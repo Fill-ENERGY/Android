@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/mapFragment"
+        android:enabled="true"
+        android:title="@string/map" />
+    <item
+        android:id="@+id/listFragment"
+        android:enabled="true"
+        android:title="@string/list" />
+    <item
+        android:id="@+id/communityFragment"
+        android:enabled="true"
+        android:title="@string/community" />
+    <item
+        android:id="@+id/noteFragment"
+        android:enabled="true"
+        android:title="@string/note" />
+    <item
+        android:id="@+id/mypageFragment"
+        android:enabled="true"
+        android:title="@string/mypage" />
+</menu>

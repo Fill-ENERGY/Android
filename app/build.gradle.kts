@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.energy"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.energy"
@@ -18,8 +18,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        //buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty(propertyBaseUrl))
-        //buildConfigField("String", "KAKAO_NATIVE_KEY", gradleLocalProperties(rootDir).getProperty(propertyBaseUrl))
+        //buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty("BASE_URL"))
+        //buildConfigField("String", "KAKAO_NATIVE_KEY", gradleLocalProperties(rootDir).getProperty("KAKAO_NATIVE_KEY"))
     }
 
     buildTypes {
