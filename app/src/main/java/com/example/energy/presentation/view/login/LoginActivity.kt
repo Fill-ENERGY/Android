@@ -9,20 +9,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.energy.databinding.ActivityLoginBinding
 import com.example.energy.presentation.view.MainActivity
+import com.example.energy.presentation.view.base.BaseActivity
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 
-class LoginActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityLoginBinding
-
+class LoginActivity : BaseActivity<ActivityLoginBinding>({ ActivityLoginBinding.inflate(it)}) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
 
         kakaoLogin()
     }
@@ -34,6 +30,7 @@ class LoginActivity : AppCompatActivity() {
             val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
                 if (error != null) {
                     Log.e("로그인테스트", "카카오계정으로 로그인 실패", error)
+                    loginFail()
 
                 } else if (token != null) {
                     Log.i("로그인테스트", "카카오계정으로 로그인 성공 ${token.accessToken}")
@@ -46,6 +43,8 @@ class LoginActivity : AppCompatActivity() {
                 UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
                     if (error != null) {
                         Log.e("로그인테스트", "카카오톡으로 로그인 실패", error)
+                        loginFail()
+
                         // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
                         // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
                         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
@@ -66,8 +65,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginFail() {
+        showToast("로그인에 실패했습니다.")
     }
     private fun loginSuccess() {
+        showToast("로그인에 성공했습니다.")
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }
