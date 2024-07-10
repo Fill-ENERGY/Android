@@ -57,8 +57,9 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    // Kakao Login
+    // Kakao
     implementation("com.kakao.sdk:v2-user:2.20.3")
+    implementation("com.kakao.sdk:v2-share:2.20.3")
 
     // network
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -66,4 +67,10 @@ dependencies {
     implementation("com.squareup.retrofit2:adapter-rxjava2:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
+
+    //image
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+    implementation("com.github.bumptech.glide:glide:4.11.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.11.0")
+
 }
