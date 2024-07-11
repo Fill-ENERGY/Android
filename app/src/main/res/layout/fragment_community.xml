@@ -15,7 +15,6 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/community_search_icon"
-            android:layout_marginTop="30dp"
             android:layout_marginEnd="15dp"
             app:layout_constraintEnd_toStartOf="@id/community_notify_iv"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -24,7 +23,6 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/community_notify_icon"
-            android:layout_marginTop="30dp"
             android:layout_marginEnd="15dp"
             app:layout_constraintEnd_toStartOf="@id/community_sos_iv"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -33,7 +31,6 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/community_sos_icon"
-            android:layout_marginTop="30dp"
             android:layout_marginEnd="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
