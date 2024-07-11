@@ -1,13 +1,11 @@
 package com.example.energy.presentation.view.community
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import com.example.energy.R
 import com.example.energy.databinding.FragmentCommunityBinding
 import com.example.energy.presentation.view.base.BaseFragment
+import com.example.energy.presentation.view.community.CommunityWritingActivity
 import com.google.android.material.tabs.TabLayoutMediator
 
 class CommunityFragment : BaseFragment<FragmentCommunityBinding>({ FragmentCommunityBinding.inflate(it)}) {
@@ -24,5 +22,10 @@ class CommunityFragment : BaseFragment<FragmentCommunityBinding>({ FragmentCommu
                 tab, position ->
             tab.text = information[position]
         }.attach()
+
+        // 글 쓰기 화면으로 전환
+        binding.communityWritingBt.setOnClickListener {
+            startActivity(Intent(activity, CommunityWritingActivity::class.java))
+        }
     }
 }
