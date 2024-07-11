@@ -1,25 +1,34 @@
 package com.example.energy.presentation.view
 
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import com.example.energy.R
 import com.example.energy.databinding.ActivityMainBinding
 import com.example.energy.presentation.view.community.CommunityFragment
 import com.example.energy.presentation.view.list.ListFragment
+import com.example.energy.presentation.view.login.LoginActivity
 import com.example.energy.presentation.view.map.MapFragment
 import com.example.energy.presentation.view.mypage.MypageFragment
 import com.example.energy.presentation.view.note.NoteFragment
+import com.kakao.sdk.common.util.Utility
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         initBottomNavigation()
     }
+
 
     private fun initBottomNavigation(){
 
@@ -63,5 +72,12 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
+    }
+
+    fun hideBottomNavigation(state: Boolean){
+        if(state)
+            binding.mainBnv.visibility = View.GONE
+        else
+            binding.mainBnv.visibility = View.VISIBLE
     }
 }
