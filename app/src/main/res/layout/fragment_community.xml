@@ -48,10 +48,9 @@
             app:tabMode="scrollable"
             app:tabIndicatorFullWidth="false"
             app:tabRippleColor="@android:color/transparent"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="15dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/community_search_iv"
-            app:layout_constraintBottom_toTopOf="@id/community_viewpage"
             app:tabIndicatorColor="#F37E13"
             app:tabIndicatorGravity="bottom"
             app:tabSelectedTextColor="@color/black"/>
