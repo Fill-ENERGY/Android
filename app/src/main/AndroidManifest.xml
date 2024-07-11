@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".EnergyApp"
@@ -14,6 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Android"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31" >
         <activity
             android:name=".presentation.view.login.LoginActivity"
@@ -38,7 +41,7 @@
                     android:scheme="kakao${KAKAO_NATIVE_KEY}" />
             </intent-filter>
         </activity>
-
+        <meta-data android:name="com.kakao.vectormap.APP_KEY" android:value="${KAKAO_NATIVE_KEY}" />
     </application>
 
 </manifest>

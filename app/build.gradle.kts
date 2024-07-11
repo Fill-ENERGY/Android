@@ -60,6 +60,7 @@ dependencies {
     // Kakao
     implementation("com.kakao.sdk:v2-user:2.20.3")
     implementation("com.kakao.sdk:v2-share:2.20.3")
+    implementation("com.kakao.maps.open:android:2.9.5")
 
     // network
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
