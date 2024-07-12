@@ -21,6 +21,7 @@ android {
         //buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty("BASE_URL"))
         buildConfigField("String", "KAKAO_NATIVE_KEY", gradleLocalProperties(rootDir).getProperty("KAKAO_NATIVE_KEY"))
         manifestPlaceholders["KAKAO_NATIVE_KEY"] = gradleLocalProperties(rootDir).getProperty("kakaoNativeKey")
+        buildConfigField("String", "KAKAO_REST_KEY", gradleLocalProperties(rootDir).getProperty("KAKAO_REST_KEY"))
     }
 
     buildTypes {

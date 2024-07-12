@@ -1,5 +1,6 @@
 package com.example.energy.presentation.view.map
 
+import ResultSearchKeyword
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -50,7 +51,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                 }, object : KakaoMapReadyCallback() {
                     override fun onMapReady(kakaoMap: KakaoMap) {
                         // 인증 후 API 가 정상적으로 실행될 때 호출됨
-
+                        MapLocation.searchKeyword("급속 충전소")
                     }
 
                     override fun getPosition(): LatLng {
@@ -84,4 +85,6 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
             dialog.dismiss()
         }
     }
+
+
 }
