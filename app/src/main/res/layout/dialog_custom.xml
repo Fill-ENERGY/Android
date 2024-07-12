@@ -6,11 +6,19 @@
     android:padding="16dp">
 
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/iv_sos"
+        android:scaleType="center"
+        android:background="@color/white"
+        />
+
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Custom Dialog"
+        android:text="@string/sos_title"
         android:textSize="16sp"
         android:textStyle="bold"
         android:gravity="center"
@@ -20,7 +28,7 @@
         android:id="@+id/tv_subTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Custom Dialog"
+        android:text="@string/help"
         android:textSize="12sp"
         android:textStyle="bold"
         android:gravity="center"
@@ -30,10 +38,9 @@
         android:id="@+id/btn_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="OK"
+        android:text="@string/call"
         android:backgroundTint="@color/main"
         android:textColor="@color/white"
-        android:layout_marginTop="16dp"
-        android:textAllCaps="false"/>
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>

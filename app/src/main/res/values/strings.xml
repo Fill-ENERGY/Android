@@ -9,4 +9,8 @@
 
     <string name="nickname">닉네임</string>
 
+    <string name="sos_title">112 긴급 연락</string>
+    <string name="help">도움이 필요하신가요?</string>
+    <string name="call">통화 연결</string>
+
 </resources>

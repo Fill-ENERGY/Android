@@ -17,9 +17,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.NonNull
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.energy.R
+import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.FragmentMapBinding
 import com.example.energy.presentation.view.MainActivity
 import com.example.energy.presentation.view.base.BaseFragment
@@ -36,23 +38,21 @@ import com.kakao.vectormap.label.LabelLayer
 import com.kakao.vectormap.label.LabelOptions
 
 
-class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflate(it)}) {
+class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflate(it) }) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val mapView : MapView = binding.mapView
+        val mapView: MapView = binding.mapView
 
         mapView.start(object : MapLifeCycleCallback() {
 
 
             override fun onMapDestroy() {
-                showToast("지도를 정상적으로 불러왔습니다.")
                 Log.d("카카오맵", "지도 정상 작동")
             }
 
             override fun onMapError(error: Exception) {
-                showToast("지도를 불러오지 못했습니다${error}")
                 Log.e("카카오맵", "지도 에러${error}")
 
             }
@@ -63,14 +63,27 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
             }
         })
 
-        //sos
+        //sos 기능
         binding.ivSos.setOnClickListener {
-            var intent = Intent(Intent.ACTION_DIAL)
-            intent.data = Uri.parse("tel:112")
-
-            startActivity(intent)
+            showSOSDialog()
         }
 
     }
 
+    private fun showSOSDialog() {
+        val dialogBinding = DialogCustomBinding.inflate(layoutInflater)
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setView(dialogBinding.root)
+
+        val dialog = builder.create()
+        dialog.show()
+
+        dialogBinding.btnDialog.setOnClickListener {
+            var intent = Intent(Intent.ACTION_DIAL)
+            intent.data = Uri.parse("tel:112")
+
+            startActivity(intent)
+            dialog.dismiss()
+        }
+    }
 }
