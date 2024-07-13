@@ -36,16 +36,16 @@ class MainActivity : AppCompatActivity() {
         binding.mainBnv.setOnItemSelectedListener { item ->
             when (item.itemId) {
 
-                R.id.mapFragment -> {
+                R.id.listFragment -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.main_frm, MapFragment())
+                        .replace(R.id.main_frm, ListFragment())
                         .commitAllowingStateLoss()
                     return@setOnItemSelectedListener true
                 }
 
-                R.id.listFragment -> {
+                R.id.mapFragment -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.main_frm, ListFragment())
+                        .replace(R.id.main_frm, MapFragment())
                         .commitAllowingStateLoss()
                     return@setOnItemSelectedListener true
                 }
