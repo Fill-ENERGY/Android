@@ -13,5 +13,6 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
     }
 }

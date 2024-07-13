@@ -17,10 +17,6 @@
             android:exported="false"
             android:theme="@style/Theme.Android" />
         <activity
-            android:name=".presentation.view.community.CommunityWritingActivity"
-            android:exported="false"
-            android:theme="@style/Theme.Android" />
-        <activity
             android:name=".presentation.view.MainActivity"
             android:exported="true" >
             <intent-filter>
