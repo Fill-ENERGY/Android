@@ -8,11 +8,15 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 abstract class BaseFragment<T : ViewBinding>(private val inflater: (LayoutInflater) -> T) : Fragment() {
     private var _binding: T? = null
     protected val binding get() = _binding!!
     private var imm : InputMethodManager? = null
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -20,6 +24,7 @@ abstract class BaseFragment<T : ViewBinding>(private val inflater: (LayoutInflat
         savedInstanceState: Bundle?,
     ): View? {
         _binding = inflater(layoutInflater)
+
         return binding.root
     }
 

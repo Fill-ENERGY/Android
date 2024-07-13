@@ -22,6 +22,7 @@ android {
         //buildConfigField("String", "BASE_URL", gradleLocalProperties(rootDir).getProperty("BASE_URL"))
         buildConfigField("String", "KAKAO_NATIVE_KEY", gradleLocalProperties(rootDir).getProperty("KAKAO_NATIVE_KEY"))
         manifestPlaceholders["KAKAO_NATIVE_KEY"] = gradleLocalProperties(rootDir).getProperty("kakaoNativeKey")
+        buildConfigField("String", "KAKAO_REST_KEY", gradleLocalProperties(rootDir).getProperty("KAKAO_REST_KEY"))
     }
 
     buildTypes {
@@ -61,6 +62,7 @@ dependencies {
     // Kakao
     implementation("com.kakao.sdk:v2-user:2.20.3")
     implementation("com.kakao.sdk:v2-share:2.20.3")
+    implementation("com.kakao.maps.open:android:2.9.5")
 
     // network
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -73,5 +75,11 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.github.bumptech.glide:glide:4.11.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.11.0")
+
+    //map
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    //recyclerview
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 
 }

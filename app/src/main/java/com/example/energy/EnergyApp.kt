@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.energy.BuildConfig.KAKAO_NATIVE_KEY
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.util.Utility
+import com.kakao.vectormap.KakaoMapSdk
 
 class EnergyApp : Application() {
     override fun onCreate() {
@@ -16,5 +17,6 @@ class EnergyApp : Application() {
 
         // Kakao SDK 초기화
         KakaoSdk.init(this, KAKAO_NATIVE_KEY)
+        KakaoMapSdk.init(this, KAKAO_NATIVE_KEY)
     }
 }
