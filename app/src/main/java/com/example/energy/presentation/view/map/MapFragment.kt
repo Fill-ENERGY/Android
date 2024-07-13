@@ -50,7 +50,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
         }
 
         //sos 기능
-        binding.ivSos.setOnClickListener {
+        binding.cvSos.setOnClickListener {
             showSOSDialog()
         }
 
