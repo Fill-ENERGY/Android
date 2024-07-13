@@ -21,6 +21,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.Locale
 
+const val KAKAO_KEY = BuildConfig.KAKAO_REST_KEY
 class MapLocation {
     companion object {
 
