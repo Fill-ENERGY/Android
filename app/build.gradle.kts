@@ -78,4 +78,7 @@ dependencies {
     //map
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
+    //recyclerview
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+
 }

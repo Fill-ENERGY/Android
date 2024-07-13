@@ -2,6 +2,7 @@ package com.example.energy.presentation.view.map
 
 import ResultSearchKeyword
 import android.content.Intent
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -37,26 +38,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
         } else {
             MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) {
                 location ->  Log.d("CurrentLocation", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
-                mapView.start(object : MapLifeCycleCallback() {
-
-
-                    override fun onMapDestroy() {
-                        Log.d("카카오맵", "지도 정상 작동")
-                    }
-
-                    override fun onMapError(error: Exception) {
-                        Log.e("카카오맵", "지도 에러${error}")
-
-                    }
-                }, object : KakaoMapReadyCallback() {
-                    override fun onMapReady(kakaoMap: KakaoMap) {
-                        // 인증 후 API 가 정상적으로 실행될 때 호출됨
-                        MapLocation.searchKeyword("급속 충전소")
-                    }
-
-                    override fun getPosition(): LatLng {
-                        return LatLng.from(location.latitude, location.longitude)                }
-                })
+                getMap(mapView, location)
             }
         }
 
@@ -66,6 +48,38 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
             showSOSDialog()
         }
 
+        //현재 위치 재조정
+        binding.ivLocation.setOnClickListener {
+            showToast("현재 위치를 가져옵니다")
+            MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) {
+                    location ->  Log.d("CurrentLocation", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+                getMap(mapView, location)
+            }
+        }
+
+    }
+
+    private fun getMap(mapView: MapView, location: Location) {
+        mapView.start(object : MapLifeCycleCallback() {
+
+            override fun onMapDestroy() {
+                Log.d("카카오맵", "지도 정상 작동")
+            }
+
+            override fun onMapError(error: Exception) {
+                Log.e("카카오맵", "지도 에러${error}")
+
+            }
+        }, object : KakaoMapReadyCallback() {
+            override fun onMapReady(kakaoMap: KakaoMap) {
+                // 인증 후 API 가 정상적으로 실행될 때 호출됨
+                MapLocation.searchKeyword("급속 충전소")
+            }
+
+            override fun getPosition(): LatLng {
+                return LatLng.from(location.latitude, location.longitude)
+            }
+        })
     }
 
 
