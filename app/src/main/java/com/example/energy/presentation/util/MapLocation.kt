@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.Location
 import android.util.Log
 import androidx.core.content.ContextCompat
@@ -18,6 +19,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.Locale
 
 class MapLocation {
     companion object {
@@ -65,6 +67,25 @@ class MapLocation {
             }
             return true
         }
+
+        //위도 경도를 주소로 변환
+        fun getGeoCoder(latitude:Double,longitude:Double, context: Context) : String{
+            val geocoder: Geocoder = Geocoder(context)
+            val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+
+            if (addresses != null) {
+                return if (addresses.isNotEmpty()) {
+                    val cityName = addresses?.get(0)?.subLocality ?: "00구"
+                    val neighborhoodName = addresses?.get(0)?.thoroughfare ?: "00동"
+                    "$cityName $neighborhoodName"
+                } else {
+                    "00구 00동"
+                }
+            }
+            return "00구 00동"
+        }
+
+
 
         fun searchKeyword(keyword: String) {
             val retrofit = Retrofit.Builder() // Retrofit 구성

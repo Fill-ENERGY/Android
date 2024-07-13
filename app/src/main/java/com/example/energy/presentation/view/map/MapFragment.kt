@@ -1,7 +1,9 @@
 package com.example.energy.presentation.view.map
 
 import ResultSearchKeyword
+import android.content.Context
 import android.content.Intent
+import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -42,6 +44,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
             }
         }
 
+        //검색 창 넘어가기
+        binding.cvSearch.setOnClickListener {
+
+        }
 
         //sos 기능
         binding.ivSos.setOnClickListener {
@@ -56,6 +62,8 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                 getMap(mapView, location)
             }
         }
+
+
 
     }
 
@@ -73,6 +81,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
         }, object : KakaoMapReadyCallback() {
             override fun onMapReady(kakaoMap: KakaoMap) {
                 // 인증 후 API 가 정상적으로 실행될 때 호출됨
+
+                //주소창 텍스트를 현재 주소 기준으로 설정
+                binding.tvCurrentLocation.text = MapLocation.getGeoCoder(location.latitude, location.longitude, requireContext())
+
                 MapLocation.searchKeyword("급속 충전소")
             }
 
@@ -98,7 +110,13 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
             startActivity(intent)
             dialog.dismiss()
         }
+
+        dialogBinding.ivClose.setOnClickListener {
+            dialog.dismiss()
+        }
     }
+
+
 
 
 }
