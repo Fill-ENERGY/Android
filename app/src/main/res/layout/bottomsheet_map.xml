@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nestedScrollView"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,37 +11,68 @@
         android:id="@+id/tv_marker_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
         android:text="@string/marker_bottomsheet"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />
 
-<!--    <TextView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="16m"-->
-<!--        />-->
+    <TextView
+        android:id="@+id/tv_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:text="16m"
+        app:layout_constraintTop_toBottomOf="@id/tv_marker_bottom"
+        app:layout_constraintStart_toStartOf="parent"
+        />
 
-<!--    <TextView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="4.41(15)"-->
-<!--        />-->
+    <ImageView
+        android:id="@+id/iv_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/iv_star"
+        app:layout_constraintStart_toEndOf="@+id/tv_distance"
+        app:layout_constraintTop_toTopOf="@id/tv_distance"
+        />
+    <TextView
+        android:id="@+id/tv_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="4.41(15)"
+        app:layout_constraintStart_toEndOf="@+id/iv_star"
+        app:layout_constraintTop_toTopOf="@id/tv_distance"
+        />
 
-<!--    <TextView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="4.41(15)"-->
-<!--        />-->
+    <ImageView
+        android:id="@+id/iv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/iv_time"
+        app:layout_constraintStart_toEndOf="@+id/tv_star"
+        app:layout_constraintTop_toTopOf="@id/tv_distance"
+        />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(평일) 0:00 ~ 24:00"
+        app:layout_constraintStart_toEndOf="@+id/iv_time"
+        app:layout_constraintTop_toTopOf="@id/tv_distance"
+        />
 
     <ImageView
         android:id="@+id/iv_call"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/iv_call"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/iv_bookmark"
-        app:layout_constraintTop_toBottomOf="@id/tv_marker_bottom"
+        app:layout_constraintTop_toBottomOf="@id/tv_distance"
         />
 
     <TextView
@@ -108,5 +140,7 @@
         app:layout_constraintStart_toStartOf="@id/iv_share"
         app:layout_constraintEnd_toEndOf="@id/iv_share"
         android:text="공유"/>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -46,7 +46,15 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
 
         //검색 창 넘어가기
         binding.cvSearch.setOnClickListener {
-
+            //바텀시트 테스트
+            val bottomSheetDialogFragment = MapInfoBottomSheet()
+            val bundle = Bundle()
+            // 현재 위치 데이터를 Bundle에 넣어 전달
+            MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) { location ->
+                bundle.putParcelable("location", location)
+                bottomSheetDialogFragment.arguments = bundle
+                bottomSheetDialogFragment.show(requireActivity().supportFragmentManager, bottomSheetDialogFragment.tag)
+            }
         }
 
         //sos 기능
@@ -115,8 +123,5 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
             dialog.dismiss()
         }
     }
-
-
-
 
 }
