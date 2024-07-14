@@ -22,15 +22,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBinding.inflate(it)}) {
     private val searchList = ArrayList<SearchData>()
     private val searchAdapter = SearchAdapter(searchList)
+    private var keyword = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var keyword = binding.etSearch.text.toString()
-        Log.d("키워드 입력 테스트", keyword)
-
-
         binding.cvSos.setOnClickListener {
+            keyword = binding.etSearch.text.toString()
+            Log.d("키워드 입력 테스트", keyword)
             searchKeyword(keyword)
         }
 
@@ -87,7 +86,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val api = retrofit.create(MapInterface::class.java) // 통신 인터페이스를 객체로 생성
-        val call = api.getSearchKeyword("KakaoAK 346cc3cb97a47cbcd35f8ec8b4794861", keyword) // 검색 조건 입력
+        val call = api.getSearchKeyword("KakaoAK ${BuildConfig.KAKAO_REST_KEY}", keyword) // 검색 조건 입력
 
         // API 서버에 요청
         call.enqueue(object : Callback<ResultSearchKeyword> {
@@ -98,6 +97,9 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
                 // 통신 성공 (검색 결과는 response.body()에 담겨있음)
                 Log.d("검색테스트", "Raw: ${response.raw()}")
                 Log.d("검색테스트", "Body: ${response.body()}")
+
+                //리사이클러뷰에 결과 추가
+                addSearchResult(response.body())
             }
 
             override fun onFailure(call: Call<ResultSearchKeyword>, t: Throwable) {
