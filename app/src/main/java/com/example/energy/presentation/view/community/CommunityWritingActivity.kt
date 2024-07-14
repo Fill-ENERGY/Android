@@ -18,6 +18,10 @@ class CommunityWritingActivity : AppCompatActivity() {
         binding = ActivityCommunityWritingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //뒤로가기 버튼
+        binding.communityWritingBackIcon.setOnClickListener {
+            finish() // 현재 액티비티 종료
+        }
     }
 
 }
