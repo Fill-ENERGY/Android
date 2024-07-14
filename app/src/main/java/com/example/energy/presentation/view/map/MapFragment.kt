@@ -1,6 +1,5 @@
 package com.example.energy.presentation.view.map
 
-import ResultSearchKeyword
 import android.content.Context
 import android.content.Intent
 import android.location.Geocoder
@@ -100,7 +99,6 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                 //주소창 텍스트를 현재 주소 기준으로 설정
                 binding.tvCurrentLocation.text = MapLocation.getGeoCoder(location.latitude, location.longitude, requireContext())
 
-                MapLocation.searchKeyword("급속 충전소")
             }
 
             override fun getPosition(): LatLng {
