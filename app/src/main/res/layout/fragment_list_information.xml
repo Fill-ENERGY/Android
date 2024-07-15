@@ -16,7 +16,7 @@
             android:layout_height="12dp"
             android:layout_marginStart="21dp"
             android:layout_marginTop="47dp"
-            android:src="@drawable/left" />
+            android:src="@drawable/ic_star" />
 
         <TextView
             android:layout_width="243dp"
@@ -186,7 +186,7 @@
     <ImageView
         android:layout_width="320dp"
         android:layout_height="186dp"
-        android:src="@drawable/Map"
+        android:src="@drawable/ic_star"
         android:layout_marginStart="20dp"
         android:layout_marginTop="291dp" />
 
@@ -201,7 +201,7 @@
             android:id="@+id/location"
             android:layout_width="24dp"
             android:layout_height="15dp"
-            android:src="@drawable/location"
+            android:src="@drawable/ic_star"
             android:layout_marginTop="2dp"
             android:layout_marginStart="14dp" />
 
@@ -255,7 +255,7 @@
             android:id="@+id/time"
             android:layout_width="12dp"
             android:layout_height="12dp"
-            android:src="@drawable/time"
+            android:src="@drawable/ic_star"
             android:layout_marginTop="2dp"
             android:layout_marginStart="21dp" />
 
@@ -334,7 +334,7 @@
             android:id="@+id/call"
             android:layout_width="12dp"
             android:layout_height="12dp"
-            android:src="@drawable/call"
+            android:src="@drawable/ic_star"
             android:layout_marginTop="2dp"
             android:layout_marginStart="21dp" />
 
@@ -370,7 +370,7 @@
             android:id="@+id/use"
             android:layout_width="12dp"
             android:layout_height="12dp"
-            android:src="@drawable/use"
+            android:src="@drawable/ic_star"
             android:layout_marginTop="2dp"
             android:layout_marginStart="21dp" />
 
@@ -405,7 +405,7 @@
             android:id="@+id/push"
             android:layout_width="12dp"
             android:layout_height="13dp"
-            android:src="@drawable/push"
+            android:src="@drawable/ic_star"
             android:layout_marginTop="2dp"
             android:layout_marginStart="21dp" />
 
