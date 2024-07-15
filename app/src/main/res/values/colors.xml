@@ -9,12 +9,13 @@
     <color name="support_orange">#FF643E</color>
     <color name="yellow">#F0AB26</color>
     <color name="green">#8ACF19</color>
-    <color name="sub_black">#222019</color>
-    <color name="deep_gray">#4A4945</color>
-    <color name="normal_gray">#71716E</color>
-    <color name="sub_gray">#888886</color>
-    <color name="light_gray">#D7D7D5</color>
-    <color name="support_white">#F1F1F1</color>
-    <color name="support_white2">#F7F7F7</color>
+    <color name="gray_scale8">#222019</color>
+    <color name="gray_scale7">#4A4945</color>
+    <color name="gray_scale6">#71716E</color>
+    <color name="gray_scale5">#888886</color>
+    <color name="gray_scale4">#D7D7D5</color>
+    <color name="gray_scale3">#E4E4E2</color>
+    <color name="gray_scale2">#F1F1F1</color>
+    <color name="gray_scale1">#F7F7F7</color>
 
 </resources>
