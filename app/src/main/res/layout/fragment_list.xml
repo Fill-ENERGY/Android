@@ -1,14 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".presentation.view.list.ListFragment">
 
+    <!-- Search Bar -->
+    <RelativeLayout
+        android:id="@+id/search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="9dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_edit_text"
+
+            android:layout_width="match_parent"
+            android:layout_height="31dp"
+            android:layout_marginTop="41dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="50dp"
+            android:textSize="12sp"
+            android:queryHint="서대문구 연희동"
+            android:background="#FFFFFF" />
+
+
+
+
+
+
+        <ImageView
+            android:id="@+id/sos_button"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="9dp"
+            android:layout_marginTop="41dp"
+            android:src="@drawable/iv_sos"
+            android:background="#FFFFFF"/>
+    </RelativeLayout>
+
     <TextView
+        android:id="@+id/meter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="400dp"
-        android:text="list" />
+        android:layout_marginTop="88dp"
+        android:layout_marginStart="30dp"
+        android:text="거리순"
+        android:textSize="12sp" />
 
-</FrameLayout>
+
+    <TextView
+        android:id="@+id/star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="88dp"
+        android:layout_marginStart="91dp"
+        android:text="별점순"
+        android:textSize="12sp" />
+
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="120dp"
+
+         />
+
+
+
+
+</RelativeLayout>
