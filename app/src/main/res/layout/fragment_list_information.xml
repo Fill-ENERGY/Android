@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".list_informationFragment">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="13dp"
+            android:layout_height="12dp"
+            android:layout_marginStart="21dp"
+            android:layout_marginTop="47dp"
+            android:src="@drawable/left" />
+
+        <TextView
+            android:layout_width="243dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="44dp"
+            android:gravity="center_vertical"
+            android:text="서대문구청 전동보장구 급속충전기"
+            android:textSize="16sp" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="26dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="94dp"
+        android:textSize="12sp"
+        android:text="16m"/>
+
+
+    <ImageView
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="78dp"
+        android:layout_marginTop="96dp"
+        android:src="@drawable/ic_star" />
+
+
+
+    <TextView
+        android:layout_width="48dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="94dp"
+        android:textSize="12sp"
+        android:text="4.41(15)" />
+
+
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="138dp"
+        android:layout_marginBottom="47dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginEnd="35dp"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="41dp"
+                android:layout_height="41dp"
+                android:src="@drawable/iv_call" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textSize="12sp"
+                android:text="전화" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginEnd="35dp"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="41dp"
+                android:layout_height="41dp"
+                android:src="@drawable/iv_bookmark" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textSize="12sp"
+                android:text="즐겨찾기" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginEnd="35dp"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="41dp"
+                android:layout_height="41dp"
+                android:src="@drawable/iv_guide" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textSize="12sp"
+                android:text="길안내" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="41dp"
+                android:layout_height="41dp"
+                android:src="@drawable/iv_share" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textSize="12sp"
+                android:text="공유" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="7dp"
+        android:layout_marginTop="219dp"
+        android:background="#E4E4E2"/>
+
+
+    <!--탭 레이아웃-->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/divider"
+        app:tabIndicatorColor="#F37E13"
+        app:tabIndicatorGravity="bottom"
+        app:tabIndicatorHeight="2dp"
+        app:tabMode="fixed"
+        app:tabGravity="fill"
+        app:tabIndicatorFullWidth="true">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="정보" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="평가" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="민원" />
+    </com.google.android.material.tabs.TabLayout>
+
+
+
+
+    <ImageView
+        android:layout_width="320dp"
+        android:layout_height="186dp"
+        android:src="@drawable/Map"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="291dp" />
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="494dp">
+
+        <ImageView
+            android:id="@+id/location"
+            android:layout_width="24dp"
+            android:layout_height="15dp"
+            android:src="@drawable/location"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="14dp" />
+
+        <TextView
+            android:id="@+id/locationtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/location"
+            android:layout_marginStart="3dp"
+            android:textSize="12sp"
+            android:text="도로명" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="서울 서대문구 연희로 248 1층"
+            android:layout_marginStart="92dp"
+            android:textSize="12sp" />
+
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/location"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="25dp"
+            android:textSize="12sp"
+            android:text="지번" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="연희동 168-6"
+            android:layout_marginTop="25dp"
+            android:layout_marginStart="92dp"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="555dp">
+
+        <ImageView
+            android:id="@+id/time"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/time"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="21dp" />
+
+        <TextView
+            android:id="@+id/timetext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/time"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            android:text="평일" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0:00 ~ 24:00"
+            android:layout_marginStart="92dp"
+            android:textSize="12sp" />
+
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/time"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="25dp"
+            android:textSize="12sp"
+            android:text="토요일" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="25dp"
+            android:layout_marginStart="92dp"
+            android:textSize="12sp"
+            android:text="0:00 ~ 24:00"/>
+
+
+
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/time"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="50dp"
+            android:textSize="12sp"
+            android:text="공휴일" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="92dp"
+            android:textSize="12sp"
+            android:text="0:00 ~ 24:00"/>
+
+    </RelativeLayout>
+
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="639dp">
+
+        <ImageView
+            android:id="@+id/call"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/call"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="21dp" />
+
+        <TextView
+            android:id="@+id/calltext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/call"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            android:text="번호" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="02-879-4317"
+            android:layout_marginStart="92dp"
+            android:textSize="12sp" />
+
+
+
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="674dp">
+
+        <ImageView
+            android:id="@+id/use"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/use"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="21dp" />
+
+        <TextView
+            android:id="@+id/usetext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/use"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            android:text="동시 가능 사용대 수" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2"
+            android:layout_marginStart="152dp"
+            android:textSize="12sp" />
+
+
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="710dp">
+
+        <ImageView
+            android:id="@+id/push"
+            android:layout_width="12dp"
+            android:layout_height="13dp"
+            android:src="@drawable/push"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="21dp" />
+
+        <TextView
+            android:id="@+id/pushtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/push"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            android:text="공기압주입 가능 여부" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="151dp"
+            android:textSize="12sp"
+            android:textColor="#FF4C13"
+            android:text="N"/>
+
+
+    </RelativeLayout>
+
+
+
+
+
+
+</RelativeLayout>
