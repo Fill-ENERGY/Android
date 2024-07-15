@@ -45,7 +45,8 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
 
         //검색 창 넘어가기
         binding.cvSearch.setOnClickListener {
-            startActivity(Intent(activity, SearchActivity::class.java))
+            //startActivity(Intent(activity, SearchActivity::class.java))
+            showBottomSheet()
         }
 
         //sos 기능

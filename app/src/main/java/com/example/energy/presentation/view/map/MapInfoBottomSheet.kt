@@ -1,5 +1,8 @@
 package com.example.energy.presentation.view.map
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -8,11 +11,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import com.example.energy.databinding.BottomsheetMapBinding
+import com.example.energy.presentation.view.community.CommunityWritingActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class MapInfoBottomSheet : BottomSheetDialogFragment() {
     lateinit var binding: BottomsheetMapBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,7 +53,38 @@ class MapInfoBottomSheet : BottomSheetDialogFragment() {
 
         //공유하기
         shareCharging("https://developer.android.com/training/sharing/send?hl=ko")
+
+        //민원 탭
+        showTabComplaint()
     }
+
+    private fun showTabComplaint() {
+        val clipboard: ClipboardManager =
+            requireContext().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+
+        binding.tvManageCopy.setOnClickListener {
+            clipboard.setPrimaryClip(
+                ClipData.newPlainText(
+                    "label",
+                    binding.tvManageInstitution.text.toString()
+                )
+            )
+        }
+
+        binding.tvNumberCopy.setOnClickListener {
+            clipboard.setPrimaryClip(
+                ClipData.newPlainText(
+                    "label",
+                    binding.tvNumberInstitution.text.toString()
+                )
+            )
+        }
+
+        binding.btnWriteComplaint.setOnClickListener {
+            startActivity(Intent(activity, CommunityWritingActivity::class.java))
+        }
+    }
+
 
     private fun bookmarkCharging() {
         binding.ivBookmark.setOnClickListener {
