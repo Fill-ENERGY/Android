@@ -82,4 +82,7 @@ dependencies {
     //recyclerview
     implementation("androidx.recyclerview:recyclerview:1.3.2")
 
+    //image upload
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
 }
