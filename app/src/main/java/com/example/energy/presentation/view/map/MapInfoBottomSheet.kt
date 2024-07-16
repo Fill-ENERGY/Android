@@ -5,6 +5,8 @@ import android.content.ClipboardManager
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -12,9 +14,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getSystemService
 import com.example.energy.databinding.BottomsheetMapBinding
+import com.example.energy.databinding.DialogLoginBinding
 import com.example.energy.presentation.view.community.CommunityWritingActivity
+import com.example.energy.presentation.view.login.LoginActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class MapInfoBottomSheet : BottomSheetDialogFragment() {
@@ -89,7 +94,7 @@ class MapInfoBottomSheet : BottomSheetDialogFragment() {
     private fun bookmarkCharging() {
         binding.ivBookmark.setOnClickListener {
             //즐겨찾기 로직
-
+            showLoginDialog()
         }
     }
 
@@ -151,6 +156,42 @@ class MapInfoBottomSheet : BottomSheetDialogFragment() {
             true
         }catch (ex : PackageManager.NameNotFoundException){
             false
+        }
+    }
+
+    private fun showLoginDialog() {
+        val dialogBinding = DialogLoginBinding.inflate(layoutInflater)
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setView(dialogBinding.root)
+
+        val dialog = builder.create()
+        dialog.setOnShowListener {
+            val window = dialog.window
+            val layoutParams = window?.attributes
+
+            // 디바이스 너비의 70%로 설정
+            val width = (resources.displayMetrics.widthPixels * 0.7).toInt()
+
+            //radius 적용
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            layoutParams?.width = width
+            window?.attributes = layoutParams
+        }
+        dialog.show()
+
+        dialogBinding.btnKakaoLogin.setOnClickListener {
+            startActivity(Intent(activity, LoginActivity::class.java))
+            dialog.dismiss()
+        }
+
+        dialogBinding.tvLoginInput.setOnClickListener {
+            //직접 입력하기 로직
+            dialog.dismiss()
+        }
+
+        dialogBinding.ivClose.setOnClickListener {
+            dialog.dismiss()
         }
     }
 }

@@ -15,42 +15,47 @@
         android:layout_gravity="right"
         />
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/iv_sos"
-        android:scaleType="center"
-        android:background="@color/white"
-        />
 
     <TextView
-        android:id="@+id/tv_title"
+        android:id="@+id/tv_dialog_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sos_title"
-        android:textColor="@color/red"
+        android:text="@string/search_dialog_title"
+        android:textColor="@color/gray_scale8"
         android:gravity="center"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="5dp"/>
 
     <TextView
-        android:id="@+id/tv_subTitle"
+        android:id="@+id/tv_dialog_subTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/help"
-        android:textColor="@color/gray_scale6"
+        android:text="@string/search_dialog_sub"
+        android:textColor="@color/gray_scale8"
         android:gravity="center" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_dialog"
+        android:id="@+id/btn_delete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/call"
+        android:text="@string/delete"
         android:layout_marginStart="22dp"
         android:layout_marginEnd="22dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="12dp"
         android:background="@drawable/button_style"
         android:textColor="@color/white"
-        android:layout_marginTop="26dp" />
+        android:layout_marginTop="38dp" />
+
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:text="@string/back"
+        android:textColor="@color/gray_scale6"
+        android:layout_marginStart="22dp"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="25dp"/>
+
 
 </LinearLayout>

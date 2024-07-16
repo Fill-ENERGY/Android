@@ -9,21 +9,21 @@
     <EditText
         android:id="@+id/et_search"
         android:background="@drawable/search_style"
-        android:elevation="10dp"
+        android:elevation="5dp"
         android:layout_width="0dp"
         android:layout_height="53dp"
         android:layout_marginStart="20dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintTop_toTopOf="@id/cv_sos"
         android:hint="00구 00동"
-        android:paddingStart="10dp"
+        android:textColor="@color/gray_scale6"
+        android:paddingStart="9dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/cv_sos"
         />
 
 
     <androidx.cardview.widget.CardView
-        style="@style/Head1"
         android:id="@+id/cv_sos"
         android:layout_width="53dp"
         android:layout_height="53dp"
@@ -31,7 +31,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:background="@color/white"
-        app:cardElevation="10dp"
+        app:cardElevation="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         >
@@ -45,11 +45,24 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
+        android:id="@+id/tv_recent_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recent_search"
+        android:textColor="@color/gray_scale5"
+        android:layout_marginStart="20dp"
+        app:layout_constraintTop_toTopOf="@id/tv_all_delete"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+
+    <TextView
         android:id="@+id/tv_all_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/all_delete"
-        android:layout_marginTop="20dp"
+        android:textColor="@color/gray_scale5"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="20dp"
         app:layout_constraintTop_toBottomOf="@id/cv_sos"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -58,8 +71,8 @@
         android:id="@+id/divide"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="20dp"
-        android:background="@android:color/darker_gray"
+        android:layout_marginTop="14dp"
+        android:background="@color/gray_scale3"
         app:layout_constraintTop_toBottomOf="@+id/tv_all_delete"
         />
 

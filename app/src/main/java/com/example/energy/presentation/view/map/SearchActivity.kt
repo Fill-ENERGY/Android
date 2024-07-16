@@ -2,6 +2,8 @@ package com.example.energy.presentation.view.map
 
 import ResultSearchKeyword
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -16,6 +18,7 @@ import com.example.energy.data.repository.map.MapInterface
 import com.example.energy.data.repository.map.Search.SearchData
 import com.example.energy.databinding.ActivitySearchBinding
 import com.example.energy.databinding.DialogCustomBinding
+import com.example.energy.databinding.DialogSearchDeleteBinding
 import com.example.energy.presentation.view.base.BaseActivity
 import com.example.energy.presentation.viewmodel.SearchViewModel
 import retrofit2.Call
@@ -39,8 +42,9 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
             showSOSDialog()
         }
 
+        //전체삭제
         binding.tvAllDelete.setOnClickListener {
-            recentSearchAdapter.removeAllItem()
+            showAllDeleteDialog()
         }
 
         //리사이클러뷰 설정
@@ -169,6 +173,19 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
         builder.setView(dialogBinding.root)
 
         val dialog = builder.create()
+        dialog.setOnShowListener {
+            val window = dialog.window
+            val layoutParams = window?.attributes
+
+            // 디바이스 너비의 70%로 설정
+            val width = (resources.displayMetrics.widthPixels * 0.7).toInt()
+
+            //radius 적용
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            layoutParams?.width = width
+            window?.attributes = layoutParams
+        }
         dialog.show()
 
         dialogBinding.btnDialog.setOnClickListener {
@@ -180,6 +197,42 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
         }
 
         dialogBinding.ivClose.setOnClickListener {
+            dialog.dismiss()
+        }
+    }
+
+    private fun showAllDeleteDialog() {
+        val dialogBinding = DialogSearchDeleteBinding.inflate(layoutInflater)
+        val builder = AlertDialog.Builder(this)
+        builder.setView(dialogBinding.root)
+
+        val dialog = builder.create()
+        dialog.setOnShowListener {
+            val window = dialog.window
+            val layoutParams = window?.attributes
+
+            // 디바이스 너비의 70%로 설정
+            val width = (resources.displayMetrics.widthPixels * 0.7).toInt()
+
+            //radius 적용
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            layoutParams?.width = width
+            window?.attributes = layoutParams
+        }
+        dialog.show()
+
+        //삭제하기
+        dialogBinding.btnDelete.setOnClickListener {
+            recentSearchAdapter.removeAllItem()
+            dialog.dismiss()
+        }
+
+        //창 닫기
+        dialogBinding.ivClose.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialogBinding.btnBack.setOnClickListener {
             dialog.dismiss()
         }
     }

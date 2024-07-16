@@ -2,17 +2,23 @@ package com.example.energy.presentation.view.map
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import com.example.energy.databinding.DialogCustomBinding
+import com.example.energy.databinding.DialogLoginBinding
 import com.example.energy.databinding.FragmentMapBinding
 import com.example.energy.presentation.util.MapLocation
 import com.example.energy.presentation.view.base.BaseFragment
+import com.example.energy.presentation.view.login.LoginActivity
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -115,6 +121,19 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
         builder.setView(dialogBinding.root)
 
         val dialog = builder.create()
+        dialog.setOnShowListener {
+            val window = dialog.window
+            val layoutParams = window?.attributes
+
+            // 디바이스 너비의 70%로 설정
+            val width = (resources.displayMetrics.widthPixels * 0.7).toInt()
+
+            //radius 적용
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            layoutParams?.width = width
+            window?.attributes = layoutParams
+        }
         dialog.show()
 
         dialogBinding.btnDialog.setOnClickListener {
