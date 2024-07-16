@@ -92,16 +92,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <Button
+        <ImageView
             android:id="@+id/community_writing_bt"
-            android:layout_width="90dp"
+            android:layout_width="100dp"
             android:layout_height="40dp"
+            android:src="@drawable/writing_community_btn"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
-            android:background="#FFAF66"
-            android:backgroundTint="#FFF4EB"
-            android:text="글쓰기"
-            android:textColor="#FFAF66"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
