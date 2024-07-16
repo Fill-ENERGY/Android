@@ -44,20 +44,22 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/tv_edit"
+        android:id="@+id/tv_all_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/edit"
+        android:text="@string/all_delete"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         app:layout_constraintTop_toBottomOf="@id/cv_sos"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <View
+        android:id="@+id/divide"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginTop="20dp"
         android:background="@android:color/darker_gray"
-        app:layout_constraintBottom_toTopOf="@id/rv_list"
+        app:layout_constraintTop_toBottomOf="@+id/tv_all_delete"
         />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -67,9 +69,20 @@
         android:background="@color/white"
         tools:listitem="@layout/item_search"
         android:orientation="vertical"
-        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_edit" />
+        app:layout_constraintTop_toBottomOf="@+id/divide"
+        android:visibility="gone"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_recent_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        tools:listitem="@layout/item_recent"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divide" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

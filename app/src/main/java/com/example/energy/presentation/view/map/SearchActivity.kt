@@ -1,18 +1,23 @@
 package com.example.energy.presentation.view.map
 
 import ResultSearchKeyword
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.energy.BuildConfig
-import com.example.energy.R
 import com.example.energy.data.repository.map.MapInterface
-import com.example.energy.data.repository.map.SearchData
+import com.example.energy.data.repository.map.Search.SearchData
 import com.example.energy.databinding.ActivitySearchBinding
-import com.example.energy.presentation.util.MapLocation
+import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.presentation.view.base.BaseActivity
+import com.example.energy.presentation.viewmodel.SearchViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,36 +25,84 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBinding.inflate(it)}) {
+    private lateinit var searchViewModel: SearchViewModel
     private val searchList = ArrayList<SearchData>()
+    private val recentSearchList = ArrayList<SearchData>()
     private val searchAdapter = SearchAdapter(searchList)
-    private var keyword = ""
+    private val recentSearchAdapter = RecentSearchAdapter(recentSearchList)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //긴급 전화
         binding.cvSos.setOnClickListener {
-            keyword = binding.etSearch.text.toString()
-            Log.d("키워드 입력 테스트", keyword)
-            searchKeyword(keyword)
+            showSOSDialog()
         }
 
+        binding.tvAllDelete.setOnClickListener {
+            recentSearchAdapter.removeAllItem()
+        }
 
+        //리사이클러뷰 설정
+        setUpRecyclerViews()
+
+        //실시간 검색
+        setupSearchEditText()
+
+    }
+
+    private fun setUpRecyclerViews() {
         //구분선 적용
         binding.rvList.apply {
             addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
         }
+        binding.rvRecentList.apply {
+            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
+        }
+
+
         binding.rvList.adapter = searchAdapter
-        binding.rvList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.rvRecentList.adapter = recentSearchAdapter
+
+        binding.rvList.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         searchAdapter.setItemClickListener(object : SearchAdapter.OnItemClickListener {
             override fun onItemClick(searchData: SearchData) {
-                showToast("click text")
+                // 아이템을 최근 검색어 리스트에 추가
+                recentSearchAdapter.addItem(searchData)
+            }
+        })
 
+        binding.rvRecentList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recentSearchAdapter.setItemClickListener(object : RecentSearchAdapter.OnItemClickListener {
+            override fun onItemClick(searchData: SearchData) {
+                TODO("Not yet implemented")
             }
 
-
-
             override fun onRemoveCurrentSearch(position: Int) {
-                searchAdapter.removeItem(position)
+                recentSearchAdapter.removeItem(position)
+            }
+        })
+    }
+
+
+    //실시간 검색 기능
+    private fun setupSearchEditText() {
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val keyword = s.toString()
+                if (keyword.isNotEmpty()) {
+                    binding.rvList.visibility = View.VISIBLE
+                    binding.rvRecentList.visibility = View.GONE
+                    searchKeyword(keyword)
+                } else {
+                    binding.rvList.visibility = View.GONE
+                    binding.rvRecentList.visibility = View.VISIBLE
+                }
             }
         })
     }
@@ -109,5 +162,27 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
         }
         )
     }
+
+    private fun showSOSDialog() {
+        val dialogBinding = DialogCustomBinding.inflate(layoutInflater)
+        val builder = AlertDialog.Builder(this)
+        builder.setView(dialogBinding.root)
+
+        val dialog = builder.create()
+        dialog.show()
+
+        dialogBinding.btnDialog.setOnClickListener {
+            var intent = Intent(Intent.ACTION_DIAL)
+            intent.data = Uri.parse("tel:112")
+
+            startActivity(intent)
+            dialog.dismiss()
+        }
+
+        dialogBinding.ivClose.setOnClickListener {
+            dialog.dismiss()
+        }
+    }
+
 
 }
