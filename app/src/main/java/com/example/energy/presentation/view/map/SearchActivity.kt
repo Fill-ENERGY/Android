@@ -2,6 +2,7 @@ package com.example.energy.presentation.view.map
 
 import ResultSearchKeyword
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -15,12 +16,14 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.BuildConfig
 import com.example.energy.data.repository.map.MapInterface
-import com.example.energy.data.repository.map.Search.SearchData
+import com.example.energy.data.repository.map.search.SearchData
 import com.example.energy.databinding.ActivitySearchBinding
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.DialogSearchDeleteBinding
 import com.example.energy.presentation.view.base.BaseActivity
 import com.example.energy.presentation.viewmodel.SearchViewModel
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,10 +35,16 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
     private val searchList = ArrayList<SearchData>()
     private val recentSearchList = ArrayList<SearchData>()
     private val searchAdapter = SearchAdapter(searchList)
-    private val recentSearchAdapter = RecentSearchAdapter(recentSearchList)
+    private val recentSearchAdapter = RecentSearchAdapter(this, recentSearchList)
+    //최근 검색어 로드
+    private lateinit var sharedPreferences: SharedPreferences
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sharedPreferences = getSharedPreferences("recent_search_prefs", MODE_PRIVATE)
 
         //긴급 전화
         binding.cvSos.setOnClickListener {
@@ -53,6 +62,8 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
         //실시간 검색
         setupSearchEditText()
 
+        //최근 검색어 로드
+        loadRecentSearches()
     }
 
     private fun setUpRecyclerViews() {
@@ -237,5 +248,14 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
         }
     }
 
-
+    //최근 검색어 로드
+    private fun loadRecentSearches() {
+        val gson = Gson()
+        val json = sharedPreferences.getString("recent_searches", null)
+        val type = object : TypeToken<ArrayList<SearchData>>() {}.type
+        if (json != null) {
+            recentSearchList.addAll(gson.fromJson(json, type))
+            recentSearchAdapter.notifyDataSetChanged()
+        }
+    }
 }

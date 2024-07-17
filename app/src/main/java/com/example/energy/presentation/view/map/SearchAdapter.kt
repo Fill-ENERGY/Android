@@ -3,7 +3,7 @@ package com.example.energy.presentation.view.map
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.energy.data.repository.map.Search.SearchData
+import com.example.energy.data.repository.map.search.SearchData
 import com.example.energy.databinding.ItemSearchBinding
 
 class SearchAdapter(private val itemList: ArrayList<SearchData>): RecyclerView.Adapter<SearchAdapter.ViewHolder>() {

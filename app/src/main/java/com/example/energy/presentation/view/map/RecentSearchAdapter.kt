@@ -1,13 +1,14 @@
 package com.example.energy.presentation.view.map
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.energy.data.repository.map.Search.SearchData
+import com.example.energy.data.repository.map.search.SearchData
 import com.example.energy.databinding.ItemRecentBinding
-import com.example.energy.databinding.ItemSearchBinding
+import com.google.gson.Gson
 
-class RecentSearchAdapter(private val itemList: ArrayList<SearchData>): RecyclerView.Adapter<RecentSearchAdapter.ViewHolder>() {
+class RecentSearchAdapter( private val context: Context, private val itemList: ArrayList<SearchData>): RecyclerView.Adapter<RecentSearchAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RecentSearchAdapter.ViewHolder {
         val binding: ItemRecentBinding = ItemRecentBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
@@ -57,16 +58,29 @@ class RecentSearchAdapter(private val itemList: ArrayList<SearchData>): Recycler
         if(!itemList.contains(searchData)){
             itemList.add(0, searchData)
             notifyDataSetChanged()
+            saveRecentSearches()
         }
     }
 
     fun removeItem(position: Int) {
         itemList.removeAt(position)
         notifyDataSetChanged()
+        saveRecentSearches()
     }
 
     fun removeAllItem() {
         itemList.clear()
         notifyDataSetChanged()
+        saveRecentSearches()
+    }
+
+    //최근 검색어 저장
+    private fun saveRecentSearches() {
+        val sharedPreferences = context.getSharedPreferences("recent_search_prefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        val gson = Gson()
+        val json = gson.toJson(itemList)
+        editor.putString("recent_searches", json)
+        editor.apply()
     }
 }

@@ -1,4 +1,4 @@
-package com.example.energy.data.repository.map.Search
+package com.example.energy.data.repository.map.search
 
 data class SearchData(
     val location: String,
