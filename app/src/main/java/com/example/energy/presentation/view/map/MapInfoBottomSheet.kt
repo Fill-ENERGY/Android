@@ -57,7 +57,7 @@ class MapInfoBottomSheet : BottomSheetDialogFragment() {
         }
 
         //공유하기
-        shareCharging("https://developer.android.com/training/sharing/send?hl=ko")
+        shareCharging("급속충전기","https://developer.android.com/training/sharing/send?hl=ko")
 
         //민원 탭
         showTabComplaint()
@@ -136,16 +136,16 @@ class MapInfoBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun shareCharging(chargingUrl: String) {
+    private fun shareCharging(chargingName: String, chargingUrl: String) {
         binding.ivShare.setOnClickListener {
             //기본 셰어 창 연결
             val intent = Intent(Intent.ACTION_SEND_MULTIPLE)
             intent.type = "text/plain"
 
-            val content = "링크 공유하기\n확인해보세요!"
+            val content = "${chargingName}의\n위치를 공유해 보세요!"
             intent.putExtra(Intent.EXTRA_TEXT, "$content\n\n$chargingUrl")
 
-            val chooserTitle = "친구에게 공유하기"
+            val chooserTitle = "친구에게 공유"
             startActivity(Intent.createChooser(intent, chooserTitle))
         }
     }

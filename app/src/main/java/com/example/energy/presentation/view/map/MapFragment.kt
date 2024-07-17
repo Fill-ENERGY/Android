@@ -10,9 +10,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
+import com.example.energy.R
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.DialogLoginBinding
 import com.example.energy.databinding.FragmentMapBinding
@@ -28,6 +31,8 @@ import com.kakao.vectormap.camera.CameraUpdate
 import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelLayer
 import com.kakao.vectormap.label.LabelOptions
+import com.kakao.vectormap.label.LabelStyle
+import com.kakao.vectormap.label.LabelStyles
 
 
 class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflate(it) }) {
@@ -106,6 +111,19 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                 //주소창 텍스트를 현재 주소 기준으로 설정
                 binding.tvCurrentLocation.text = MapLocation.getGeoCoder(location.latitude, location.longitude, requireContext())
 
+                //마커 띄우기
+                var labelManager = kakaoMap.labelManager
+                if(labelManager!=null) {
+                    var markerStyle = labelManager.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.iv_marker)))
+                    var layer = labelManager.layer
+                    if (layer != null) {
+                        layer.removeAll()
+
+                        val label = LabelOptions.from(LatLng.from(location.latitude,location.longitude)).setStyles(markerStyle);
+                        label.clickable = true
+                        layer.addLabel(label)
+                    }
+                }
             }
 
             override fun getPosition(): LatLng {
