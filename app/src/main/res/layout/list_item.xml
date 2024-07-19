@@ -13,7 +13,7 @@
         android:textSize="16sp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="16dp"
-        android:text="서대문구청 전동보장구 급속충전기"/>
+        android:text="장소"/>
 
 
     <LinearLayout
@@ -29,7 +29,7 @@
             android:textSize="14sp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="7dp"
-            android:text="16m" />
+            android:text="거리" />
 
 
 
@@ -50,7 +50,7 @@
                 android:textSize="14sp"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="8dp"
-                android:text="4.41(15)" />
+                android:text="평점" />
 
 
         <!--시간-->
@@ -69,7 +69,7 @@
             android:textSize="14sp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="8dp"
-            android:text="(평일) 0:00 ~ 24:00" />
+            android:text="시간" />
 
 
 

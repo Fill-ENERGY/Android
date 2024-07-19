@@ -1,60 +1,43 @@
 package com.example.energy.presentation.view.list
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.example.energy.R
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ListInformationFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ListInformationFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_list_information, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ListInformationFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ListInformationFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // findViewById를 사용하여 뷰 참조
+        val locationNameTextView: TextView = view.findViewById(R.id.LocationName)
+        val distanceTextView: TextView = view.findViewById(R.id.Distance)
+        val gradeTextView: TextView = view.findViewById(R.id.Grade)
+        val timeTextView: TextView = view.findViewById(R.id.timetext)
+
+        arguments?.let {
+            val locationName = it.getString("location_name")
+            val distance = it.getString("distance")
+            val grade = it.getString("grade")
+            val time = it.getString("time")
+
+            // UI에 데이터 바인딩
+            locationNameTextView.text = locationName
+            distanceTextView.text = distance
+            gradeTextView.text = grade
+            timeTextView.text = time
+        }
     }
 }
