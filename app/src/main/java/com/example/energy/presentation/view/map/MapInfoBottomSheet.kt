@@ -15,7 +15,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat.getSystemService
 import com.example.energy.databinding.BottomsheetMapBinding
 import com.example.energy.databinding.DialogLoginBinding
 import com.example.energy.presentation.view.community.CommunityWritingActivity
@@ -39,7 +38,6 @@ class MapInfoBottomSheet : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         //전화하기
         callCharging("112")
 
@@ -57,12 +55,11 @@ class MapInfoBottomSheet : BottomSheetDialogFragment() {
         }
 
         //공유하기
-        shareCharging("급속충전기","https://developer.android.com/training/sharing/send?hl=ko")
+        shareCharging("급속충전기", "https://developer.android.com/training/sharing/send?hl=ko")
 
         //민원 탭
         showTabComplaint()
     }
-
     private fun showTabComplaint() {
         val clipboard: ClipboardManager =
             requireContext().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
@@ -150,11 +147,11 @@ class MapInfoBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun isAppInstalled(packageName : String, packageManager : PackageManager) : Boolean{
-        return try{
+    private fun isAppInstalled(packageName: String, packageManager: PackageManager): Boolean {
+        return try {
             packageManager.getPackageInfo(packageName, 0)
             true
-        }catch (ex : PackageManager.NameNotFoundException){
+        } catch (ex: PackageManager.NameNotFoundException) {
             false
         }
     }

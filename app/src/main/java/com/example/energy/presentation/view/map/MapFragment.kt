@@ -37,6 +37,8 @@ import com.kakao.vectormap.label.LabelStyles
 
 class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflate(it) }) {
 
+    lateinit var myKakaoMap: KakaoMap
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -57,7 +59,6 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
         //검색 창 넘어가기
         binding.cvSearch.setOnClickListener {
             startActivity(Intent(activity, SearchActivity::class.java))
-            //showBottomSheet()
         }
 
         //sos 기능
@@ -107,6 +108,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
         }, object : KakaoMapReadyCallback() {
             override fun onMapReady(kakaoMap: KakaoMap) {
                 // 인증 후 API 가 정상적으로 실행될 때 호출됨
+                myKakaoMap = kakaoMap
 
                 //주소창 텍스트를 현재 주소 기준으로 설정
                 binding.tvCurrentLocation.text = MapLocation.getGeoCoder(location.latitude, location.longitude, requireContext())
@@ -124,7 +126,14 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                         layer.addLabel(label)
                     }
                 }
+
+                //마커 클릭 이벤트
+                myKakaoMap.setOnLabelClickListener { kakaoMap, layer, label ->
+                    showBottomSheet()
+                }
             }
+
+
 
             override fun getPosition(): LatLng {
                 return LatLng.from(location.latitude, location.longitude)
