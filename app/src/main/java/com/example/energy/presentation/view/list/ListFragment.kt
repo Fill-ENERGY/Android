@@ -2,8 +2,8 @@ package com.example.energy.presentation.view.list
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
+
+
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
 import com.example.energy.databinding.FragmentListBinding
