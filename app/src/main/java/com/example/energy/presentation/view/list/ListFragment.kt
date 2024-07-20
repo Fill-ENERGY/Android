@@ -1,22 +1,15 @@
 package com.example.energy.presentation.view.list
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.recyclerview.widget.DividerItemDecoration
+
+
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.energy.R
-import com.example.energy.databinding.FragmentCommunityBinding
 import com.example.energy.databinding.FragmentListBinding
 import com.example.energy.presentation.view.base.BaseFragment
 
 class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inflate(it)}) {
-
-
-    private lateinit var listAdapter: listAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -30,21 +23,27 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
             // 더미 데이터 추가
         )
 
-        listAdapter = listAdapter(itemList)
+        val adapter = listAdapter(itemList) { selectedItem ->
+            // 클릭된 아이템을 ListInformationFragment로 전달
+            val fragment = ListInformationFragment().apply {
+                arguments = Bundle().apply {
+                    putString("location_name", selectedItem.location_name)
+                    putString("distance", selectedItem.distance)
+                    putString("grade", selectedItem.grade)
+                    putString("time", selectedItem.time)
+                }
+            }
+
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.list_main, fragment) // fragment_container는 프래그먼트를 담을 컨테이너의 ID
+                .addToBackStack(null)
+                .commit()
+        }
 
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = listAdapter
-
-            // 구분선 추가
-            //val dividerItemDecoration = DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation)
-            //addItemDecoration(dividerItemDecoration)
-
-            // 커스텀 구분선 추가
+            //adapter = adapter
             addItemDecoration(CustomDividerItemDecoration(context))
         }
     }
-
-
-
 }

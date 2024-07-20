@@ -20,11 +20,13 @@
             android:src="@drawable/ic_star" />
 
         <TextView
+            android:id="@+id/LocationName"
             android:layout_width="243dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
             android:layout_marginTop="44dp"
             android:gravity="center_vertical"
+            android:fontFamily="@font/pretendard_semibold"
             android:text="서대문구청 전동보장구 급속충전기"
             android:textSize="16sp" />
 
@@ -32,6 +34,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/Distance"
         android:layout_width="26dp"
         android:layout_height="16dp"
         android:layout_marginStart="30dp"
@@ -50,6 +53,7 @@
 
 
     <TextView
+        android:id="@+id/Grade"
         android:layout_width="48dp"
         android:layout_height="16dp"
         android:layout_marginStart="96dp"
