@@ -1,14 +1,21 @@
 package com.example.energy.presentation.view.community
 
+import android.app.Dialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.energy.R
 import com.example.energy.data.repository.community.WritingCommunityImage
 import com.example.energy.databinding.ActivityCommunityWritingBinding
+import com.example.energy.databinding.DialogSelectCategoryBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
 class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClickListener {
@@ -34,6 +41,11 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
             finish() // 현재 액티비티 종료
         }
 
+        // 카테고리 선택 버튼 클릭 리스너 설정
+        binding.communityWritingCategoryUnderBtn.setOnClickListener {
+            showCategoryDialog()
+        }
+
         // 이미지 업로드 사진 클릭 시
         binding.communityWritingImageSelect.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK) //갤러리 호출
@@ -41,6 +53,20 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true) //멀티 선택 기능
             activityResult.launch(intent)
         }
+    }
+    private fun showCategoryDialog() { //카테고리 선택 화면
+        val dialog = Dialog(this)
+        val binding = DialogSelectCategoryBinding.inflate(layoutInflater)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 기존 다이어그램 배경 투명으로 적용(커스텀한 배경이 보이게 하기 위함)
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.setContentView(binding.root)
+        dialog.setCancelable(true) // 바깥 영역 터치하면 닫힘
+
+        // 다이얼로그 표시
+        dialog.show()
     }
 
     // 이미지 가져오기
