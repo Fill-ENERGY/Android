@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".presentation.view.list.ListInformationFragment"
-    >
+    tools:context=".presentation.view.list.ListInformationFragment">
 
 
     <LinearLayout
@@ -26,7 +27,6 @@
             android:layout_marginStart="14dp"
             android:layout_marginTop="44dp"
             android:gravity="center_vertical"
-            android:fontFamily="@font/pretendard_semibold"
             android:text="서대문구청 전동보장구 급속충전기"
             android:textSize="16sp" />
 
@@ -97,6 +97,7 @@
             android:orientation="vertical"
             android:layout_marginEnd="35dp"
             android:gravity="center">
+
             <ImageView
                 android:layout_width="41dp"
                 android:layout_height="41dp"
@@ -107,6 +108,7 @@
                 android:layout_marginTop="5dp"
                 android:textSize="12sp"
                 android:text="즐겨찾기" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -115,6 +117,7 @@
             android:orientation="vertical"
             android:layout_marginEnd="35dp"
             android:gravity="center">
+
             <ImageView
                 android:layout_width="41dp"
                 android:layout_height="41dp"
@@ -125,6 +128,7 @@
                 android:layout_marginTop="5dp"
                 android:textSize="12sp"
                 android:text="길안내" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -132,6 +136,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center">
+
             <ImageView
                 android:layout_width="41dp"
                 android:layout_height="41dp"
@@ -441,3 +446,5 @@
 
 
 </RelativeLayout>
+
+
