@@ -1,13 +1,13 @@
 package com.example.energy.presentation.view.community
 
 import android.content.Intent
-import android.content.Intent.ACTION_GET_CONTENT
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.energy.data.repository.community.WritingCommunityImage
 import com.example.energy.databinding.ActivityCommunityWritingBinding
 
 

@@ -1,4 +1,4 @@
-package com.example.energy.presentation.view.community
+package com.example.energy.data.repository.community
 
 import android.net.Uri
 
