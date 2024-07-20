@@ -1,14 +1,15 @@
 package com.example.energy.presentation.view.list
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.energy.databinding.ListItemBinding
 
 
-class listAdapter(private val itemList: List<listdata>,
-                  private val onItemClick: (listdata) -> Unit // 클릭 리스너 추가
-    ) : RecyclerView.Adapter<listAdapter.ListViewHolder>() {
+class ListAdapter(private val itemList: List<listdata>,
+                  private val onItemClick: (listdata) -> Unit
+    ) : RecyclerView.Adapter<ListAdapter.ListViewHolder>() {
 
 
 
@@ -40,6 +41,7 @@ class listAdapter(private val itemList: List<listdata>,
 
     // ViewHolder에 데이터를 바인딩
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
+        Log.d("ListAdapter", "Binding item at position $position")
         holder.bind(itemList[position], onItemClick)
 
 

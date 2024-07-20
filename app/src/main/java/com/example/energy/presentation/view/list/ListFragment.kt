@@ -1,6 +1,7 @@
 package com.example.energy.presentation.view.list
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 
 
@@ -13,6 +14,7 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("ListFragment", "onViewCreated called")
 
         val itemList = listOf(
             listdata("서대문구청 전동보장구 급속충전기", "16m", "4.41(15)", "(평일) 0:00 ~ 24:00"),
@@ -23,7 +25,7 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
             // 더미 데이터 추가
         )
 
-        val adapter = listAdapter(itemList) { selectedItem ->
+        val listadapter = ListAdapter(itemList) { selectedItem ->
             // 클릭된 아이템을 ListInformationFragment로 전달
             val fragment = ListInformationFragment().apply {
                 arguments = Bundle().apply {
@@ -35,14 +37,14 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
             }
 
             parentFragmentManager.beginTransaction()
-                .replace(R.id.list_main, fragment) // fragment_container는 프래그먼트를 담을 컨테이너의 ID
+                .replace(R.id.list_main, fragment) // fragment_container는 프래그먼트를 담을 컨테이너 ID
                 .addToBackStack(null)
                 .commit()
         }
 
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            //adapter = adapter
+            adapter = listadapter
             addItemDecoration(CustomDividerItemDecoration(context))
         }
     }
