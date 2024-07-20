@@ -21,7 +21,7 @@ import com.example.energy.databinding.ActivitySearchBinding
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.DialogSearchDeleteBinding
 import com.example.energy.presentation.view.base.BaseActivity
-import com.example.energy.presentation.viewmodel.SearchViewModel
+import com.example.energy.presentation.viewmodel.MapViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import retrofit2.Call
@@ -31,7 +31,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBinding.inflate(it)}) {
-    private lateinit var searchViewModel: SearchViewModel
+    private lateinit var mapViewModel: MapViewModel
     private val searchList = ArrayList<SearchData>()
     private val recentSearchList = ArrayList<SearchData>()
     private val searchAdapter = SearchAdapter(searchList)
@@ -44,7 +44,11 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //최근 검색어 불러오기
         sharedPreferences = getSharedPreferences("recent_search_prefs", MODE_PRIVATE)
+
+        //힌트 텍스트 현재 주소로 설정
+        binding.etSearch.hint = intent.getStringExtra("hintText")
 
         //긴급 전화
         binding.cvSos.setOnClickListener {

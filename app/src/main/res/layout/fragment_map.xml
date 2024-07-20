@@ -42,7 +42,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="서대문구 연희동"
+                    android:text="00구 00동"
                     android:textColor="@color/gray_scale6"
                     android:gravity="center_vertical"
                     android:layout_marginStart="9dp"

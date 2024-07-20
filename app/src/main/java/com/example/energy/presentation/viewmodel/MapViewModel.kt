@@ -6,10 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class MapViewModel: ViewModel() {
-    private val _currentLocation = MutableLiveData<Location>()
-    val currentLocation: LiveData<Location> = _currentLocation
+   private var _searchHint = MutableLiveData<String>()
+   val searchHint: LiveData<String>
+      get() = _searchHint
 
-    fun setCurrentLocation(location: Location) {
-        _currentLocation.value = location
-    }
 }

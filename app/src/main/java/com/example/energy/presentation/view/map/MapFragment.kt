@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import com.example.energy.R
+import com.example.energy.data.model.MarkerModel
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.DialogLoginBinding
 import com.example.energy.databinding.FragmentMapBinding
@@ -36,8 +37,9 @@ import com.kakao.vectormap.label.LabelStyles
 
 
 class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflate(it) }) {
-
     lateinit var myKakaoMap: KakaoMap
+
+    val markerList = ArrayList<MarkerModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,7 +60,9 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
 
         //검색 창 넘어가기
         binding.cvSearch.setOnClickListener {
-            startActivity(Intent(activity, SearchActivity::class.java))
+            val intent = Intent(activity, SearchActivity::class.java)
+            intent.putExtra("hintText", binding.tvCurrentLocation.text)
+            startActivity(intent)
         }
 
         //sos 기능
@@ -113,19 +117,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                 //주소창 텍스트를 현재 주소 기준으로 설정
                 binding.tvCurrentLocation.text = MapLocation.getGeoCoder(location.latitude, location.longitude, requireContext())
 
-                //마커 띄우기
-                var labelManager = kakaoMap.labelManager
-                if(labelManager!=null) {
-                    var markerStyle = labelManager.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.iv_marker)))
-                    var layer = labelManager.layer
-                    if (layer != null) {
-                        layer.removeAll()
-
-                        val label = LabelOptions.from(LatLng.from(location.latitude,location.longitude)).setStyles(markerStyle);
-                        label.clickable = true
-                        layer.addLabel(label)
-                    }
-                }
+                setMarker(kakaoMap, markerList)
 
                 //마커 클릭 이벤트
                 myKakaoMap.setOnLabelClickListener { kakaoMap, layer, label ->
@@ -133,6 +125,26 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                 }
             }
 
+            //마커 띄우기
+            private fun setMarker(kakaoMap: KakaoMap, markerList: ArrayList<MarkerModel>) {
+                var labelManager = kakaoMap.labelManager
+                if (labelManager != null) {
+                    var markerStyle =
+                        labelManager.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.iv_marker)))
+                    var layer = labelManager.layer
+                    if (layer != null) {
+                        layer.removeAll()
+                        for (data in markerList) {
+                            val label =
+                                LabelOptions.from(LatLng.from(data.latitude, data.longitude))
+                                    .setStyles(markerStyle);
+                            label.clickable = true
+                            layer.addLabel(label)
+
+                        }
+                    }
+                }
+            }
 
 
             override fun getPosition(): LatLng {
