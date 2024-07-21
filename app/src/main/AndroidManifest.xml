@@ -40,11 +40,6 @@
         <activity
             android:name=".presentation.view.community.CommunityWritingActivity"
             android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity
@@ -71,4 +66,7 @@
             android:value="${KAKAO_NATIVE_KEY}" />
     </application>
 
+    <queries>
+        <package android:name="net.daum.android.map"/>
+    </queries>
 </manifest>

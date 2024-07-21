@@ -82,6 +82,14 @@ dependencies {
     //recyclerview
     implementation("androidx.recyclerview:recyclerview:1.3.2")
 
+    //roomDB
+    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.room:room-runtime:2.6.1")
+
+    //viewModel
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
+    
     //image upload
     implementation("com.github.bumptech.glide:glide:4.16.0")
 
