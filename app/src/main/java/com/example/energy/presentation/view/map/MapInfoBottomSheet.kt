@@ -58,34 +58,34 @@ class MapInfoBottomSheet : BottomSheetDialogFragment() {
         shareCharging("급속충전기", "https://developer.android.com/training/sharing/send?hl=ko")
 
         //민원 탭
-        showTabComplaint()
+        //showTabComplaint()
     }
-    private fun showTabComplaint() {
-        val clipboard: ClipboardManager =
-            requireContext().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-
-        binding.tvManageCopy.setOnClickListener {
-            clipboard.setPrimaryClip(
-                ClipData.newPlainText(
-                    "label",
-                    binding.tvManageInstitution.text.toString()
-                )
-            )
-        }
-
-        binding.tvNumberCopy.setOnClickListener {
-            clipboard.setPrimaryClip(
-                ClipData.newPlainText(
-                    "label",
-                    binding.tvNumberInstitution.text.toString()
-                )
-            )
-        }
-
-        binding.btnWriteComplaint.setOnClickListener {
-            startActivity(Intent(activity, CommunityWritingActivity::class.java))
-        }
-    }
+//    private fun showTabComplaint() {
+//        val clipboard: ClipboardManager =
+//            requireContext().getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+//
+//        binding.tvManageCopy.setOnClickListener {
+//            clipboard.setPrimaryClip(
+//                ClipData.newPlainText(
+//                    "label",
+//                    binding.tvManageInstitution.text.toString()
+//                )
+//            )
+//        }
+//
+//        binding.tvNumberCopy.setOnClickListener {
+//            clipboard.setPrimaryClip(
+//                ClipData.newPlainText(
+//                    "label",
+//                    binding.tvNumberInstitution.text.toString()
+//                )
+//            )
+//        }
+//
+//        binding.btnWriteComplaint.setOnClickListener {
+//            startActivity(Intent(activity, CommunityWritingActivity::class.java))
+//        }
+//    }
 
 
     private fun bookmarkCharging() {
