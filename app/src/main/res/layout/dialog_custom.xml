@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="7dp"
+    android:background="@drawable/dialog_style">
 
 
     <ImageView
@@ -27,31 +28,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/sos_title"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:textColor="@color/red"
         android:gravity="center"
-        android:paddingBottom="8dp"/>
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"/>
 
     <TextView
         android:id="@+id/tv_subTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/help"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:paddingBottom="8dp"/>
+        android:textColor="@color/gray_scale6"
+        android:gravity="center" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/call"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="25dp"
         android:background="@drawable/button_style"
         android:textColor="@color/white"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="26dp" />
 
 </LinearLayout>

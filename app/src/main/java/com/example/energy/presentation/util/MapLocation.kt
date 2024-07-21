@@ -86,35 +86,6 @@ class MapLocation {
             return "00구 00동"
         }
 
-
-
-        fun searchKeyword(keyword: String) {
-            val retrofit = Retrofit.Builder() // Retrofit 구성
-                .baseUrl("https://dapi.kakao.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-            val api = retrofit.create(MapInterface::class.java) // 통신 인터페이스를 객체로 생성
-            val call = api.getSearchKeyword("KakaoAK ${BuildConfig.KAKAO_REST_KEY}", keyword) // 검색 조건 입력
-
-            // API 서버에 요청
-            call.enqueue(object : Callback<ResultSearchKeyword> {
-                override fun onResponse(
-                    call: Call<ResultSearchKeyword>,
-                    response: Response<ResultSearchKeyword>
-                ) {
-                    // 통신 성공 (검색 결과는 response.body()에 담겨있음)
-                    Log.d("검색테스트", "Raw: ${response.raw()}")
-                    Log.d("검색테스트", "Body: ${response.body()}")
-                }
-
-                override fun onFailure(call: Call<ResultSearchKeyword>, t: Throwable) {
-                    // 통신 실패
-                    Log.w("검색테스트", "통신 실패: ${t.message}")
-                }
-            }
-            )
-        }
-
     }
 
 }
