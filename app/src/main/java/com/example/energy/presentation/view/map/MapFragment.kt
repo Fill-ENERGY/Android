@@ -117,7 +117,25 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                 //주소창 텍스트를 현재 주소 기준으로 설정
                 binding.tvCurrentLocation.text = MapLocation.getGeoCoder(location.latitude, location.longitude, requireContext())
 
-                setMarker(kakaoMap, markerList)
+                //setMarker(kakaoMap, markerList)
+
+                //내 위치
+                var labelManager = kakaoMap.labelManager
+                if (labelManager != null) {
+                    var markerStyle =
+                        labelManager.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.iv_marker)))
+                    var layer = labelManager.layer
+                    if (layer != null) {
+                        layer.removeAll()
+                            val label =
+                                LabelOptions.from(LatLng.from(location.latitude, location.longitude))
+                                    .setStyles(markerStyle);
+                            label.clickable = true
+                            layer.addLabel(label)
+
+
+                    }
+                }
 
                 //마커 클릭 이벤트
                 myKakaoMap.setOnLabelClickListener { kakaoMap, layer, label ->
