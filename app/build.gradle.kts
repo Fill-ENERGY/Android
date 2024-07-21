@@ -89,4 +89,8 @@ dependencies {
     //viewModel
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
+    
+    //image upload
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
 }
