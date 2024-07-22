@@ -21,7 +21,7 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
 
         setUserInfo()
 
-        binding.tvLogout.setOnClickListener {
+        binding.btnLogout.setOnClickListener {
             // 로그아웃
             UserApiClient.instance.logout { error ->
                 if (error != null) {
