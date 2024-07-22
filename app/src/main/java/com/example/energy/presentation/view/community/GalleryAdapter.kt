@@ -1,34 +1,44 @@
 package com.example.energy.presentation.view.community
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.energy.data.repository.community.WritingCommunityImage
 import com.example.energy.databinding.ItemWritingCommunityImageBinding
 
-class WritingCommunityImageRVAdapter (private val imageUrl: ArrayList<WritingCommunityImage>): RecyclerView.Adapter<WritingCommunityImageRVAdapter.ViewHolder>() {
+
+class GalleryAdapter (private val imageUrl: ArrayList<WritingCommunityImage>): RecyclerView.Adapter<GalleryAdapter.ViewHolder>() {
 
     interface MyItemClickListener{
         fun onRemoveImage(position: Int)
     }
 
-    // 외부에서 전달받은 Listener 객체를 Adapter에서 사용할 수 있도록 따로 저장할 변수 선언
+    // Listener 객체를 Adapter에서 사용할 수 있도록 따로 저장할 변수 선언
     private lateinit var mItemClickListener: MyItemClickListener
 
     fun setMyItemClickListener(itemClickListener: MyItemClickListener){
         mItemClickListener = itemClickListener
     }
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): WritingCommunityImageRVAdapter.ViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): GalleryAdapter.ViewHolder {
         // itemview 객체 생성
         val binding: ItemWritingCommunityImageBinding = ItemWritingCommunityImageBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: WritingCommunityImageRVAdapter.ViewHolder, position: Int) {
-        holder.bind(imageUrl[position])
+    override fun onBindViewHolder(holder: GalleryAdapter.ViewHolder, position: Int) {
+        val currentImage = imageUrl[position]
+
+        Glide.with(holder.itemView.context)
+            .load(imageUrl[position].imageUrl) //이미지 위치
+            .into(holder.galleryView) //보여줄 위치
+
+        // 대표 이미지 표시
+        holder.binding.representativeLabel.visibility = if (currentImage.isRepresentative) View.VISIBLE else View.GONE
 
         // X 아이콘 클릭 시 해당데이터 삭제
         holder.binding.writingCommunityImageCancel.setOnClickListener {
@@ -46,9 +56,10 @@ class WritingCommunityImageRVAdapter (private val imageUrl: ArrayList<WritingCom
     }
 
     inner class ViewHolder(val binding: ItemWritingCommunityImageBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(image: WritingCommunityImage) {
-            binding.itemWritingCommunityImage.setImageURI(image.imageUrl)
-        }
+        val galleryView : ImageView = binding.itemWritingCommunityImage
+//        fun bind(image: WritingCommunityImage) {
+//            binding.itemWritingCommunityImage.setImageURI(image.imageUrl)
+//        }
     }
 
 }
