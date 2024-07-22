@@ -23,6 +23,31 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+
+            android:name=".presentation.view.list.ListInformationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.view.map.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.view.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".presentation.view.community.CommunityWritingActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+=======
             android:name=".presentation.view.SplashActivity"
             android:exported="true">
         <intent-filter>
@@ -37,6 +62,7 @@
             android:name=".presentation.view.map.SearchActivity" />
         <activity
             android:name=".presentation.view.community.CommunityWritingActivity" />
+
         <activity android:name=".presentation.view.login.LoginActivity" />
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
@@ -59,7 +85,11 @@
             android:value="${KAKAO_NATIVE_KEY}" />
     </application>
 
+
+</manifest>
+=======
     <queries>
         <package android:name="net.daum.android.map"/>
     </queries>
 </manifest>
+

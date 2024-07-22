@@ -1,10 +1,9 @@
 package com.example.energy.presentation.view.list
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-
-
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
 import com.example.energy.databinding.FragmentListBinding
@@ -26,20 +25,15 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
         )
 
         val listadapter = ListAdapter(itemList) { selectedItem ->
-            // 클릭된 아이템을 ListInformationFragment로 전달
-            val fragment = ListInformationFragment().apply {
-                arguments = Bundle().apply {
-                    putString("location_name", selectedItem.location_name)
-                    putString("distance", selectedItem.distance)
-                    putString("grade", selectedItem.grade)
-                    putString("time", selectedItem.time)
-                }
-            }
 
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.list_main, fragment) // fragment_container는 프래그먼트를 담을 컨테이너 ID
-                .addToBackStack(null)
-                .commit()
+            // 클릭된 아이템을 ListInformationActivity로 전달
+            val intent = Intent(activity, ListInformationActivity::class.java).apply {
+                putExtra("location_name", selectedItem.location_name)
+                putExtra("distance", selectedItem.distance)
+                putExtra("grade", selectedItem.grade)
+                putExtra("time", selectedItem.time)
+            }
+            startActivity(intent)
         }
 
         binding.recyclerView.apply {
