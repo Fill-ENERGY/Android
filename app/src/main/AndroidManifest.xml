@@ -35,6 +35,9 @@
             android:name=".presentation.view.MainActivity" />
         <activity
             android:name=".presentation.view.map.SearchActivity" />
+
+        <activity android:name=".presentation.view.list.ListInformationActivity"></activity>
+
         <activity
             android:name=".presentation.view.community.CommunityWritingActivity" />
         <activity android:name=".presentation.view.login.LoginActivity" />

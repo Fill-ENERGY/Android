@@ -7,11 +7,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.energy.R
+import com.example.energy.databinding.ActivityListInformationBinding
 
 class ListInformationActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityListInformationBinding
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_list_information)
+        binding= ActivityListInformationBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+
+        //리사이클러뷰 아이템 데이터 받기
 
 
         val locationName = intent.getStringExtra("location_name")
@@ -29,5 +38,16 @@ class ListInformationActivity : AppCompatActivity() {
         distanceTextView.text = distance
         gradeTextView.text = grade
         timeTextView.text = time
+
+        //뒤로 가기 버튼 클릭 시
+        binding.backbutton.setOnClickListener {
+            finish()
+        }
+
+
+
     }
+
+
+
 }

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
 import com.example.energy.databinding.FragmentListBinding
@@ -34,6 +35,7 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
                 putExtra("time", selectedItem.time)
             }
             startActivity(intent)
+
         }
 
         binding.recyclerView.apply {
