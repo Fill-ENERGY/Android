@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -15,73 +16,85 @@
         android:layout_marginTop="16dp"
         android:text="장소"/>
 
-
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginTop="7dp"
+        android:layout_marginStart="20dp">
 
-        <!--거리-->
+        <!-- 거리 -->
         <TextView
             android:id="@+id/distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="7dp"
-            android:text="거리" />
+            android:text="거리"
+            android:fontFamily="@font/pretendard_regular"
+            android:textColor="@color/gray_scale7"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBaseline_toBaselineOf="parent"/>
 
-
-
-        <!--평점-->
+        <!-- 평점 아이콘 -->
         <ImageView
             android:id="@+id/ic_star"
             android:layout_width="12dp"
             android:layout_height="12dp"
-            android:layout_marginStart="19dp"
-            android:layout_marginTop="12dp"
-            android:src="@drawable/ic_star"/>
+            android:src="@drawable/ic_star"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/distance"
 
+            android:layout_marginStart="19dp"/>
 
+        <!-- 평점 텍스트 -->
         <TextView
-                android:id="@+id/grade"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="8dp"
-                android:text="평점" />
+            android:id="@+id/grade"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:fontFamily="@font/pretendard_regular"
+            android:textColor="@color/gray_scale7"
+            android:text="평점"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ic_star"
+            android:layout_marginStart="6dp"/>
 
-
-        <!--시간-->
+        <!-- 시간 아이콘 -->
         <ImageView
+            android:id="@+id/ic_time"
             android:layout_width="12dp"
             android:layout_height="12dp"
-            android:layout_marginStart="18dp"
-            android:layout_marginTop="12dp"
-            android:src="@drawable/ic_star"/>
+            android:src="@drawable/ic_time"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/grade"
+            app:layout_constraintEnd_toStartOf="@id/time"
+            android:layout_marginStart="18dp"/>
 
-
+        <!-- 시간 텍스트 -->
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="8dp"
-            android:text="시간" />
+            android:fontFamily="@font/pretendard_regular"
+            android:textColor="@color/gray_scale7"
+            android:text="시간"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ic_time"
+            android:layout_marginStart="6dp"/>
 
-
-
-
-    </LinearLayout>
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
 
         <ImageView
             android:id="@+id/call_button"
@@ -92,7 +105,6 @@
             android:layout_marginTop="18dp"
             android:layout_marginBottom="16dp"/>
 
-
         <ImageView
             android:id="@+id/navi_button"
             android:layout_width="wrap_content"
@@ -102,9 +114,6 @@
             android:layout_marginTop="18dp"
             android:layout_marginBottom="16dp"/>
 
-
-
     </LinearLayout>
-
 
 </LinearLayout>
