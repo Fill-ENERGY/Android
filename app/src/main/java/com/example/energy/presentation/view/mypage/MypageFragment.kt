@@ -20,22 +20,7 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbar.inflateMenu(R.menu.toolbar_menu_mypage)
-        binding.toolbar.setTitle(R.string.mypage)
-        binding.toolbar.setTitleTextAppearance(requireContext(), R.style.Title1)
-        binding.toolbar.setOnMenuItemClickListener {
-            when(it.itemId) {
-                R.id.appbar_notification -> {
-                    showToast("notification")
-                    true
-                }
-                R.id.appbar_sos -> {
-                    showToast("sos")
-                    true
-                }
-                else -> false
-            }
-        }
+        setToolBar()
 
         setUserInfo()
 
@@ -55,6 +40,28 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
         }
 
 
+    }
+
+    private fun setToolBar() {
+        binding.toolbar.inflateMenu(R.menu.toolbar_menu_mypage)
+        binding.toolbar.setTitle(R.string.mypage)
+        binding.toolbar.setTitleTextAppearance(requireContext(), R.style.Title1)
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.appbar_notification -> {
+                    showToast("notification")
+                    true
+                }
+
+                R.id.appbar_sos -> {
+                    showToast("sos")
+                    startActivity(Intent(activity, BlockActivity::class.java))
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
     private fun setUserInfo() {
