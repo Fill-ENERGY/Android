@@ -16,8 +16,26 @@ import com.kakao.sdk.user.UserApiClient
 
 class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBinding.inflate(it)}) {
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.toolbar.inflateMenu(R.menu.toolbar_menu_mypage)
+        binding.toolbar.setTitle(R.string.mypage)
+        binding.toolbar.setTitleTextAppearance(requireContext(), R.style.Title1)
+        binding.toolbar.setOnMenuItemClickListener {
+            when(it.itemId) {
+                R.id.appbar_notification -> {
+                    showToast("notification")
+                    true
+                }
+                R.id.appbar_sos -> {
+                    showToast("sos")
+                    true
+                }
+                else -> false
+            }
+        }
 
         setUserInfo()
 
