@@ -8,10 +8,17 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.energy.R
 import com.example.energy.databinding.ActivityListInformationBinding
+import com.google.android.material.tabs.TabLayoutMediator
 
 class ListInformationActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityListInformationBinding
+
+    private val tabTitleArray = arrayOf(
+        "정보",
+        "평가",
+        "민원"
+    )
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,10 +46,23 @@ class ListInformationActivity : AppCompatActivity() {
         gradeTextView.text = grade
         timeTextView.text = time
 
+
         //뒤로 가기 버튼 클릭 시
         binding.backbutton.setOnClickListener {
             finish()
         }
+
+        val viewPager = binding.viewPager
+        val tabLayout = binding.tabs
+
+
+        viewPager.adapter = ListVPAdapter(this)
+
+
+        TabLayoutMediator(tabLayout, viewPager) { tabs, position ->
+            tabs.text= tabTitleArray[position]
+
+        }.attach()
 
 
 
