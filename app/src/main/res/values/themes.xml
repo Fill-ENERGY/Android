@@ -17,4 +17,8 @@
     <style name="SpinnerTheme">
         <item name="android:dropDownListViewStyle">@style/SpinnerDivideStyle</item>
     </style>
+
+    <style name="CustomDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
 </resources>

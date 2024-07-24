@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
 import com.example.energy.data.repository.community.WritingCommunityImage
 import com.example.energy.databinding.ActivityCommunityWritingBinding
+import com.example.energy.databinding.DialogPostCommunitySuccessBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClickListener {
@@ -111,7 +112,7 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         // 등록 버튼 click listener
         finishButton.setOnClickListener {
             if (finishButton.isEnabled) {
-                finish()
+                showSuccessDialog()
             }
         }
 
@@ -131,15 +132,6 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
             false
         }
     }
-
-//    // CommunityFragment로 이동하는 함수
-//    private fun navigateToCommunityFragment() {
-//        val communityFragment = CommunityFragment()
-//        supportFragmentManager.beginTransaction()
-//            .replace(R.id.main_frm, communityFragment) // Replace with your fragment container ID
-//            .addToBackStack(null) // Add to back stack if you want to allow the user to return to the previous screen
-//            .commit()
-//    }
 
     // 등록 버튼 상태 업데이트하는 함수
     private fun updateFinishButtonState() {
@@ -200,5 +192,23 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
                 InputMethodManager.HIDE_NOT_ALWAYS
             )
         }
+    }
+
+    // 정상 등록 Dialog 띄우는 함수
+    private fun showSuccessDialog() {
+        val dialog = Dialog(this, R.style.CustomDialog)
+        val binding = DialogPostCommunitySuccessBinding.inflate(layoutInflater)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 기존 다이어그램 배경 투명으로 적용(커스텀한 배경이 보이게 하기 위함)
+        dialog.setContentView(binding.root)
+        dialog.setCanceledOnTouchOutside(false) // 바깥 영역 터치해도 닫힘 X
+
+        binding.dialogPostSuccessBtn.setOnClickListener {
+            // 확인 버튼 클릭 시 수행할 작업
+            dialog.dismiss() // 다이얼로그 닫기
+            finish()
+        }
+
+        // 다이얼로그 표시
+        dialog.show()
     }
 }

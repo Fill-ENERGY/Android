@@ -1,6 +1,7 @@
 package com.example.energy.presentation.view.community
 
 import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,6 +38,8 @@ class OptionSpinnerAdapter(
             binding.itemCategoryCheckbox.visibility = View.GONE
             binding.itemCategoryUncheckbox.visibility = View.VISIBLE
         }
+
+        binding.itemCategoryTitle.gravity = Gravity.END
 
         return binding.root
     }

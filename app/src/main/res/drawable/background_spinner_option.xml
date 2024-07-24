@@ -12,8 +12,9 @@
             <item
                 android:drawable="@drawable/under_vector"
                 android:gravity="center|end"
-                android:width="14dp"
-                android:height="7dp" />
+                android:width="15dp"
+                android:height="8dp"
+                android:right="20dp"/>
         </layer-list>
     </item>
 </selector>
