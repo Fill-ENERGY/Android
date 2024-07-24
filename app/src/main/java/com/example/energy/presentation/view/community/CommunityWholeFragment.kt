@@ -16,7 +16,7 @@ import com.example.energy.presentation.view.base.BaseFragment
 class CommunityWholeFragment : BaseFragment<FragmentCommunityWholeBinding>({ FragmentCommunityWholeBinding.inflate(it)}) {
 
     var postInfo = ArrayList<CommunityPost>() //선택한 이미지 데이터 리스트
-    val categoriesList = listOf("도와줘요", "요청 중") //임시 카테고리 리스트
+    val categoriesList = "도와줘요" //임시 카테고리 리스트
     val imageUrlsList: List<Uri> = emptyList() // 임시 이미지 리스트
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
