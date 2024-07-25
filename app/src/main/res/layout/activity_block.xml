@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F6F6F6"
     tools:context=".presentation.view.mypage.BlockActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -21,7 +22,8 @@
             android:layout_height="wrap_content"
             android:text="차단 목록"
             android:layout_gravity="center"
-            style="@style/Title1" />
+            style="@style/Title1"
+            android:textColor="@color/gray_scale8"/>
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
