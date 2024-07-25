@@ -39,6 +39,10 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
             }
         }
 
+        binding.btnLogin.setOnClickListener {
+            //로그인
+            startActivity(Intent(activity, LoginActivity::class.java))
+        }
 
     }
 
