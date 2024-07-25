@@ -46,6 +46,7 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
         binding.toolbar.inflateMenu(R.menu.toolbar_menu_mypage)
         binding.toolbar.setTitle(R.string.mypage)
         binding.toolbar.setTitleTextAppearance(requireContext(), R.style.Title1)
+        binding.toolbar.setTitleTextColor(resources.getColor(R.color.gray_scale8))
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.appbar_notification -> {
