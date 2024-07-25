@@ -16,12 +16,15 @@ import com.kakao.sdk.user.UserApiClient
 
 class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBinding.inflate(it)}) {
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setToolBar()
+
         setUserInfo()
 
-        binding.tvLogout.setOnClickListener {
+        binding.btnLogout.setOnClickListener {
             // 로그아웃
             UserApiClient.instance.logout { error ->
                 if (error != null) {
@@ -37,6 +40,29 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
         }
 
 
+    }
+
+    private fun setToolBar() {
+        binding.toolbar.inflateMenu(R.menu.toolbar_menu_mypage)
+        binding.toolbar.setTitle(R.string.mypage)
+        binding.toolbar.setTitleTextAppearance(requireContext(), R.style.Title1)
+        binding.toolbar.setTitleTextColor(resources.getColor(R.color.gray_scale8))
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.appbar_notification -> {
+                    showToast("notification")
+                    true
+                }
+
+                R.id.appbar_sos -> {
+                    showToast("sos")
+                    startActivity(Intent(activity, BlockActivity::class.java))
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
     private fun setUserInfo() {
@@ -59,5 +85,4 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
             }
         }
     }
-
 }
