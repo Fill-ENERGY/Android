@@ -34,10 +34,13 @@ import com.kakao.vectormap.label.LabelLayer
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import com.kakao.vectormap.shape.MapPoints
 
 
 class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflate(it) }) {
     lateinit var myKakaoMap: KakaoMap
+    private var seachLatitude: Double = 0.0
+    private var searchLongitude: Double = 0.0
 
     val markerList = ArrayList<MarkerModel>()
 
@@ -77,8 +80,14 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                     location ->  Log.d("CurrentLocation", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
                 getMap(mapView, location)
             }
-        }
 
+            //bundle로 데이터 받기
+            arguments?.let { bundle ->
+                seachLatitude = bundle.getDouble("latitude", 0.0)
+                searchLongitude = bundle.getDouble("longitude", 0.0)
+                Log.d("검색데이터전달", "${searchLongitude}, ${seachLatitude}")
+            }
+        }
 
 
     }
@@ -119,6 +128,12 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
 
                 //setMarker(kakaoMap, markerList)
 
+                // 현재 위치를 표시하거나 초기 위치를 설정하는 로직
+                if (seachLatitude != 0.0 && searchLongitude != 0.0) {
+                    //지도에 선택한 위치 표시하는 로직
+                    //myKakaoMap.setCenter(location.latitude, location.longitude)
+                }
+
                 //내 위치
                 var labelManager = kakaoMap.labelManager
                 if (labelManager != null) {
@@ -143,34 +158,32 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                 }
             }
 
-            //마커 띄우기
-            private fun setMarker(kakaoMap: KakaoMap, markerList: ArrayList<MarkerModel>) {
-                var labelManager = kakaoMap.labelManager
-                if (labelManager != null) {
-                    var markerStyle =
-                        labelManager.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.iv_marker)))
-                    var layer = labelManager.layer
-                    if (layer != null) {
-                        layer.removeAll()
-                        for (data in markerList) {
-                            val label =
-                                LabelOptions.from(LatLng.from(data.latitude, data.longitude))
-                                    .setStyles(markerStyle);
-                            label.clickable = true
-                            layer.addLabel(label)
-
-                        }
-                    }
-                }
-            }
-
-
             override fun getPosition(): LatLng {
                 return LatLng.from(location.latitude, location.longitude)
             }
         })
     }
 
+    //마커 띄우기
+    private fun setMarker(kakaoMap: KakaoMap, markerList: ArrayList<MarkerModel>) {
+        var labelManager = kakaoMap.labelManager
+        if (labelManager != null) {
+            var markerStyle =
+                labelManager.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.iv_marker)))
+            var layer = labelManager.layer
+            if (layer != null) {
+                layer.removeAll()
+                for (data in markerList) {
+                    val label =
+                        LabelOptions.from(LatLng.from(data.latitude, data.longitude))
+                            .setStyles(markerStyle);
+                    label.clickable = true
+                    layer.addLabel(label)
+
+                }
+            }
+        }
+    }
 
     private fun showSOSDialog() {
         val dialogBinding = DialogCustomBinding.inflate(layoutInflater)
