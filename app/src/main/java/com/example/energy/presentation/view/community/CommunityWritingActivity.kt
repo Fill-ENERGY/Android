@@ -8,12 +8,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
-import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
@@ -24,15 +23,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.Room
 import com.example.energy.R
 import com.example.energy.data.repository.community.WritingCommunityImage
 import com.example.energy.databinding.ActivityCommunityWritingBinding
 import com.example.energy.databinding.DialogPostCommunitySuccessBinding
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.example.energy.data.CommunityPostDatabase
+import com.example.energy.data.repository.community.CommunityPost
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClickListener {
     private lateinit var binding: ActivityCommunityWritingBinding
+    private lateinit var communityDB: CommunityPostDatabase
     var imageList = ArrayList<WritingCommunityImage>() // 선택한 이미지 데이터 리스트
+    var postInfo = ArrayList<CommunityPost>()
     val adapter = GalleryAdapter(imageList) // Recycler View Adapter
     val initText = "카테고리를 선택해 주세요"
     private val menuList = listOf("카테고리를 선택해 주세요", "일상","궁금해요","도와줘요","휠체어", "스쿠터")
@@ -50,6 +56,9 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         binding = ActivityCommunityWritingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Room 데이터베이스 인스턴스 생성
+        communityDB = CommunityPostDatabase.getInstance(this)!!
+
         spinner = binding.communitySelectCategory
         titleEditText = binding.communityWritingTitleTv
         contentEditText = binding.communityWritingContent
@@ -61,17 +70,16 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
                 isTitleFilled = !s.isNullOrEmpty()
                 updateFinishButtonState()
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
+
         // 내용 EditText 변화 listener
         contentEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 isContentFilled = !s.isNullOrEmpty()
                 updateFinishButtonState()
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
@@ -112,7 +120,7 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         // 등록 버튼 click listener
         finishButton.setOnClickListener {
             if (finishButton.isEnabled) {
-                showSuccessDialog()
+                savePostWithImages() // 게시글 저장
             }
         }
 
@@ -210,5 +218,30 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
 
         // 다이얼로그 표시
         dialog.show()
+    }
+
+    // 게시글 저장 함수
+    private fun savePostWithImages() {
+
+        // 이미지 Uri 리스트 추출
+        val imageUriList: List<Uri> = imageList.map { it.imageUrl }
+
+        // CommunityPost 객체 생성
+        val newPost = CommunityPost(
+            userProfile = R.drawable.user_profile, // 예시로 설정된 값
+            userName = "사용자 이름", // 예시로 설정된 값
+            title = titleEditText.text.toString(),
+            content = contentEditText.text.toString(),
+            category = spinner.selectedItem.toString(),
+            imageUrl = imageUriList, // 이미지 Uri 리스트 저장
+            likes = "0",
+            comments = "0"
+        )
+
+        // 데이터베이스에 저장 (비동기 작업)
+        communityDB.communityPostDao().insertPost(newPost)
+        postInfo.addAll(communityDB.communityPostDao().getAllPosts())
+        Log.d("community", communityDB.communityPostDao().getAllPosts().toString())
+        showSuccessDialog()
     }
 }

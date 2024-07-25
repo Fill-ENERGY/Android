@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.example.energy.R
+import com.example.energy.data.CommunityPostDatabase
+import com.example.energy.data.repository.community.CommunityPost
 import com.example.energy.databinding.ActivityMainBinding
 import com.example.energy.presentation.view.community.CommunityFragment
 import com.example.energy.presentation.view.list.ListFragment
@@ -23,6 +25,7 @@ class MainActivity : AppCompatActivity() {
 
 
         initBottomNavigation()
+        inputDummyCommunity()
 
     }
 
@@ -75,6 +78,37 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // 커뮤니티 피드 더미데이터 생성 함수
+    private fun inputDummyCommunity(){
+        val communityDB = CommunityPostDatabase.getInstance(this)!!
+        val postInfo = communityDB.communityPostDao().getAllPosts()
 
+        if(postInfo!!.isNotEmpty()) return
+
+        communityDB.communityPostDao().insertPost(
+            CommunityPost(1, R.drawable.userimage, "김규리", "연희동 급 SOS",
+                "혹시 지금 연희동 쪽으로 도움 주러 오실 수 있는 분 계신가요? 멈춰서 움직일수가 없어요ㅠㅠ",
+                "도와줘요", emptyList(), "1", "3"
+            )
+        )
+        communityDB.communityPostDao().insertPost(
+            CommunityPost(2, R.drawable.userimage, "정서현", "평창동 급 SOS",
+                "혹시 지금 평창동 쪽으로 도움 주러 오실 수 있는 분 계신가요? 멈춰서 움직일수가 없어요ㅠㅠ",
+                "궁금해요", emptyList(), "2", "0"
+            )
+        )
+        communityDB.communityPostDao().insertPost(
+            CommunityPost(3, R.drawable.userimage, "김수현", "서대문구 급 SOS",
+                "혹시 지금 서대문구 쪽으로 도움 주러 오실 수 있는 분 계신가요? 멈춰서 움직일수가 없어요ㅠㅠ",
+                "휠체어", emptyList(), "0", "4"
+            )
+        )
+        communityDB.communityPostDao().insertPost(
+            CommunityPost(4, R.drawable.userimage, "주아연", "신촌 급 SOS",
+                "혹시 지금 신촌 쪽으로 도움 주러 오실 수 있는 분 계신가요? 멈춰서 움직일수가 없어요ㅠㅠ",
+                "스쿠터", emptyList(), "5", "3"
+            )
+        )
+    }
 
 }

@@ -12,7 +12,7 @@ import com.example.energy.data.repository.community.CommunityPost
 import com.example.energy.databinding.ItemCommunityFeedBinding
 
 
-class PostCommunityRVAdapter (private val postInfo: ArrayList<CommunityPost>): RecyclerView.Adapter<PostCommunityRVAdapter.ViewHolder>() {
+class PostCommunityRVAdapter (private var postInfo: ArrayList<CommunityPost>): RecyclerView.Adapter<PostCommunityRVAdapter.ViewHolder>() {
 
     interface PeopleItemClickListener {
         fun onItemClick(position: Int, community: CommunityPost) // 각 인원수 아이템 클릭 시 반응하는 함수
@@ -45,7 +45,7 @@ class PostCommunityRVAdapter (private val postInfo: ArrayList<CommunityPost>): R
 
     inner class ViewHolder(val binding: ItemCommunityFeedBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(postInfo: CommunityPost) {
-            binding.itemCommunityPostUserProfile.setImageResource(postInfo.userProfile)
+            binding.itemCommunityPostUserProfile.setImageResource(postInfo.userProfile!!)
             binding.itemCommunityPostUserName.text = postInfo.userName
             binding.itemCommunityPostTitle.text = postInfo.title
             binding.itemCommunityPostContent.text = postInfo.content
@@ -55,17 +55,15 @@ class PostCommunityRVAdapter (private val postInfo: ArrayList<CommunityPost>): R
             // 아이템 제목 및 내용 클릭 시 상세 페이지로 이동
             binding.itemCommunityPostContainer.setOnClickListener {
                 val intent = Intent(binding.root.context, CommunityDetailActivity::class.java)
-                intent.putExtra("postInfo", postInfo)
+                intent.putExtra("postId", postInfo.id)
                 binding.root.context.startActivity(intent)
             }
             // 댓글 쓰기 클릭 시 상세 페이지로 이동
             binding.itemCommunityPostCommentTv.setOnClickListener {
                 val intent = Intent(binding.root.context, CommunityDetailActivity::class.java)
-                intent.putExtra("postInfo", postInfo)
+                intent.putExtra("postId", postInfo.id)
                 binding.root.context.startActivity(intent)
             }
         }
-
-
     }
 }
