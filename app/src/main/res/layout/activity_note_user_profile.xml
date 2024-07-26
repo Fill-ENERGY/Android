@@ -69,7 +69,6 @@
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/userprofile"
         app:layout_constraintEnd_toEndOf="@+id/userprofile"
-        app:layout_constraintHorizontalBias="0.5"
         app:layout_constraintStart_toStartOf="@+id/userprofile"
         app:layout_constraintTop_toTopOf="@+id/userprofile" />
 
