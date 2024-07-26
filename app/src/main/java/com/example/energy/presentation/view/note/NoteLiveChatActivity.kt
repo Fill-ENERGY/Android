@@ -47,7 +47,7 @@ class NoteLiveChatActivity : AppCompatActivity() {
         }
 
 
-        //클릭 리스너 적용
+        //프로필 전환 클릭 리스너 적용
         binding.usernameTextView.setOnClickListener(clickListener)
         binding.userIdTextView.setOnClickListener(clickListener)
         binding.UserProfile.setOnClickListener(clickListener)

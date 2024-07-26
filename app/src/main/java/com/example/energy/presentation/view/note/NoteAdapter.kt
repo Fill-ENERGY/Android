@@ -21,7 +21,6 @@ class NoteAdapter(private val noteList: List<NoteItem>) :
 
 
             //NoteLiveChatActivity로 전환
-
             itemView.setOnClickListener {
                 val intent = Intent(itemView.context, NoteLiveChatActivity::class.java)
 

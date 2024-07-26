@@ -5,19 +5,74 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F6F6F6"
     tools:context=".presentation.view.note.NoteUserProfileActivity">
 
+    <ImageView
+        android:id="@+id/backbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="23dp"
+        android:src="@drawable/ic_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/showMoreButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:src="@drawable/showmorebutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="20dp" />
+
+    <View
+        android:id="@+id/rectangle_1"
+        android:layout_width="0dp"
+        android:layout_height="160dp"
+        android:layout_marginTop="78dp"
+        android:background="#FFF4EB"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/rectangle_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="55dp"
+        android:src="@drawable/profile_rectangle"
+        app:layout_constraintTop_toTopOf="@id/rectangle_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/userprofile"
+        android:layout_width="83dp"
+        android:layout_height="83dp"
+        android:src="@drawable/userimage"
+        android:layout_marginTop="44dp"
+        app:layout_constraintTop_toTopOf="@+id/rectangle_1"
+        app:layout_constraintStart_toStartOf="@+id/rectangle_1"
+        app:layout_constraintEnd_toEndOf="@+id/rectangle_1" />
 
     <TextView
         android:id="@+id/usernameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/pretendard_regular"
-        android:textSize="14sp"
         android:layout_marginTop="16dp"
-        android:text="이름"
-        android:gravity="top" />
+        android:fontFamily="@font/pretendard_regular"
+        android:gravity="top"
+        android:text="김한주"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/userprofile"
+        app:layout_constraintEnd_toEndOf="@+id/userprofile"
+        app:layout_constraintHorizontalBias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/userprofile"
+        app:layout_constraintTop_toTopOf="@+id/userprofile"
+        app:layout_constraintVertical_bias="2.0" />
 
     <TextView
         android:id="@+id/userIdTextView"
@@ -29,9 +84,27 @@
         android:textColor="@color/gray_scale7"
         android:layout_marginTop="1dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintStart_toEndOf="@+id/usernameTextView"
-        android:text="아이디"
-        android:gravity="top" />
+        android:text="kimhanjooo"
+        android:gravity="top"
+        app:layout_constraintTop_toBottomOf="@+id/usernameTextView"
+        app:layout_constraintStart_toStartOf="@+id/rectangle_1"
+        app:layout_constraintEnd_toEndOf="@+id/rectangle_1"
+        app:layout_constraintHorizontalBias="0.5" />
+    
+    
+    
+    
 
 
+
+
+    <ImageView
+        android:id="@+id/ic_complain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_complain"
+        android:layout_marginTop="31dp"
+        app:layout_constraintTop_toBottomOf="@id/rectangle_2"
+        app:layout_constraintStart_toStartOf="@id/rectangle_1"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
