@@ -51,6 +51,7 @@ class PostCommunityRVAdapter (private var postInfo: ArrayList<CommunityPost>): R
             binding.itemCommunityPostContent.text = postInfo.content
             binding.itemCommunityPostLikeNum.text = postInfo.likes
             binding.itemCommunityPostCommentNum.text = postInfo.comments
+            binding.itemCommunityPostCategoryView.setImageResource(postInfo.category!!)
 
             // 아이템 제목 및 내용 클릭 시 상세 페이지로 이동
             binding.itemCommunityPostContainer.setOnClickListener {

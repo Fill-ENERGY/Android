@@ -139,10 +139,12 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/community_detail_image"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="184dp"
+        android:visibility="gone"
         android:orientation="horizontal"
         android:layout_marginStart="10dp"
         android:layout_marginTop="8dp"
+        tools:listitem="@layout/item_community_feed_photo"
         app:layout_constraintTop_toBottomOf="@id/community_detail_container"
         app:layout_constraintStart_toStartOf="parent"/>
 

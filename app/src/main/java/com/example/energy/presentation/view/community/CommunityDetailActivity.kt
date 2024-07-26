@@ -13,7 +13,7 @@ import com.example.energy.databinding.ActivityCommunityDetailBinding
 
 class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemClickListener{
     private lateinit var binding: ActivityCommunityDetailBinding
-    private lateinit var db: CommunityPostDatabase
+    private lateinit var communityDB: CommunityPostDatabase
     private lateinit var dataList: ArrayList<Comment>
     private lateinit var commentAdapter: ItemCommentAdapter
 
@@ -31,11 +31,11 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
         binding.communityDetailCommentView.adapter = commentAdapter
         binding.communityDetailCommentView.layoutManager = LinearLayoutManager(this)
 
-        // Room 데이터베이스 인스턴스 생성
-        db = Room.databaseBuilder(
-            applicationContext,
-            CommunityPostDatabase::class.java, "database-name"
-        ).build()
+//        // Room 데이터베이스 인스턴스 생성
+//        db = Room.databaseBuilder(
+//            applicationContext,
+//            CommunityPostDatabase::class.java, "database-name"
+//        ).allowMainThreadQueries().build()
 
         // 인텐트로부터 전달받은 postId 가져옴. 기본값은 -1로 설정하여 예외처리
         val postId = intent.getIntExtra("postId", -1)
@@ -43,7 +43,8 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
         // 전달받은 데이터 수신
         if (postId != -1) {
             Thread {
-                val postInfo = db.communityPostDao().getPostById(postId)
+                communityDB = CommunityPostDatabase.getInstance(this@CommunityDetailActivity)!!
+                val postInfo = communityDB.communityPostDao().getPostById(postId)
                 runOnUiThread {
                     // CommunityPost 객체의 데이터를 UI 요소에 반영
                     binding.communityDetailUserProfile.setImageResource(postInfo.userProfile!!)
@@ -52,6 +53,7 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
                     binding.communityDetailContent.text = postInfo.content
                     binding.communityDetailLikeNum.text = postInfo.likes
                     binding.communityDetailCommentNum.text = postInfo.comments
+                    binding.communityDetailCategoryTitle.text = postInfo.categoryString
                     // 이미지 로딩 등 추가 작업 수행
                 }
             }.start()

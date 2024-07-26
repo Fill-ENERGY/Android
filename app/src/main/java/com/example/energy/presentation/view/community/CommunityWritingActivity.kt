@@ -29,6 +29,7 @@ import com.example.energy.data.repository.community.WritingCommunityImage
 import com.example.energy.databinding.ActivityCommunityWritingBinding
 import com.example.energy.databinding.DialogPostCommunitySuccessBinding
 import com.example.energy.data.CommunityPostDatabase
+import com.example.energy.data.repository.community.CategoryConverter
 import com.example.energy.data.repository.community.CommunityPost
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -220,19 +221,32 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         dialog.show()
     }
 
+    // 카테고리 String -> Int로 바꾸는 함수
+    fun fromString(category: String): Int {
+        return when (category) {
+            "일상" -> R.drawable.tag_daily
+            "궁금해요" -> R.drawable.tag_curious
+            "도와줘요" -> R.drawable.tag_help
+            "휠체어" -> R.drawable.tag_wheelchair
+            else -> R.drawable.tag_scooter
+        }
+    }
+
     // 게시글 저장 함수
     private fun savePostWithImages() {
 
         // 이미지 Uri 리스트 추출
         val imageUriList: List<Uri> = imageList.map { it.imageUrl }
+        val category: Int = fromString(spinner.selectedItem.toString())
 
         // CommunityPost 객체 생성
         val newPost = CommunityPost(
-            userProfile = R.drawable.user_profile, // 예시로 설정된 값
+            userProfile = R.drawable.userimage, // 예시로 설정된 값
             userName = "사용자 이름", // 예시로 설정된 값
             title = titleEditText.text.toString(),
             content = contentEditText.text.toString(),
-            category = spinner.selectedItem.toString(),
+            categoryString = spinner.selectedItem.toString(),
+            category = category,
             imageUrl = imageUriList, // 이미지 Uri 리스트 저장
             likes = "0",
             comments = "0"
