@@ -33,6 +33,7 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
                 else {
                     Log.i("로그아웃", "로그아웃 성공. SDK에서 토큰 삭제됨")
                     //남아있는 스택 지우며 이동
+                    showToast("로그아웃에 성공했습니다.")
                     activity?.finishAffinity()
                     startActivity(Intent(activity, LoginActivity::class.java))
                 }
@@ -48,7 +49,6 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
                 binding.tvNickname.visibility = View.GONE
                 binding.tvProfileEdit.visibility = View.GONE
                 binding.ivProfileViewMore.visibility = View.GONE
-
             } else if (token != null) {
                 // 로그인이 된 상태라면
                 // 로그인 버튼 비활성화
@@ -57,6 +57,9 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
                 binding.tvNickname.visibility = View.VISIBLE
                 binding.tvProfileEdit.visibility = View.VISIBLE
                 binding.ivProfileViewMore.visibility = View.VISIBLE
+                // 로그아웃 버튼 활성화
+                binding.divide3.visibility = View.VISIBLE
+                binding.btnLogout.visibility = View.VISIBLE
             }
         }
 
