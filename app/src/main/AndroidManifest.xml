@@ -42,6 +42,7 @@
         <activity android:name=".presentation.view.map.SearchActivity" />
         <activity android:name=".presentation.view.list.ListInformationActivity" />
         <activity android:name=".presentation.view.note.NoteLiveChatActivity" />
+        <activity android:name=".presentation.view.note.NoteUserProfileActivity" />
         <activity android:name=".presentation.view.community.CommunityWritingActivity" />
         <activity android:name=".presentation.view.login.LoginActivity" />
         <activity
