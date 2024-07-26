@@ -19,13 +19,20 @@ class NoteUserProfileActivity : AppCompatActivity() {
 
 
         // username, Id 가져오기
-
         val username = intent.getStringExtra("Username") ?: "김규리"
         val userId = intent.getStringExtra("Id") ?: "rlarbfl"
 
 
         binding.usernameTextView.text = username
         binding.userIdTextView.text = userId
+
+
+
+
+        //뒤로 가기 버튼 클릭 시
+        binding.backbutton.setOnClickListener {
+            finish()
+        }
 
     }
 }
