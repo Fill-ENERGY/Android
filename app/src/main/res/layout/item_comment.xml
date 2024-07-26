@@ -13,11 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/comment_user_image"
             android:layout_width="23dp"
             android:layout_height="23dp"
-            android:src="@drawable/user_profile"
+            android:src="@drawable/userimage"
             android:layout_marginTop="10dp"
             android:layout_marginStart="20dp"
             app:layout_constraintTop_toTopOf="parent"
@@ -42,6 +42,7 @@
             android:text="(작성자)"
             android:textSize="14sp"
             android:textColor="@color/gray_scale8"
+            android:visibility="gone"
             android:layout_marginStart="5dp"
             app:layout_constraintStart_toEndOf="@id/comment_user_name"
             app:layout_constraintTop_toTopOf="@id/comment_user_image"
