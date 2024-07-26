@@ -106,7 +106,7 @@
             android:id="@+id/item_community_post_like_icon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/like_icon"
+            android:src="@drawable/icon_unlike"
             android:layout_marginStart="10dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="20dp"

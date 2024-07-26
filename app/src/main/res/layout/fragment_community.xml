@@ -14,7 +14,7 @@
             android:id="@+id/community_search_iv"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/community_search_icon"
+            android:src="@drawable/iv_search"
             android:layout_marginEnd="15dp"
             app:layout_constraintEnd_toStartOf="@id/community_notify_iv"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -22,7 +22,7 @@
             android:id="@+id/community_notify_iv"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/community_notify_icon"
+            android:src="@drawable/icon_alarm"
             android:layout_marginEnd="15dp"
             app:layout_constraintEnd_toStartOf="@id/community_sos_iv"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -30,7 +30,7 @@
             android:id="@+id/community_sos_iv"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/community_sos_icon"
+            android:src="@drawable/ic_sos"
             android:layout_marginEnd="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -118,7 +118,7 @@
         <ImageView
             android:id="@+id/community_writing_bt"
             android:layout_width="100dp"
-            android:layout_height="40dp"
+            android:layout_height="35dp"
             android:src="@drawable/writing_community_btn"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"

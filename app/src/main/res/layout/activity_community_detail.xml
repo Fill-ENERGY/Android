@@ -7,13 +7,15 @@
 
     <ImageView
         android:id="@+id/community_detail_back_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/back_icon"
-        android:layout_marginTop="8dp"
+        android:layout_width="13dp"
+        android:layout_height="12dp"
+        android:src="@drawable/ic_back"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/divider"/>
 
     <TextView
         android:id="@+id/community_detail_category_title"
@@ -41,7 +43,7 @@
         android:layout_width="0dp"
         android:layout_height="2dp"
         android:background="#D7D7D5"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintTop_toBottomOf="@id/community_detail_back_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,7 +53,7 @@
         android:id="@+id/community_detail_user_profile"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:src="@drawable/user_profile"
+        android:src="@drawable/userimage"
         android:layout_marginStart="10dp"
         android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -82,9 +84,9 @@
 
     <ImageView
         android:id="@+id/community_detail_chatting_btn"
-        android:layout_width="71dp"
-        android:layout_height="28dp"
-        android:src="@drawable/chatting_btn"
+        android:layout_width="65dp"
+        android:layout_height="32dp"
+        android:src="@drawable/button_chatting"
         android:layout_marginEnd="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/community_detail_user_profile"
@@ -148,7 +150,7 @@
         android:id="@+id/community_detail_like_icon"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:src="@drawable/like_icon"
+        android:src="@drawable/icon_unlike"
         android:layout_marginStart="10dp"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="20dp"
@@ -182,7 +184,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:src="@drawable/comment_icon"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="15dp"
         app:layout_constraintTop_toBottomOf="@id/community_detail_image"
         app:layout_constraintStart_toEndOf="@id/community_detail_like_tv"/>
@@ -267,8 +269,8 @@
             android:textSize="13sp"
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:inputType="textMultiLine"
             android:maxLines="4"
             android:minLines="1"

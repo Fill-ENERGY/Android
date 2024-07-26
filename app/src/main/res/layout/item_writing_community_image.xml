@@ -19,7 +19,7 @@
             android:id="@+id/item_writing_community_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/community_image_upload"
+            android:src="@drawable/button_photo"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

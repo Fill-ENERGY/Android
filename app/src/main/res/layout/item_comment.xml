@@ -69,7 +69,7 @@
                 android:id="@+id/comment_secret_lock"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:src="@drawable/lock_icon"
+                android:src="@drawable/icon_comment_lock"
                 android:layout_marginStart="3dp"
                 app:layout_constraintStart_toEndOf="@id/circle"
                 app:layout_constraintTop_toTopOf="@id/comment_user_image"
