@@ -39,7 +39,29 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
             }
         }
 
-        binding.btnLogin.setOnClickListener {
+        UserApiClient.instance.accessTokenInfo{ token, error ->
+            if (error != null) {
+                //로그아웃 된 상태라면
+                // 로그인 버튼 활성화
+                binding.btnNeedLogin.visibility = View.VISIBLE
+                // 프로필 정보 버튼 비활성화
+                binding.tvNickname.visibility = View.GONE
+                binding.tvProfileEdit.visibility = View.GONE
+                binding.ivProfileViewMore.visibility = View.GONE
+
+            } else if (token != null) {
+                // 로그인이 된 상태라면
+                // 로그인 버튼 비활성화
+                binding.btnNeedLogin.visibility = View.GONE
+                // 프로필 정보 버튼 활성화
+                binding.tvNickname.visibility = View.VISIBLE
+                binding.tvProfileEdit.visibility = View.VISIBLE
+                binding.ivProfileViewMore.visibility = View.VISIBLE
+            }
+        }
+
+
+        binding.btnNeedLogin.setOnClickListener {
             //로그인
             startActivity(Intent(activity, LoginActivity::class.java))
         }
