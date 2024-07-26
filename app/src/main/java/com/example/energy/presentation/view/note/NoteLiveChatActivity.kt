@@ -1,7 +1,9 @@
 package com.example.energy.presentation.view.note
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -33,5 +35,26 @@ class NoteLiveChatActivity : AppCompatActivity() {
         binding.backbutton.setOnClickListener {
             finish()
         }
+
+
+        // 프로필로 전환하는 클릭 리스너
+        val clickListener = View.OnClickListener {
+            val intent = Intent(this, NoteUserProfileActivity::class.java).apply {
+                putExtra("Username", username)
+                putExtra("Id", userId)
+            }
+            startActivity(intent)
+        }
+
+
+        //프로필 전환 클릭 리스너 적용
+        binding.usernameTextView.setOnClickListener(clickListener)
+        binding.userIdTextView.setOnClickListener(clickListener)
+        binding.UserProfile.setOnClickListener(clickListener)
+        binding.showMoreButton.setOnClickListener(clickListener)
+
+
+
+
     }
 }
