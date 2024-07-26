@@ -19,12 +19,15 @@ import com.example.energy.databinding.FragmentNoteBinding
 import com.example.energy.databinding.FragmentNoteListBinding
 import com.example.energy.presentation.view.base.BaseFragment
 import com.example.energy.presentation.view.list.CustomDividerItemDecoration
+import com.example.energy.presentation.view.mypage.BlockActivity
 import com.kakao.vectormap.mapwidget.component.Vertical
 
 class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inflate(it)}) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setToolBar()
 
         // 테스트 데이터
         val sampleData = listOf(
@@ -51,11 +54,6 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
         }
 
 
-        //sos 기능
-        binding.cvSos.setOnClickListener {
-            showSOSDialog()
-        }
-
 
 
 
@@ -63,8 +61,32 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
 
 
 
+    private fun setToolBar() {
+        binding.toolbar.inflateMenu(R.menu.toolbar_menu_chat)
+        binding.toolbar.setTitle(R.string.note)
+        binding.toolbar.setTitleTextAppearance(requireContext(), R.style.Title1)
+        binding.toolbar.setTitleTextColor(resources.getColor(R.color.gray_scale8))
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.appbar_search -> {
+                    showToast("search")
+                    true
+                }
+
+                R.id.appbar_sos -> {
+                    showToast("sos")
+                    showSOSDialog()
+                    true
+                }
+
+                else -> false
+            }
+        }
+    }
 
 
+
+    //sos 기능
     private fun showSOSDialog() {
         val dialogBinding = DialogCustomBinding.inflate(layoutInflater)
         val builder = AlertDialog.Builder(requireContext())
@@ -98,6 +120,7 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
             dialog.dismiss()
         }
     }
+
 
 
 }
