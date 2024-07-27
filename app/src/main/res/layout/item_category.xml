@@ -6,9 +6,9 @@
     
     <ImageView
         android:id="@+id/item_category"
-        android:layout_width="58.25dp"
+        android:layout_width="wrap_content"
         android:layout_height="22dp"
-        android:src="@drawable/tag_help"
+        android:src="@drawable/tag_daily"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 

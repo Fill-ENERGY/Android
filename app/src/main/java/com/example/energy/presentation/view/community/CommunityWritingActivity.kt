@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -20,16 +19,14 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Room
 import com.example.energy.R
 import com.example.energy.data.repository.community.WritingCommunityImage
 import com.example.energy.databinding.ActivityCommunityWritingBinding
 import com.example.energy.databinding.DialogPostCommunitySuccessBinding
 import com.example.energy.data.CommunityPostDatabase
-import com.example.energy.data.repository.community.CategoryConverter
 import com.example.energy.data.repository.community.CommunityPost
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -237,6 +234,8 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
 
         // 이미지 Uri 리스트 추출
         val imageUriList: List<Uri> = imageList.map { it.imageUrl }
+//        val imageUriList: List<String> = imageList.map { it.imageUrl.toString() } // Uri를 String으로 변환
+
         val category: Int = fromString(spinner.selectedItem.toString())
 
         // CommunityPost 객체 생성
@@ -247,15 +246,29 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
             content = contentEditText.text.toString(),
             categoryString = spinner.selectedItem.toString(),
             category = category,
-            imageUrl = imageUriList, // 이미지 Uri 리스트 저장
+            imageUrl = imageUriList, //imageUriList, // 이미지 Uri 리스트 저장
             likes = "0",
             comments = "0"
         )
 
         // 데이터베이스에 저장 (비동기 작업)
-        communityDB.communityPostDao().insertPost(newPost)
-        postInfo.addAll(communityDB.communityPostDao().getAllPosts())
-        Log.d("community", communityDB.communityPostDao().getAllPosts().toString())
-        showSuccessDialog()
+//        communityDB.communityPostDao().insertPost(newPost)
+//        postInfo.addAll(communityDB.communityPostDao().getAllPosts())
+//        Log.d("community", communityDB.communityPostDao().getAllPosts().toString())
+//        showSuccessDialog()
+        CoroutineScope(Dispatchers.IO).launch {
+            communityDB.communityPostDao().insertPost(newPost)
+            runOnUiThread {
+                showSuccessDialog()
+                updateCommunityFragment(newPost)
+            }
+        }
+    }
+
+    // CommunityWholeFragment 업데이트 함수
+    private fun updateCommunityFragment(newPost: CommunityPost) {
+        val fragmentManager: FragmentManager = supportFragmentManager
+        val communityWholeFragment = fragmentManager.findFragmentByTag("CommunityWholeFragment") as CommunityWholeFragment?
+        communityWholeFragment?.updatePostList(newPost)
     }
 }

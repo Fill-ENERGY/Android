@@ -2,21 +2,24 @@ package com.example.energy.presentation.view.community
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.opengl.Visibility
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.energy.data.repository.community.CommunityPost
 import com.example.energy.databinding.ItemCommunityFeedBinding
 
 
-class PostCommunityRVAdapter (private var postInfo: ArrayList<CommunityPost>): RecyclerView.Adapter<PostCommunityRVAdapter.ViewHolder>() {
+class PostCommunityRVAdapter (private var postInfo: List<CommunityPost>): RecyclerView.Adapter<PostCommunityRVAdapter.ViewHolder>() {
 
     interface PeopleItemClickListener {
-        fun onItemClick(position: Int, community: CommunityPost) // 각 인원수 아이템 클릭 시 반응하는 함수
-        fun onCheckIconClick(community: CommunityPost) //체크 이미지 클릭 시 반응하는 함수
+        fun onItemClick(position: Int, community: CommunityPost)
+        fun onCheckIconClick(community: CommunityPost)
     }
 
     // 외부에서 전달받은 Listener 객체를 Adapter에서 사용할 수 있도록 따로 저장할 변수 선언
@@ -52,6 +55,21 @@ class PostCommunityRVAdapter (private var postInfo: ArrayList<CommunityPost>): R
             binding.itemCommunityPostLikeNum.text = postInfo.likes
             binding.itemCommunityPostCommentNum.text = postInfo.comments
             binding.itemCommunityPostCategoryView.setImageResource(postInfo.category!!)
+
+            // 이미지 RecyclerView 설정
+            if(postInfo.imageUrl.isEmpty()){
+                // 이미지가 없는 경우 RecyclerView 숨기기
+                binding.itemCommunityPostImage.visibility = View.GONE
+            } else{
+                binding.itemCommunityPostImage.visibility = View.VISIBLE
+                // RecyclerView의 LayoutManager 및 Adapter 설정
+                val layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+                binding.itemCommunityPostImage.layoutManager = layoutManager
+
+                val imageAdapter = ItemFeedPhotoAdapter(postInfo.imageUrl)
+                Log.d("imageUrl", postInfo.imageUrl.toString())
+                binding.itemCommunityPostImage.adapter = imageAdapter
+            }
 
             // 아이템 제목 및 내용 클릭 시 상세 페이지로 이동
             binding.itemCommunityPostContainer.setOnClickListener {

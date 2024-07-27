@@ -56,7 +56,7 @@
 
         <ImageView
             android:id="@+id/item_community_post_category_view"
-            android:layout_width="58dp"
+            android:layout_width="wrap_content"
             android:layout_height="22dp"
             android:src="@drawable/tag_help"
             android:layout_marginStart="10dp"
