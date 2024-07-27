@@ -1,15 +1,13 @@
 package com.example.energy.data.repository.community
 
-import java.io.Serializable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+@Entity(tableName = "comment")
 data class Comment(
-    val commentId: Int,
-//    var reviewInfo: ReviewInComment,
-    var userInfo: String, //UserInfo?,
-    var body: String,
-    var likeCount : Int = 0,
-    val parentCommentId : Int?,
-    var userLike : Boolean,
-    var createTime: String,
-    var updateTime: String,
-): Serializable
+    var id: Int = 0,
+    var userInfo: String = "", //UserInfo?,
+    var body: String = "",
+    val parentCommentId : Int? = null,
+    var createTime: String = "",
+)
