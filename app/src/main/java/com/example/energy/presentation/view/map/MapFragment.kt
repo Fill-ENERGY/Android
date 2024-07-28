@@ -62,6 +62,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
         } else {
             MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) {
                 location ->  Log.d("CurrentLocation", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+
+                //뷰모델에 현재 위치 전달
+                mapViewModel.setCurrentLocation(location)
+
                 getMap(mapView, location)
             }
         }
@@ -83,6 +87,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
             showToast("현재 위치를 가져옵니다")
             MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) {
                     location ->  Log.d("CurrentLocation", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+
+                //뷰모델에 현재 위치 전달
+                mapViewModel.setCurrentLocation(location)
+
                 getMap(mapView, location)
             }
 
@@ -162,6 +170,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                     //showBottomSheet()
 
                     mapViewModel.setStationName("my town")
+                    mapViewModel.setStationLongitude(location.longitude)
+                    mapViewModel.setStationLatitude(location.latitude)
+                    mapViewModel.setStationTime("정상영업")
+                    mapViewModel.setStationCall("010")
 
                     (context as MainActivity).supportFragmentManager.beginTransaction()
                         .replace(R.id.main_frm, SearchResultFragment())
