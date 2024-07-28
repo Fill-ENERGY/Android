@@ -10,18 +10,24 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.BuildConfig
 import com.example.energy.R
 import com.example.energy.data.repository.map.MapInterface
 import com.example.energy.data.repository.map.search.SearchData
-import com.example.energy.databinding.ActivitySearchBinding
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.DialogSearchDeleteBinding
-import com.example.energy.presentation.view.base.BaseActivity
+import com.example.energy.databinding.FragmentMapBinding
+import com.example.energy.databinding.FragmentSearchBinding
+import com.example.energy.presentation.view.base.BaseFragment
 import com.example.energy.presentation.viewmodel.MapViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -31,25 +37,28 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBinding.inflate(it)}) {
+class SearchFragment : BaseFragment<FragmentSearchBinding>({ FragmentSearchBinding.inflate(it) }) {
     private lateinit var mapViewModel: MapViewModel
     private val searchList = ArrayList<SearchData>()
     private val recentSearchList = ArrayList<SearchData>()
     private val searchAdapter = SearchAdapter(searchList)
-    private val recentSearchAdapter = RecentSearchAdapter(this, recentSearchList)
+    private val recentSearchAdapter = RecentSearchAdapter(requireContext(), recentSearchList)
     //최근 검색어 로드
     private lateinit var sharedPreferences: SharedPreferences
 
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         //최근 검색어 불러오기
-        sharedPreferences = getSharedPreferences("recent_search_prefs", MODE_PRIVATE)
+        //sharedPreferences = requireContext().getSharedPreferences("recent_search_prefs",
+        //    AppCompatActivity.MODE_PRIVATE
+        //)
 
         //힌트 텍스트 현재 주소로 설정
-        binding.etSearch.hint = intent.getStringExtra("hintText")
+        //binding.etSearch.hint = intent.getStringExtra("hintText")
 
         //긴급 전화
         binding.cvSos.setOnClickListener {
@@ -69,7 +78,11 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
 
         //최근 검색어 로드
         loadRecentSearches()
+
+        return binding.root
     }
+
+
 
     private fun setUpRecyclerViews() {
         //구분선 적용
@@ -85,7 +98,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
         binding.rvRecentList.adapter = recentSearchAdapter
 
         binding.rvList.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         searchAdapter.setItemClickListener(object : SearchAdapter.OnItemClickListener {
             override fun onItemClick(searchData: SearchData) {
                 // 아이템을 최근 검색어 리스트에 추가
@@ -101,14 +114,13 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
                     arguments = bundle
                 }
 
-                //search result fragment로 이동
-                supportFragmentManager.beginTransaction().replace(R.id.search_activity, SearchResultFragment()).commit()
+                //Navigation.findNavController().navigate(R.id.action_searchFragment_to_mapFragment)
 
             }
         }
         )
 
-        binding.rvRecentList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.rvRecentList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         recentSearchAdapter.setItemClickListener(object : RecentSearchAdapter.OnItemClickListener {
             override fun onItemClick(searchData: SearchData) {
                 //지도로 이동해서 위치 보여주기
@@ -144,10 +156,10 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
 
     private fun addSearchResult(searchResult: ResultSearchKeyword?) {
         if (!searchResult?.documents.isNullOrEmpty()) {
-    // 검색 결과 있음
+            // 검색 결과 있음
             searchList.clear() // 리스트 초기화
             for (document in searchResult!!.documents) {
-    // 결과를 리사이클러 뷰에 추가
+                // 결과를 리사이클러 뷰에 추가
                 val item = SearchData(
                     document.place_name,
                     document.road_address_name,
@@ -163,7 +175,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
 
 
         } else {
-    // 검색 결과 없음
+            // 검색 결과 없음
             showToast("검색 결과가 없습니다")
         }
     }
@@ -200,7 +212,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
 
     private fun showSOSDialog() {
         val dialogBinding = DialogCustomBinding.inflate(layoutInflater)
-        val builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(requireContext())
         builder.setView(dialogBinding.root)
 
         val dialog = builder.create()
@@ -234,7 +246,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
 
     private fun showAllDeleteDialog() {
         val dialogBinding = DialogSearchDeleteBinding.inflate(layoutInflater)
-        val builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(requireContext())
         builder.setView(dialogBinding.root)
 
         val dialog = builder.create()
