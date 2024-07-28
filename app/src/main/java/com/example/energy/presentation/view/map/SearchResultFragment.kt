@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer
 import com.example.energy.R
 import com.example.energy.databinding.FragmentSearchBinding
 import com.example.energy.databinding.FragmentSearchResultBinding
+import com.example.energy.presentation.util.EnergyUtils
 import com.example.energy.presentation.util.MapLocation
 import com.example.energy.presentation.view.MainActivity
 import com.example.energy.presentation.view.base.BaseFragment
@@ -172,7 +173,7 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
                 }
 
                 R.id.appbar_sos -> {
-                    showToast("sos")
+                    EnergyUtils.showSOSDialog(requireContext())
                     true
                 }
 
