@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.example.energy.R
 import com.example.energy.databinding.FragmentMypageBinding
+import com.example.energy.presentation.util.EnergyUtils
 import com.example.energy.presentation.view.base.BaseFragment
 import com.example.energy.presentation.view.login.LoginActivity
 import com.kakao.sdk.user.UserApiClient
@@ -80,12 +81,12 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
             when (it.itemId) {
                 R.id.appbar_notification -> {
                     showToast("notification")
+                    startActivity(Intent(activity, BlockActivity::class.java))
                     true
                 }
 
                 R.id.appbar_sos -> {
-                    showToast("sos")
-                    startActivity(Intent(activity, BlockActivity::class.java))
+                    EnergyUtils.showSOSDialog(requireContext())
                     true
                 }
 
