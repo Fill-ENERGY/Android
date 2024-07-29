@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "comment")
 data class Comment(
-    var id: Int = 0,
+    @PrimaryKey(autoGenerate = true) var commentId: Int = 0,
     var userInfo: String = "", //UserInfo?,
     var body: String = "",
     val parentCommentId : Int? = null,

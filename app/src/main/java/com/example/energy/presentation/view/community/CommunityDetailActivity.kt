@@ -4,15 +4,22 @@ import android.os.Bundle
 import android.os.Message
 import android.text.InputType
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.example.energy.data.CommunityPostDatabase
 import com.example.energy.data.repository.community.Comment
+import com.example.energy.data.repository.community.CommunityPost
 import com.example.energy.databinding.ActivityCommunityDetailBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -22,7 +29,6 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
     private lateinit var communityDB: CommunityPostDatabase
     private lateinit var dataList: ArrayList<Comment>
     private lateinit var commentAdapter: ItemCommentAdapter
-    var itemSet = makeChildComment(dataList) //자식 정렬 알고리즘 호출
     private var parentCommentId: Int = -1 // 자식 댓글의 부모 댓글 ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,6 +88,14 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
             }.start()
         }
 
+        // 키보드 외부 화면 클릭 시 키보드 숨기기
+        binding.communityDetail.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                hideKeyboard()
+            }
+            false
+        }
+
         // 뒤로가기 버튼
         binding.communityDetailBackIcon.setOnClickListener {
             finish() //현재 Activity 종료
@@ -92,7 +106,7 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
             val commentText = binding.messageInput.text.toString()
             if (commentText.isNotBlank()) {
                 val newComment = Comment(
-                    id = dataList.size + 1, // 임시 ID, 실제로는 DB에서 생성된 ID 사용
+                    commentId = dataList.size + 1, // 임시 ID, 실제로는 DB에서 생성된 ID 사용
                     userInfo = "사용자 정보", // 실제 사용자 정보로 변경
                     body = commentText,
                     parentCommentId = parentCommentId, // 자식 댓글의 부모 ID
@@ -100,7 +114,7 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
                 )
                 // 자식 댓글인 경우 부모 댓글에 추가
                 if (parentCommentId != -1) {
-                    val parentComment = dataList.find { it.id == parentCommentId }
+                    val parentComment = dataList.find { it.commentId == parentCommentId }
                     parentComment?.let {
                         dataList.add(newComment)
                         commentAdapter.itemSet = makeChildComment(dataList)
@@ -113,38 +127,57 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
                     commentAdapter.itemSet = makeChildComment(dataList)
                     commentAdapter.notifyDataSetChanged()
                 }
+
+                // 데이터베이스에 저장
+//                CoroutineScope(Dispatchers.IO).launch {
+//                    communityDB.commentDao().insertComment(newComment)
+//                    runOnUiThread {
+//                        updateCommentsList(newComment)
+//                    }
+//                }
+                addCommentToDatabase(newComment)
+
                 binding.messageInput.text.clear()
+
             }
         }
     }
 
-//    // 댓글 추가 기능
-//    private fun addCommentToDatabase(commentText: String) {
-//        // 댓글 객체 생성
-//        val newComment = Comment(
-//            commentId = dataList.size + 1, // 임시 ID, 실제로는 DB에서 생성된 ID 사용
-//            userInfo = "사용자 정보", // 실제 사용자 정보로 변경
-//            body = commentText,
-//            parentCommentId = null, // 대댓글이 아니라면 null 또는 실제 부모 ID
-//            createTime = Date().toString(), // 현재 시간으로 변경
-//        )
-//
-//        // 댓글을 데이터베이스에 저장 (Thread로 실행)
-//        Thread {
-//            communityDB.commentDao().insertComment(newComment)
-//            val updatedComments = communityDB.commentDao().getAllComments()
-//            runOnUiThread {
-//                dataList.clear()
-//                dataList.addAll(makeChildComment(ArrayList(updatedComments)))
-//                commentAdapter.notifyDataSetChanged()
-//                binding.messageInput.text.clear() // 입력 필드 비우기
-//            }
-//        }.start()
-//    }
+    // 댓글 추가 기능
+    private fun addCommentToDatabase(comment: Comment) {
+        Thread {
+            communityDB.commentDao().insertComment(comment)
+            runOnUiThread {
+                updateCommentsList(comment)
+            }
+        }.start()
+    }
 
     // 대댓글 추가 기능
     override fun addSubComment(comment: Comment) {
         // 부모 댓글 ID를 설정하여 자식 댓글을 작성할 준비
-        parentCommentId = comment.id
+        parentCommentId = comment.commentId
+    }
+
+    // Comment 업데이트 함수
+    private fun updateCommentsList(newComment: Comment) {
+//        val fragmentManager: FragmentManager = supportFragmentManager
+//        val communityWholeFragment = fragmentManager.findFragmentByTag("CommunityWholeFragment") as CommunityWholeFragment?
+//        communityWholeFragment?.updatePostList(newComment)
+        dataList.add(newComment)
+        commentAdapter.itemSet = makeChildComment(dataList)
+        commentAdapter.notifyDataSetChanged()
+    }
+
+    // 키보드 내리는 함수
+    private fun hideKeyboard() {
+        val currentFocusView = currentFocus
+        if (currentFocusView != null) {
+            val inputManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputManager.hideSoftInputFromWindow(
+                currentFocusView.windowToken,
+                InputMethodManager.HIDE_NOT_ALWAYS
+            )
+        }
     }
 }
