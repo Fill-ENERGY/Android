@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/search_result_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.view.map.SearchResultFragment">
+
+    <com.kakao.vectormap.MapView
+        android:id="@+id/map_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/iv_location"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomsheet_search"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="22dp"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottomsheet_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bottomsheet_style"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/iv_bottomsheet_line"
+                android:layout_marginTop="7dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                style="@style/Title1"
+                android:id="@+id/tv_marker_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="25dp"
+                android:textColor="@color/gray_scale8"
+                android:text="@string/marker_bottomsheet"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <TextView
+                style="@style/Body4"
+                android:id="@+id/tv_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="15dp"
+                android:text="16m"
+                android:textColor="@color/gray_scale8"
+                app:layout_constraintTop_toBottomOf="@id/tv_marker_bottom"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <ImageView
+                android:id="@+id/iv_star"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/iv_star"
+                android:layout_marginStart="25dp"
+                app:layout_constraintStart_toEndOf="@+id/tv_distance"
+                app:layout_constraintTop_toTopOf="@id/tv_distance"
+                />
+            <TextView
+                android:id="@+id/tv_star"
+                style="@style/Body4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4.41(15)"
+                android:layout_marginStart="6dp"
+                android:textColor="@color/gray_scale8"
+                app:layout_constraintStart_toEndOf="@+id/iv_star"
+                app:layout_constraintTop_toTopOf="@id/tv_distance"
+                />
+
+            <ImageView
+                android:id="@+id/iv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/iv_time"
+                android:layout_marginStart="25dp"
+                app:layout_constraintStart_toEndOf="@+id/tv_star"
+                app:layout_constraintTop_toTopOf="@id/tv_distance"
+                />
+
+            <TextView
+                android:id="@+id/tv_time"
+                style="@style/Body4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(평일) 0:00 ~ 24:00"
+                android:layout_marginStart="8dp"
+                android:textColor="@color/gray_scale8"
+                app:layout_constraintStart_toEndOf="@+id/iv_time"
+                app:layout_constraintTop_toTopOf="@id/tv_distance"
+                />
+
+            <ImageView
+                android:id="@+id/iv_call"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/iv_call"
+                android:layout_marginTop="30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/iv_bookmark"
+                app:layout_constraintTop_toBottomOf="@id/tv_distance"
+                />
+
+            <TextView
+                style="@style/Body3"
+                android:id="@+id/tv_call"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/gray_scale8"
+                app:layout_constraintTop_toBottomOf="@id/iv_call"
+                app:layout_constraintStart_toStartOf="@id/iv_call"
+                app:layout_constraintEnd_toEndOf="@id/iv_call"
+                android:text="전화"/>
+
+            <ImageView
+                android:id="@+id/iv_bookmark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/iv_call"
+                android:src="@drawable/iv_bookmark"
+                app:layout_constraintEnd_toStartOf="@+id/iv_guide"
+                app:layout_constraintTop_toTopOf="@id/iv_call"
+                />
+
+            <TextView
+                style="@style/Body3"
+                android:id="@+id/tv_bookmark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/gray_scale8"
+                app:layout_constraintBottom_toBottomOf="@id/tv_call"
+                app:layout_constraintTop_toBottomOf="@id/iv_bookmark"
+                app:layout_constraintStart_toStartOf="@id/iv_bookmark"
+                app:layout_constraintEnd_toEndOf="@id/iv_bookmark"
+                android:text="즐겨찾기"/>
+
+            <ImageView
+                android:id="@+id/iv_guide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/iv_bookmark"
+                android:src="@drawable/iv_guide"
+                app:layout_constraintEnd_toStartOf="@id/iv_share"
+                app:layout_constraintTop_toTopOf="@id/iv_call"
+                />
+
+            <TextView
+                style="@style/Body3"
+                android:id="@+id/tv_guide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/gray_scale8"
+                app:layout_constraintBottom_toBottomOf="@id/tv_call"
+                app:layout_constraintTop_toBottomOf="@id/iv_guide"
+                app:layout_constraintStart_toStartOf="@id/iv_guide"
+                app:layout_constraintEnd_toEndOf="@id/iv_guide"
+                android:text="길안내"/>
+
+            <ImageView
+                android:id="@+id/iv_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/iv_share"
+                android:layout_marginTop="3dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/iv_guide"
+                app:layout_constraintTop_toTopOf="@id/iv_call"
+                />
+
+            <TextView
+                style="@style/Body3"
+                android:id="@+id/tv_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray_scale8"
+                android:layout_marginTop="6dp"
+                app:layout_constraintBottom_toBottomOf="@id/tv_call"
+                app:layout_constraintTop_toBottomOf="@id/iv_share"
+                app:layout_constraintStart_toStartOf="@id/iv_share"
+                app:layout_constraintEnd_toEndOf="@id/iv_share"
+                android:text="공유"/>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="26dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_call" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

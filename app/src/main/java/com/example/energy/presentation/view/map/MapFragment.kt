@@ -15,14 +15,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.example.energy.R
 import com.example.energy.data.model.MarkerModel
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.DialogLoginBinding
 import com.example.energy.databinding.FragmentMapBinding
 import com.example.energy.presentation.util.MapLocation
+import com.example.energy.presentation.view.MainActivity
 import com.example.energy.presentation.view.base.BaseFragment
 import com.example.energy.presentation.view.login.LoginActivity
+import com.example.energy.presentation.viewmodel.MapViewModel
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -38,6 +42,7 @@ import com.kakao.vectormap.shape.MapPoints
 
 
 class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflate(it) }) {
+    val mapViewModel by activityViewModels<MapViewModel>()
     lateinit var myKakaoMap: KakaoMap
     private var seachLatitude: Double = 0.0
     private var searchLongitude: Double = 0.0
@@ -57,6 +62,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
         } else {
             MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) {
                 location ->  Log.d("CurrentLocation", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+
+                //뷰모델에 현재 위치 전달
+                mapViewModel.setCurrentLocation(location)
+
                 getMap(mapView, location)
             }
         }
@@ -78,6 +87,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
             showToast("현재 위치를 가져옵니다")
             MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) {
                     location ->  Log.d("CurrentLocation", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+
+                //뷰모델에 현재 위치 전달
+                mapViewModel.setCurrentLocation(location)
+
                 getMap(mapView, location)
             }
 
@@ -154,7 +167,17 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
 
                 //마커 클릭 이벤트
                 myKakaoMap.setOnLabelClickListener { kakaoMap, layer, label ->
-                    showBottomSheet()
+                    //showBottomSheet()
+
+                    mapViewModel.setStationName("my town")
+                    mapViewModel.setStationLongitude(location.longitude)
+                    mapViewModel.setStationLatitude(location.latitude)
+                    mapViewModel.setStationTime("정상영업")
+                    mapViewModel.setStationCall("010")
+
+                    (context as MainActivity).supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_frm, SearchResultFragment())
+                        .commitAllowingStateLoss()
                 }
             }
 

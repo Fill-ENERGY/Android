@@ -3,18 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".presentation.view.list.ListReviewFragment"
     android:id="@+id/frameLayout3">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/white">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/white">
             <TextView
+                style="@style/Title2"
+                android:textColor="@color/gray_scale8"
                 android:id="@+id/tv_review_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -25,17 +30,32 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
+                style="@style/Body4"
                 android:id="@+id/tv_go_elevation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="평가하기 >"
+                android:text="평가하기"
                 android:textColor="@color/blue"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
                 app:layout_constraintTop_toTopOf="@id/tv_review_title"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/iv_go_elevation"
                 />
 
+            <ImageView
+                android:id="@+id/iv_go_elevation"
+                android:layout_width="4dp"
+                android:layout_height="8dp"
+                app:tint="@color/blue"
+                android:src="@drawable/ic_view_more"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="3dp"
+                app:layout_constraintTop_toTopOf="@id/tv_go_elevation" />
+
             <TextView
+                style="@style/Title2"
+                android:textColor="@color/gray_scale8"
                 android:id="@+id/tv_review_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,6 +66,8 @@
                 />
 
             <TextView
+                style="@style/Title2"
+                android:textColor="@color/gray_scale8"
                 android:id="@+id/tv_review_total_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,17 +79,21 @@
                 />
 
             <TextView
+                style="@style/Body2"
+                android:textColor="@color/gray_scale7"
                 android:id="@+id/tv_review_total_summary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="“ 충전소 접근이 편리해요 “"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="19dp"
                 android:layout_marginStart="15dp"
                 app:layout_constraintTop_toBottomOf="@id/tv_review_title"
                 app:layout_constraintStart_toEndOf="@id/tv_review_total_count"
                 />
 
             <TextView
+                style="@style/Title2"
+                android:textColor="@color/gray_scale6"
                 android:id="@+id/tv_review_feature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -101,11 +127,13 @@
                     android:layout_marginTop="22dp"/>
 
                 <TextView
+                    style="@style/Body3"
+                    android:textColor="@color/gray_scale8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="추천순"
                     android:layout_marginStart="6dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="17dp"
                     />
             </LinearLayout>
 
@@ -124,11 +152,13 @@
                     android:layout_marginTop="22dp"/>
 
                 <TextView
+                    style="@style/Body4"
+                    android:textColor="@color/gray_scale6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="최신순"
                     android:layout_marginStart="6dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="17dp"
                     />
 
             </LinearLayout>
@@ -138,21 +168,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/iv_only_picture_unfill"
-                android:layout_marginTop="19dp"
+                android:layout_marginTop="17dp"
                 android:layout_marginEnd="6dp"
                 app:layout_constraintEnd_toStartOf="@id/tv_only_picture"
                 app:layout_constraintTop_toTopOf="@id/sort_review_latest"
                 />
 
             <TextView
+                style="@style/Body4"
+                android:textColor="@color/gray_scale7"
                 android:id="@+id/tv_only_picture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="사진/영상 리뷰만"
                 android:layout_marginEnd="20dp"
-                android:layout_marginTop="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/sort_review_latest" />
+                app:layout_constraintTop_toTopOf="@id/iv_only_picture" />
 
             <View
                 android:id="@+id/divide_2"

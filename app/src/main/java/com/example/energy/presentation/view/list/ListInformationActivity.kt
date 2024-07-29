@@ -1,6 +1,7 @@
 package com.example.energy.presentation.view.list
 
 import android.os.Bundle
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -72,6 +73,8 @@ class ListInformationActivity : AppCompatActivity() {
 
 
         }.attach()
+
+
 
 
 

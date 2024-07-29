@@ -415,6 +415,7 @@
         </LinearLayout>
 
         <View
+            android:visibility="gone"
             android:id="@+id/divide_3"
             android:layout_width="match_parent"
             android:layout_height="13dp"
@@ -424,6 +425,7 @@
             />
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/btn_logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
