@@ -22,6 +22,7 @@ import com.example.energy.data.model.MarkerModel
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.DialogLoginBinding
 import com.example.energy.databinding.FragmentMapBinding
+import com.example.energy.presentation.util.EnergyUtils
 import com.example.energy.presentation.util.MapLocation
 import com.example.energy.presentation.view.MainActivity
 import com.example.energy.presentation.view.base.BaseFragment
@@ -79,7 +80,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
 
         //sos 기능
         binding.cvSos.setOnClickListener {
-            showSOSDialog()
+            EnergyUtils.showSOSDialog(requireContext())
         }
 
         //현재 위치 재조정
@@ -207,39 +208,5 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
             }
         }
     }
-
-    private fun showSOSDialog() {
-        val dialogBinding = DialogCustomBinding.inflate(layoutInflater)
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setView(dialogBinding.root)
-
-        val dialog = builder.create()
-        dialog.setOnShowListener {
-            val window = dialog.window
-            val layoutParams = window?.attributes
-
-            // 디바이스 너비의 70%로 설정
-            val width = (resources.displayMetrics.widthPixels * 0.7).toInt()
-
-            //radius 적용
-            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-            layoutParams?.width = width
-            window?.attributes = layoutParams
-        }
-        dialog.show()
-
-        dialogBinding.btnDialog.setOnClickListener {
-            var intent = Intent(Intent.ACTION_DIAL)
-            intent.data = Uri.parse("tel:112")
-
-            startActivity(intent)
-            dialog.dismiss()
-        }
-
-        dialogBinding.ivClose.setOnClickListener {
-            dialog.dismiss()
-        }
-    }
-
+    
 }

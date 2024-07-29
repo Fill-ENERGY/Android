@@ -4,6 +4,7 @@ import ResultSearchKeyword
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MapInterface {
@@ -12,4 +13,17 @@ interface MapInterface {
         @Header("Authorization") key: String, // 카카오 API 인증키 [필수]
         @Query("query") query: String // 검색을 원하는 질의어 [필수]
     ): Call<ResultSearchKeyword> // 받아온 정보가 ResultSearchKeyword 클래스의 구조로 담김
+
+    //모든 충전소 정보 조회
+    @GET("/stations/location")
+    fun getAllStation(
+        @Header("Authorization") key: String,
+    ): Call<MapResponse>
+
+    //충전소 개별 조회
+    @GET("/stations/{stationId}")
+    fun getStation(
+        @Header("Authorization") key: String,
+        @Path("stationId") stationId: String,
+    ): Call<MapResponse>
 }

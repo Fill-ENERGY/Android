@@ -93,6 +93,8 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
         //충전소 즐겨찾기
         binding.ivBookmark.setOnClickListener {
             //즐겨찾기 로직 추가
+
+            binding.ivBookmark.setImageResource(R.drawable.iv_bookmark_fill)
         }
 
         //충전소 길안내
