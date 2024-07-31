@@ -2,16 +2,21 @@ package com.example.energy.data.repository.auth
 
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface AuthInterface {
-    //회원가입
-//    @POST("/")
-//    fun signUp(@Body body: AuthBody): Call<AuthResponse>
-//
+    //카카오 로그인
+    @POST("/")
+    fun kakaoLogin(
+        @Header("Authorization") accessToken: String,
+    ): Call<AuthResponse>
+
     //회원탈퇴
-//    @POST("/")
-//    fun withdraw(@Body body: AuthBody): Call<AuthResponse>
+    @DELETE("/")
+    fun withdraw(
+    ): Call<AuthResponse>
 
 
 }
