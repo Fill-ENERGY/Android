@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+
+    <FrameLayout
+        android:id="@+id/notification_userimage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/notification_user_image1"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_gravity="start|top"
+            android:scaleType="centerCrop"
+            android:src="@drawable/userimage" />
+
+        <ImageView
+            android:id="@+id/notification_user_image2"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:layout_gravity="end|bottom"
+            android:layout_marginStart="20dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/userimage" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/notification_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="김한주"
+        style="@style/Body1"
+        android:textColor="@color/gray_scale8"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/notification_userimage"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/notification_title1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" 님외 "
+        style="@style/Body1"
+        android:textColor="@color/gray_scale8"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toEndOf="@id/notification_user_name"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/notification_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="4명이"
+        style="@style/Body1"
+        android:textColor="@color/gray_scale8"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toEndOf="@id/notification_title1"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/notification_title2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" 회원님의 게시글을 좋아합니다"
+        style="@style/Body1"
+        android:textColor="@color/gray_scale8"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toEndOf="@id/notification_num"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/notification_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2분 전"
+        style="@style/Body2"
+        android:textColor="@color/gray_scale5"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toEndOf="@id/notification_userimage"
+        app:layout_constraintTop_toBottomOf="@id/notification_user_name"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

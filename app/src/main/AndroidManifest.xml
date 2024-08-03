@@ -52,6 +52,9 @@
             android:name=".presentation.view.community.CommunityDetailActivity" />
 
         <activity
+            android:name=".presentation.view.community.NotificationActivity" />
+
+        <activity
             android:name=".presentation.view.login.LoginActivity"
             />
         <activity
