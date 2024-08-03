@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.BuildConfig
+import com.example.energy.R
 import com.example.energy.data.repository.map.MapInterface
 import com.example.energy.data.repository.map.search.SearchData
 import com.example.energy.databinding.ActivitySearchBinding
@@ -89,13 +90,28 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
             override fun onItemClick(searchData: SearchData) {
                 // 아이템을 최근 검색어 리스트에 추가
                 recentSearchAdapter.addItem(searchData)
+                //데이터 전달
+                val bundle = Bundle().apply {
+                    putDouble("latitude", searchData.y)
+                    putDouble("longitude", searchData.x)
+                }
+
+                // MapFragment 인스턴스 생성
+                val mapFragment = MapFragment().apply {
+                    arguments = bundle
+                }
+
+                //search result fragment로 이동
+                supportFragmentManager.beginTransaction().replace(R.id.search_activity, SearchResultFragment()).commit()
+
             }
-        })
+        }
+        )
 
         binding.rvRecentList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recentSearchAdapter.setItemClickListener(object : RecentSearchAdapter.OnItemClickListener {
             override fun onItemClick(searchData: SearchData) {
-                TODO("Not yet implemented")
+                //지도로 이동해서 위치 보여주기
             }
 
             override fun onRemoveCurrentSearch(position: Int) {

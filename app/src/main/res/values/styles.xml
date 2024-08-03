@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!--TabLayout item 디자인-->
+
+    <style name="TabTheme">
+        <item name="colorPrimary">@color/gray_scale8</item>                                <!-- 배경 -->
+        <item name="textAppearanceBody1">@font/pretendard_semibold</item>
+
+
+        <item name="android:textColorPrimary">@color/gray_scale8</item>       <!-- 탭바 선택된 텍스트 -->
+        <item name="android:textColorSecondary">@color/gray_scale7</item>     <!-- 탭바 텍스트 -->
+
+
+    </style>
+
+</resources>

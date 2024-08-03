@@ -9,6 +9,7 @@
     android:layout_height="wrap_content">
 
     <TextView
+        style="@style/Title1"
         android:id="@+id/tv_marker_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,6 +22,7 @@
         />
 
     <TextView
+        style="@style/Body4"
         android:id="@+id/tv_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,7 +45,7 @@
         />
     <TextView
         android:id="@+id/tv_star"
-        style="@style/Body3"
+        style="@style/Body4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="4.41(15)"
@@ -65,7 +67,7 @@
 
     <TextView
         android:id="@+id/tv_time"
-        style="@style/Body3"
+        style="@style/Body4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="(평일) 0:00 ~ 24:00"
@@ -87,13 +89,12 @@
         />
 
     <TextView
+        style="@style/Body3"
         android:id="@+id/tv_call"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="6dp"
         android:textColor="@color/gray_scale8"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_call"
         app:layout_constraintStart_toStartOf="@id/iv_call"
         app:layout_constraintEnd_toEndOf="@id/iv_call"
@@ -110,10 +111,11 @@
         />
 
     <TextView
+        style="@style/Body3"
         android:id="@+id/tv_bookmark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="6dp"
         android:textColor="@color/gray_scale8"
         app:layout_constraintBottom_toBottomOf="@id/tv_call"
         app:layout_constraintTop_toBottomOf="@id/iv_bookmark"
@@ -132,10 +134,11 @@
         />
 
     <TextView
+        style="@style/Body3"
         android:id="@+id/tv_guide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="6dp"
         android:textColor="@color/gray_scale8"
         app:layout_constraintBottom_toBottomOf="@id/tv_call"
         app:layout_constraintTop_toBottomOf="@id/iv_guide"
@@ -155,15 +158,24 @@
         />
 
     <TextView
+        style="@style/Body3"
         android:id="@+id/tv_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/gray_scale8"
+        android:layout_marginTop="6dp"
         app:layout_constraintBottom_toBottomOf="@id/tv_call"
         app:layout_constraintTop_toBottomOf="@id/iv_share"
         app:layout_constraintStart_toStartOf="@id/iv_share"
         app:layout_constraintEnd_toEndOf="@id/iv_share"
         android:text="공유"/>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="26dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_call" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

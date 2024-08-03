@@ -5,6 +5,7 @@
     android:id="@+id/ListComplaintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".presentation.view.list.ListComplaintFragment">
 
     <!--    관리기관명-->
@@ -21,7 +22,7 @@
 
     <TextView
         android:id="@+id/tv_manage_title"
-        style="@style/Body3"
+        style="@style/Body4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="관리기관명"
@@ -33,6 +34,7 @@
         />
 
     <TextView
+        style="@style/Body3"
         android:id="@+id/tv_manage_institution"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,6 +45,7 @@
         app:layout_constraintTop_toTopOf="@id/tv_manage_title" />
 
     <TextView
+        style="@style/Body4"
         android:id="@+id/tv_manage_copy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -65,7 +68,7 @@
 
     <TextView
         android:id="@+id/tv_number_title"
-        style="@style/Body3"
+        style="@style/Body4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="번호"
@@ -75,6 +78,7 @@
         app:layout_constraintStart_toStartOf="@id/tv_manage_title" />
 
     <TextView
+        style="@style/Body3"
         android:id="@+id/tv_number_institution"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -85,6 +89,7 @@
         app:layout_constraintTop_toTopOf="@id/tv_number_title" />
 
     <TextView
+        style="@style/Body4"
         android:id="@+id/tv_number_copy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -104,6 +109,7 @@
         android:layout_marginBottom="12dp"
         android:background="@drawable/button_style"
         android:textColor="@color/white"
+        style="@style/Body1"
         app:layout_constraintTop_toBottomOf="@id/tv_number_title"
         android:layout_marginTop="44dp" />
 

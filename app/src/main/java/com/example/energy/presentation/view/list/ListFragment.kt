@@ -1,11 +1,17 @@
 package com.example.energy.presentation.view.list
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
+import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.FragmentListBinding
 import com.example.energy.presentation.view.base.BaseFragment
 
@@ -34,12 +40,58 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
                 putExtra("time", selectedItem.time)
             }
             startActivity(intent)
+
         }
 
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = listadapter
             addItemDecoration(CustomDividerItemDecoration(context))
+        }
+
+
+        //sos 기능
+        binding.cvSos.setOnClickListener {
+            showSOSDialog()
+        }
+
+
+    }
+
+
+
+
+    private fun showSOSDialog() {
+        val dialogBinding = DialogCustomBinding.inflate(layoutInflater)
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setView(dialogBinding.root)
+
+        val dialog = builder.create()
+        dialog.setOnShowListener {
+            val window = dialog.window
+            val layoutParams = window?.attributes
+
+            // 디바이스 너비의 70%로 설정
+            val width = (resources.displayMetrics.widthPixels * 0.7).toInt()
+
+            //radius 적용
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            layoutParams?.width = width
+            window?.attributes = layoutParams
+        }
+        dialog.show()
+
+        dialogBinding.btnDialog.setOnClickListener {
+            var intent = Intent(Intent.ACTION_DIAL)
+            intent.data = Uri.parse("tel:112")
+
+            startActivity(intent)
+            dialog.dismiss()
+        }
+
+        dialogBinding.ivClose.setOnClickListener {
+            dialog.dismiss()
         }
     }
 }

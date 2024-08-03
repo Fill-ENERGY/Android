@@ -10,8 +10,27 @@
         android:name="com.example.energy.presentation.view.map.MapFragment"
         android:label="MapFragment"
         tools:layout="@layout/fragment_map" >
-
+        <action
+            android:id="@+id/action_mapFragment_to_searchFragment"
+            app:destination="@id/SearchFragment" />
+        <action
+            android:id="@+id/action_MapFragment_to_searchResultFragment"
+            app:destination="@id/searchResultFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/SearchFragment"
+        android:name="com.example.energy.presentation.view.map.SearchFragment"
+        android:label="SearchFragment"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_searchFragment_to_mapFragment"
+            app:destination="@id/MapFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/searchResultFragment"
+        android:name="com.example.energy.presentation.view.map.SearchResultFragment"
+        android:label="fragment_search_result"
+        tools:layout="@layout/fragment_search_result" />
 
 
 </navigation>

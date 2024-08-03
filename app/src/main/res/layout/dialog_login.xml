@@ -18,22 +18,24 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/iv_sos"
+        android:src="@drawable/iv_logo"
         android:scaleType="center"
         android:background="@color/white"
         />
 
     <TextView
+        style="@style/Title1"
         android:id="@+id/tv_login_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/login_title"
-        android:textColor="@color/red"
+        android:textColor="@color/gray_scale8"
         android:gravity="center"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="6dp"/>
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="10dp"/>
 
     <TextView
+        style="@style/Body4"
         android:id="@+id/tv_login_Subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,9 +51,10 @@
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
         android:layout_marginBottom="25dp"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="26dp" />
 
     <TextView
+        style="@style/Body4"
         android:id="@+id/tv_login_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

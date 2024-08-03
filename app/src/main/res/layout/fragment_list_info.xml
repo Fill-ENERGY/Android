@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.view.list.ListInfoFragment">
+
+
+
+
+    <ImageView
+        android:layout_width="320dp"
+        android:layout_height="186dp"
+        android:src="@drawable/ic_star"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"/>
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="218dp">
+
+        <ImageView
+            android:id="@+id/location"
+            android:layout_width="24dp"
+            android:layout_height="15dp"
+            android:src="@drawable/ic_location"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="14dp" />
+
+        <TextView
+            android:id="@+id/locationtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/location"
+            android:layout_marginStart="3dp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
+            android:text="도로명" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="서울 서대문구 연희로 248 1층"
+            android:layout_marginStart="92dp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8" />
+
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/location"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="25dp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
+            android:text="지번" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="연희동 168-6"
+            android:layout_marginTop="25dp"
+            android:layout_marginStart="92dp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8" />
+
+    </RelativeLayout>
+
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="279dp">
+
+        <ImageView
+            android:id="@+id/time"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/ic_time"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="21dp" />
+
+        <TextView
+            android:id="@+id/timetext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/time"
+            android:layout_marginStart="8dp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
+            android:text="평일" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0:00 ~ 24:00"
+            android:layout_marginStart="92dp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8" />
+
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/time"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="25dp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
+            android:text="토요일" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="25dp"
+            android:layout_marginStart="92dp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
+            android:text="0:00 ~ 24:00"/>
+
+
+
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/time"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="50dp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
+            android:text="공휴일" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="92dp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
+            android:text="0:00 ~ 24:00"/>
+
+    </RelativeLayout>
+
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="363dp">
+
+        <ImageView
+            android:id="@+id/call"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/ic_call"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="21dp" />
+
+        <TextView
+            android:id="@+id/calltext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/call"
+            android:layout_marginStart="8dp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
+            android:text="번호" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="02-879-4317"
+            android:layout_marginStart="92dp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8" />
+
+
+
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="399dp">
+
+        <ImageView
+            android:id="@+id/use"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/ic_userable"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="21dp" />
+
+        <TextView
+            android:id="@+id/usetext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/use"
+            android:layout_marginStart="8dp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
+            android:text="동시 가능 사용대 수" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2"
+            android:layout_marginStart="152dp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8" />
+
+
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="435dp"
+        android:layout_marginBottom="38dp">
+
+        <ImageView
+            android:id="@+id/push"
+            android:layout_width="12dp"
+            android:layout_height="13dp"
+            android:src="@drawable/ic_air"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="21dp" />
+
+        <TextView
+            android:id="@+id/pushtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/push"
+            android:layout_marginStart="8dp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
+            android:text="공기압주입 가능 여부" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="151dp"
+            style="@style/Body3"
+            android:textColor="#FF4C13"
+            android:text="N"/>
+
+
+    </RelativeLayout>
+
+
+</FrameLayout>

@@ -12,6 +12,10 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
+    <queries>
+        <package android:name="net.daum.android.map" />
+    </queries>
+
     <application
         android:name=".EnergyApp"
         android:allowBackup="true"
@@ -42,6 +46,11 @@
         <activity
             android:name=".presentation.view.community.CommunityWritingActivity"
             android:exported="true" >
+            android:name=".presentation.view.mypage.BlockActivity"
+            android:exported="false" />
+        <activity
+            android:name=".presentation.view.SplashActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -57,6 +66,13 @@
         <activity
             android:name=".presentation.view.login.LoginActivity"
             />
+        <activity android:name=".presentation.view.MainActivity" />
+        <activity android:name=".presentation.view.map.SearchActivity" />
+        <activity android:name=".presentation.view.list.ListInformationActivity" />
+        <activity android:name=".presentation.view.note.NoteLiveChatActivity" />
+        <activity android:name=".presentation.view.note.NoteUserProfileActivity" />
+        <activity android:name=".presentation.view.community.CommunityWritingActivity" />
+        <activity android:name=".presentation.view.login.LoginActivity" />
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">

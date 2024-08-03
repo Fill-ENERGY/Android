@@ -10,18 +10,22 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.example.energy.R
 import com.example.energy.databinding.FragmentMypageBinding
+import com.example.energy.presentation.util.EnergyUtils
 import com.example.energy.presentation.view.base.BaseFragment
 import com.example.energy.presentation.view.login.LoginActivity
 import com.kakao.sdk.user.UserApiClient
 
 class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBinding.inflate(it)}) {
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setToolBar()
+
         setUserInfo()
 
-        binding.tvLogout.setOnClickListener {
+        binding.btnLogout.setOnClickListener {
             // 로그아웃
             UserApiClient.instance.logout { error ->
                 if (error != null) {
@@ -30,13 +34,65 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
                 else {
                     Log.i("로그아웃", "로그아웃 성공. SDK에서 토큰 삭제됨")
                     //남아있는 스택 지우며 이동
+                    showToast("로그아웃에 성공했습니다.")
                     activity?.finishAffinity()
                     startActivity(Intent(activity, LoginActivity::class.java))
                 }
             }
         }
 
+        UserApiClient.instance.accessTokenInfo{ token, error ->
+            if (error != null) {
+                //로그아웃 된 상태라면
+                // 로그인 버튼 활성화
+                binding.btnNeedLogin.visibility = View.VISIBLE
+                // 프로필 정보 버튼 비활성화
+                binding.tvNickname.visibility = View.GONE
+                binding.tvProfileEdit.visibility = View.GONE
+                binding.ivProfileViewMore.visibility = View.GONE
+            } else if (token != null) {
+                // 로그인이 된 상태라면
+                // 로그인 버튼 비활성화
+                binding.btnNeedLogin.visibility = View.GONE
+                // 프로필 정보 버튼 활성화
+                binding.tvNickname.visibility = View.VISIBLE
+                binding.tvProfileEdit.visibility = View.VISIBLE
+                binding.ivProfileViewMore.visibility = View.VISIBLE
+                // 로그아웃 버튼 활성화
+                binding.divide3.visibility = View.VISIBLE
+                binding.btnLogout.visibility = View.VISIBLE
+            }
+        }
 
+
+        binding.btnNeedLogin.setOnClickListener {
+            //로그인
+            startActivity(Intent(activity, LoginActivity::class.java))
+        }
+
+    }
+
+    private fun setToolBar() {
+        binding.toolbar.inflateMenu(R.menu.toolbar_menu_mypage)
+        binding.toolbar.setTitle(R.string.mypage)
+        binding.toolbar.setTitleTextAppearance(requireContext(), R.style.Title1)
+        binding.toolbar.setTitleTextColor(resources.getColor(R.color.gray_scale8))
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.appbar_notification -> {
+                    showToast("notification")
+                    startActivity(Intent(activity, BlockActivity::class.java))
+                    true
+                }
+
+                R.id.appbar_sos -> {
+                    EnergyUtils.showSOSDialog(requireContext())
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
     private fun setUserInfo() {
@@ -59,5 +115,4 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
             }
         }
     }
-
 }
