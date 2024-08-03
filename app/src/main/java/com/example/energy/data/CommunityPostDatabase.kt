@@ -12,7 +12,7 @@ import com.example.energy.data.repository.community.CommunityPostDao
 import com.example.energy.data.repository.community.UriListConverter
 import com.example.energy.data.repository.community.WritingCommunityImage
 
-@Database(entities = [CommunityPost::class, Comment::class], version = 5)
+@Database(entities = [CommunityPost::class, Comment::class], version = 7)
 @TypeConverters(UriListConverter::class)
 abstract class CommunityPostDatabase : RoomDatabase() {
 

@@ -11,6 +11,8 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.energy.R
+import com.example.energy.data.CommunityPostDatabase
 import com.example.energy.data.repository.community.CommunityPost
 import com.example.energy.databinding.ItemCommunityFeedBinding
 
@@ -55,6 +57,8 @@ class PostCommunityRVAdapter (private var postInfo: List<CommunityPost>): Recycl
             binding.itemCommunityPostLikeNum.text = postInfo.likes
             binding.itemCommunityPostCommentNum.text = postInfo.comments
             binding.itemCommunityPostCategoryView.setImageResource(postInfo.category!!)
+            // 좋아요 아이콘 설정
+            select(postInfo.isLiked)
 
             // 이미지 RecyclerView 설정
             if(postInfo.imageUrl.isNotEmpty()){
@@ -89,6 +93,20 @@ class PostCommunityRVAdapter (private var postInfo: List<CommunityPost>): Recycl
                 binding.itemCommunityPostCategoryHelp.visibility = View.VISIBLE
             } else{
                 binding.itemCommunityPostCategoryHelp.visibility = View.GONE
+            }
+
+            // 좋아요 아이콘 클릭 리스너
+            binding.itemCommunityPostLikeIcon.setOnClickListener {
+                postInfo.isLiked = !postInfo.isLiked
+                select(postInfo.isLiked)
+            }
+        }
+
+        fun select(isLike: Boolean) {
+            if (isLike) { // 좋아요 눌렀을 때의 반응
+                binding.itemCommunityPostLikeIcon.setImageResource(R.drawable.icon_like)
+            } else { // 누르지 않았을 때의 반응
+                binding.itemCommunityPostLikeIcon.setImageResource(R.drawable.icon_unlike)
             }
         }
     }

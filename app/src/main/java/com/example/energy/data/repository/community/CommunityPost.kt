@@ -19,4 +19,5 @@ data class CommunityPost(
 //    var imageUrl: List<String> = emptyList(),
     var likes: String? = "",
     var comments: String? = "",
+    var isLiked: Boolean = false, // 좋아요 상태
 )

@@ -69,6 +69,11 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
                     binding.communityDetailLikeNum.text = postInfo.likes
                     binding.communityDetailCommentNum.text = postInfo.comments
                     binding.communityDetailCategoryTitle.text = postInfo.categoryString
+                    if (postInfo.isLiked) { // true일 때
+                        binding.communityDetailLikeIcon.setImageResource(R.drawable.icon_like)
+                    } else { // false일 때
+                        binding.communityDetailLikeIcon.setImageResource(R.drawable.icon_unlike)
+                    }
                     Log.d("imageUrl2", postInfo.imageUrl.toString())
 
                     // 이미지 RecyclerView 설정
