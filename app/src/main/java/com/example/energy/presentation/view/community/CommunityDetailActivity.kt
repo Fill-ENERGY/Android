@@ -13,10 +13,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
+import com.example.energy.R
 import com.example.energy.data.CommunityPostDatabase
 import com.example.energy.data.repository.community.Comment
 import com.example.energy.data.repository.community.CommunityPost
 import com.example.energy.databinding.ActivityCommunityDetailBinding
+import com.example.energy.databinding.DialogCommunityUserSeeMoreBinding
+import com.example.energy.databinding.DialogCommunityWriterSeeMoreBinding
+import com.example.energy.databinding.DialogHelpStatusBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,6 +35,8 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
     private lateinit var dataList: ArrayList<Comment>
     private lateinit var commentAdapter: ItemCommentAdapter
     private var parentCommentId: Int = -1 // 자식 댓글의 부모 댓글 ID
+    private var writerStatus: String = "" //기본 값
+    private var status : String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,12 +51,6 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
         commentAdapter.onItemClickListener = this
         binding.communityDetailCommentView.adapter = commentAdapter
         binding.communityDetailCommentView.layoutManager = LinearLayoutManager(this)
-
-//        // Room 데이터베이스 인스턴스 생성
-//        db = Room.databaseBuilder(
-//            applicationContext,
-//            CommunityPostDatabase::class.java, "database-name"
-//        ).allowMainThreadQueries().build()
 
         // 인텐트로부터 전달받은 postId 가져옴. 기본값은 -1로 설정하여 예외처리
         val postId = intent.getIntExtra("postId", -1)
@@ -84,6 +85,29 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
                         Log.d("imageUrl", postInfo.imageUrl.toString())
                         binding.communityDetailImage.adapter = imageAdapter
                     }
+
+                    // 도와줘요 카테고리 & (작성자일 경우 추가 해야됨)
+                    if(postInfo.categoryString == "도와줘요"){
+                        binding.communityDetailChattingBtn.visibility = View.GONE
+                        binding.communityDetailWriterRequestBtn.visibility = View.VISIBLE
+
+                        // 더보기 버튼
+                        binding.communityDetailSeeMore.setOnClickListener {
+                            showSeeMoreWriterDialog()
+                        }
+                    }
+
+                    // 도와줘요 카테고리인 경우 & (일반 사용자일 경우 추가 해야됨)
+                    if(postInfo.categoryString == "도와줘요"){
+                        binding.communityDetailHelpCategory.visibility = View.VISIBLE
+
+//                        // 더보기 버튼
+//                        binding.communityDetailSeeMore.setOnClickListener {
+//                            showSeeMoreUserDialog()
+//                        }
+                    } else{
+                        binding.communityDetailHelpCategory.visibility = View.GONE
+                    }
                 }
             }.start()
         }
@@ -99,6 +123,30 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
         // 뒤로가기 버튼
         binding.communityDetailBackIcon.setOnClickListener {
             finish() //현재 Activity 종료
+        }
+
+        // 작성자의 요청 상태 결정 Dialog
+        binding.communityDetailWriterRequestBtn.setOnClickListener {
+            showHelpStatusDialog(object : HelpStatusCallback {
+                override fun onStatusSelected(status: String) {
+                    writerStatus = status
+                    Log.d("writerStatus", writerStatus)
+                    when (writerStatus) {
+                        "해결 완료" -> {
+                            binding.communityDetailWriterRequestBtn.setImageResource(R.drawable.button_resolved)
+                            binding.communityDetailHelpCategory.setImageResource(R.drawable.icon_tag_resolved)
+                        }
+                        "연락 중" -> {
+                            binding.communityDetailWriterRequestBtn.setImageResource(R.drawable.button_contacting)
+                            binding.communityDetailHelpCategory.setImageResource(R.drawable.icon_tag_contacting)
+                        }
+                        else -> {
+                            binding.communityDetailWriterRequestBtn.setImageResource(R.drawable.button_requesting)
+                            binding.communityDetailHelpCategory.setImageResource(R.drawable.icon_tag_requesting)
+                        }
+                    }
+                }
+            })
         }
 
         // 댓글 전송 버튼
@@ -179,5 +227,81 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
                 InputMethodManager.HIDE_NOT_ALWAYS
             )
         }
+    }
+
+    interface HelpStatusCallback { //콜백 함수
+        fun onStatusSelected(status: String)
+    }
+
+    private fun showHelpStatusDialog(callback: HelpStatusCallback) { // 도와줘요 요청 상태 Dialog
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val binding = DialogHelpStatusBinding.inflate(layoutInflater)
+        bottomSheetDialog.setContentView(binding.root)
+
+        //요청 중
+        binding.dialogHelpRequest.setOnClickListener {
+            binding.dialogHelpRequest.setBackgroundResource((R.drawable.select_help_status))
+            binding.dialogHelpRequest.setTextColor(getColor(R.color.white))
+
+            binding.dialogHelpContacting.setBackgroundResource((R.drawable.unselect_help_status))
+            binding.dialogHelpContacting.setTextColor(getColor(R.color.gray_scale6))
+
+            binding.dialogHelpResolved.setBackgroundResource((R.drawable.unselect_help_status))
+            binding.dialogHelpResolved.setTextColor(getColor(R.color.gray_scale6))
+
+            callback.onStatusSelected("요청 중")
+
+            bottomSheetDialog.dismiss()
+        }
+
+        //연락 중
+        binding.dialogHelpContacting.setOnClickListener {
+            binding.dialogHelpContacting.setBackgroundResource((R.drawable.select_help_status))
+            binding.dialogHelpContacting.setTextColor(getColor(R.color.white))
+
+            binding.dialogHelpRequest.setBackgroundResource((R.drawable.unselect_help_status))
+            binding.dialogHelpRequest.setTextColor(getColor(R.color.gray_scale6))
+
+            binding.dialogHelpResolved.setBackgroundResource((R.drawable.unselect_help_status))
+            binding.dialogHelpResolved.setTextColor(getColor(R.color.gray_scale6))
+
+            callback.onStatusSelected("연락 중")
+
+            bottomSheetDialog.dismiss()
+        }
+
+        //해결 완료
+        binding.dialogHelpResolved.setOnClickListener {
+            binding.dialogHelpResolved.setBackgroundResource((R.drawable.select_help_status))
+            binding.dialogHelpResolved.setTextColor(getColor(R.color.white))
+
+            binding.dialogHelpRequest.setBackgroundResource((R.drawable.unselect_help_status))
+            binding.dialogHelpRequest.setTextColor(getColor(R.color.gray_scale6))
+
+            binding.dialogHelpContacting.setBackgroundResource((R.drawable.unselect_help_status))
+            binding.dialogHelpContacting.setTextColor(getColor(R.color.gray_scale6))
+
+            callback.onStatusSelected("해결 완료")
+
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.show()
+    }
+
+    private fun showSeeMoreWriterDialog() { // 작성자 더보기 Dialog
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val binding = DialogCommunityWriterSeeMoreBinding.inflate(layoutInflater)
+        bottomSheetDialog.setContentView(binding.root)
+
+        bottomSheetDialog.show()
+    }
+
+    private fun showSeeMoreUserDialog() { // 일반 사용자 더보기 Dialog
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val binding = DialogCommunityUserSeeMoreBinding.inflate(layoutInflater)
+        bottomSheetDialog.setContentView(binding.root)
+
+        bottomSheetDialog.show()
     }
 }

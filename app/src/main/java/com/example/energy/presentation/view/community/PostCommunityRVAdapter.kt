@@ -57,10 +57,7 @@ class PostCommunityRVAdapter (private var postInfo: List<CommunityPost>): Recycl
             binding.itemCommunityPostCategoryView.setImageResource(postInfo.category!!)
 
             // 이미지 RecyclerView 설정
-            if(postInfo.imageUrl.isEmpty()){
-                // 이미지가 없는 경우 RecyclerView 숨기기
-                binding.itemCommunityPostImage.visibility = View.GONE
-            } else{
+            if(postInfo.imageUrl.isNotEmpty()){
                 binding.itemCommunityPostImage.visibility = View.VISIBLE
                 // RecyclerView의 LayoutManager 및 Adapter 설정
                 val layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
@@ -69,6 +66,9 @@ class PostCommunityRVAdapter (private var postInfo: List<CommunityPost>): Recycl
                 val imageAdapter = ItemFeedPhotoAdapter(postInfo.imageUrl)
                 Log.d("imageUrl", postInfo.imageUrl.toString())
                 binding.itemCommunityPostImage.adapter = imageAdapter
+            } else {
+                // 이미지가 없는 경우 RecyclerView 숨기기
+                binding.itemCommunityPostImage.visibility = View.GONE
             }
 
             // 아이템 제목 및 내용 클릭 시 상세 페이지로 이동
@@ -82,6 +82,13 @@ class PostCommunityRVAdapter (private var postInfo: List<CommunityPost>): Recycl
                 val intent = Intent(binding.root.context, CommunityDetailActivity::class.java)
                 intent.putExtra("postId", postInfo.id)
                 binding.root.context.startActivity(intent)
+            }
+
+            // 도와줘요 카테고리일 때만 요청중 icon 보이도록
+            if(postInfo.categoryString == "도와줘요"){
+                binding.itemCommunityPostCategoryHelp.visibility = View.VISIBLE
+            } else{
+                binding.itemCommunityPostCategoryHelp.visibility = View.GONE
             }
         }
     }

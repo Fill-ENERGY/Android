@@ -26,15 +26,6 @@ class CommunityWholeFragment : BaseFragment<FragmentCommunityWholeBinding>({ Fra
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        // community_post에 데이터 리스트 생성
-//        communityDB = CommunityPostDatabase.getInstance(requireContext())!!
-//        postInfo.addAll(communityDB.communityPostDao().getAllPosts())
-//
-//        // RecyclerView 초기화 및 데이터 연결
-//        val postCommunityAdapter = PostCommunityRVAdapter(postInfo)
-//        binding.wholeCommunityPostRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-//        binding.wholeCommunityPostRv.adapter = postCommunityAdapter
-
         // community_post에 데이터 리스트 생성
         communityDB = CommunityPostDatabase.getInstance(requireContext())!!
 

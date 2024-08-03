@@ -25,9 +25,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
 import com.example.energy.data.repository.community.WritingCommunityImage
 import com.example.energy.databinding.ActivityCommunityWritingBinding
-import com.example.energy.databinding.DialogPostCommunitySuccessBinding
 import com.example.energy.data.CommunityPostDatabase
 import com.example.energy.data.repository.community.CommunityPost
+import com.example.energy.databinding.DialogPostCommunityCancelBinding
+import com.example.energy.databinding.DialogPostCommunitySuccessBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -92,7 +93,14 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
 
         // 뒤로가기 버튼
         binding.communityWritingBackIcon.setOnClickListener {
-            finish() // 현재 액티비티 종료
+            if(titleEditText.text.isNullOrEmpty() &&
+                contentEditText.text.isNullOrEmpty() &&
+                !isCategorySelected &&
+                imageList.isEmpty()){
+                finish()
+            } else{
+                showCancelDialog()
+            }
         }
 
         // Spinner Adapter 연결
@@ -212,6 +220,29 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
             // 확인 버튼 클릭 시 수행할 작업
             dialog.dismiss() // 다이얼로그 닫기
             finish()
+        }
+
+        // 다이얼로그 표시
+        dialog.show()
+    }
+
+    // 취소 확인 Dialog 띄우는 함수
+    private fun showCancelDialog() {
+        val dialog = Dialog(this, R.style.CustomDialog)
+        val binding = DialogPostCommunityCancelBinding.inflate(layoutInflater)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 기존 다이어그램 배경 투명으로 적용(커스텀한 배경이 보이게 하기 위함)
+        dialog.setContentView(binding.root)
+        dialog.setCanceledOnTouchOutside(false) // 바깥 영역 터치해도 닫힘 X
+
+        binding.exitButton.setOnClickListener {
+            // 나가기 버튼 클릭 시 수행할 작업
+            dialog.dismiss() // 다이얼로그 닫기
+            finish() //액티비티 종료
+        }
+
+        binding.cancelButton.setOnClickListener {
+            // 아니오(취소) 버튼 클릭 시 수행할 작업
+            dialog.dismiss() // 다이얼로그 닫기
         }
 
         // 다이얼로그 표시
