@@ -118,7 +118,7 @@
         <ImageView
             android:id="@+id/community_writing_bt"
             android:layout_width="100dp"
-            android:layout_height="35dp"
+            android:layout_height="45dp"
             android:src="@drawable/writing_community_btn"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
