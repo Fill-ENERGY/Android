@@ -1,14 +1,23 @@
 package com.example.energy.data.repository.community
 
 import android.net.Uri
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 
+
+@Entity(tableName = "community_post")
 data class CommunityPost(
-    val userProfile: Int, //프로필 사진
-    val userName: String, //사용자 이름
-    val title: String, //제목
-    val content: String, //내용
-    val category: List<String>, //카테고리 리스트
-    val imageUrl: List<Uri>, //사진 리스트
-    val likes: String, //좋아요 수
-    val comments: String, //댓글 수
+    @PrimaryKey(autoGenerate = true) var id: Int = 0,
+    var userProfile: Int? = null,
+    var userName: String? = "",
+    var title: String? = "",
+    var content: String? = "",
+    var categoryString: String? = "",
+    var category: Int? = null,
+    @TypeConverters(UriListConverter::class) var imageUrl: List<Uri> = emptyList(),
+//    var imageUrl: List<String> = emptyList(),
+    var likes: String? = "",
+    var comments: String? = "",
+    var isLiked: Boolean = false, // 좋아요 상태
 )

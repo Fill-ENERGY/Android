@@ -9,4 +9,16 @@
     </style>
 
     <style name="Theme.Android" parent="Base.Theme.Android" />
+
+    <style name="SpinnerDivideStyle" parent="android:style/Widget.ListView.DropDown">
+        <item name="android:divider">@color/gray_scale4</item> <!-- divider 색 -->
+        <item name="android:dividerHeight">2dp</item> <!-- divider 높이 -->
+    </style>
+    <style name="SpinnerTheme">
+        <item name="android:dropDownListViewStyle">@style/SpinnerDivideStyle</item>
+    </style>
+
+    <style name="CustomDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
 </resources>

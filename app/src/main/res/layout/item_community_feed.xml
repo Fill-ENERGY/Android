@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:background="@color/gray_scale3"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.95"/>
+        
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/item_community_post_user_profile"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/userimage"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider"/>
+
+        <TextView
+            android:id="@+id/item_community_post_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="사용자 이름"
+            android:textColor="@color/gray_scale8"
+            android:textSize="14sp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@id/item_community_post_user_profile"
+            app:layout_constraintTop_toTopOf="@id/item_community_post_user_profile"
+            app:layout_constraintBottom_toBottomOf="@id/item_community_post_user_profile"/>
+
+        <TextView
+            android:id="@+id/item_community_post_upload_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="몇분 전"
+            android:textColor="@color/gray_scale7"
+            android:textSize="10sp"
+            android:layout_marginEnd="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/item_community_post_user_profile"
+            app:layout_constraintBottom_toBottomOf="@id/item_community_post_user_profile"/>
+
+        <ImageView
+            android:id="@+id/item_community_post_category_view"
+            android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:src="@drawable/tag_help"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/item_community_post_user_profile"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <ImageView
+            android:id="@+id/item_community_post_category_help"
+            android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:src="@drawable/icon_tag_requesting"
+            android:visibility="gone"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/item_community_post_user_profile"
+            app:layout_constraintStart_toEndOf="@id/item_community_post_category_view"/>
+
+        <LinearLayout
+            android:id="@+id/item_community_post_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/item_community_post_category_view"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/item_community_post_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="제목"
+                android:textSize="16sp"
+                android:textColor="@color/gray_scale8" />
+            <TextView
+                android:id="@+id/item_community_post_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="내용"
+                android:textSize="14sp"
+                android:textColor="@color/gray_scale8"
+                android:layout_marginTop="5dp"
+                app:layout_constraintTop_toBottomOf="@id/item_community_post_title"
+                app:layout_constraintStart_toStartOf="parent"/>
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/item_community_post_image"
+            android:layout_width="0dp"
+            android:layout_height="184dp"
+            android:visibility="gone"
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="8dp"
+            tools:listitem="@layout/item_community_feed_photo"
+            app:layout_constraintTop_toBottomOf="@id/item_community_post_container"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <ImageView
+            android:id="@+id/item_community_post_like_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/icon_unlike"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintTop_toBottomOf="@id/item_community_post_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        <TextView
+            android:id="@+id/item_community_post_like_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textColor="@color/gray_scale7"
+            android:textSize="12sp"
+            android:layout_marginStart="5dp"
+            app:layout_constraintTop_toTopOf="@id/item_community_post_like_icon"
+            app:layout_constraintStart_toEndOf="@id/item_community_post_like_icon"
+            app:layout_constraintBottom_toBottomOf="@id/item_community_post_like_icon"/>
+        <TextView
+            android:id="@+id/item_community_post_like_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="좋아요"
+            android:textColor="@color/gray_scale7"
+            android:textSize="12sp"
+            android:layout_marginStart="5dp"
+            app:layout_constraintTop_toTopOf="@id/item_community_post_like_icon"
+            app:layout_constraintStart_toEndOf="@id/item_community_post_like_num"
+            app:layout_constraintBottom_toBottomOf="@id/item_community_post_like_icon"/>
+
+        <ImageView
+            android:id="@+id/item_community_post_comment_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/comment_icon"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintTop_toBottomOf="@id/item_community_post_image"
+            app:layout_constraintStart_toEndOf="@id/item_community_post_like_tv"/>
+        <TextView
+            android:id="@+id/item_community_post_comment_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3"
+            android:textColor="@color/gray_scale7"
+            android:textSize="12sp"
+            android:layout_marginStart="5dp"
+            app:layout_constraintTop_toTopOf="@id/item_community_post_comment_icon"
+            app:layout_constraintStart_toEndOf="@id/item_community_post_comment_icon"
+            app:layout_constraintBottom_toBottomOf="@id/item_community_post_comment_icon"/>
+        <TextView
+            android:id="@+id/item_community_post_comment_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="댓글쓰기"
+            android:textColor="@color/gray_scale7"
+            android:textSize="12sp"
+            android:layout_marginStart="5dp"
+            app:layout_constraintTop_toTopOf="@id/item_community_post_comment_icon"
+            app:layout_constraintStart_toEndOf="@id/item_community_post_comment_num"
+            app:layout_constraintBottom_toBottomOf="@id/item_community_post_comment_icon"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

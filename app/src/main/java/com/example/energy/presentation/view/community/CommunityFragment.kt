@@ -27,5 +27,11 @@ class CommunityFragment : BaseFragment<FragmentCommunityBinding>({ FragmentCommu
         binding.communityWritingBt.setOnClickListener {
             startActivity(Intent(activity, CommunityWritingActivity::class.java))
         }
+
+        // 알림 아이콘 선택시
+        binding.communityNotifyIv.setOnClickListener {
+            val intent = Intent(activity, NotificationActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
