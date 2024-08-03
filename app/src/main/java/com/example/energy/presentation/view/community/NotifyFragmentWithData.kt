@@ -21,7 +21,7 @@ class NotifyFragmentWithData : BaseFragment<FragmentCommunityNotifiWithDataBindi
             add(Notification(2, R.drawable.userimage, "김한주", false))
         }
 
-        // People Adapter와 Datalist 연결
+        // Adapter와 Datalist 연결
         val notificationRVAdapter = NotificationRVAdapter(notifications)
         binding.notificationRecyclerView.adapter = notificationRVAdapter
         binding.notificationRecyclerView.layoutManager =

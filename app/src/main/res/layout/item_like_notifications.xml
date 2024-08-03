@@ -83,12 +83,22 @@
         android:id="@+id/notification_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="2분 전"
+        android:text="오후 6:51"
         style="@style/Body2"
         android:textColor="@color/gray_scale5"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toEndOf="@id/notification_userimage"
         app:layout_constraintTop_toBottomOf="@id/notification_user_name"/>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="@color/gray_scale3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="1"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

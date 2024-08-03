@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.energy.R
 import com.example.energy.data.repository.community.Notification
-import com.example.energy.databinding.ItemSingleNotificationBinding
-import com.example.energy.databinding.ItemMultipleNotificationsBinding
+import com.example.energy.databinding.ItemCommentNotificationBinding
+import com.example.energy.databinding.ItemLikeNotificationsBinding
 
 class NotificationRVAdapter(private var notifications: List<Notification>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -23,10 +23,10 @@ class NotificationRVAdapter(private var notifications: List<Notification>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return if (viewType == TYPE_SINGLE) {
-            val binding = ItemSingleNotificationBinding.inflate(inflater, parent, false)
+            val binding = ItemCommentNotificationBinding.inflate(inflater, parent, false)
             SingleNotificationViewHolder(binding)
         } else {
-            val binding = ItemMultipleNotificationsBinding.inflate(inflater, parent, false)
+            val binding = ItemLikeNotificationsBinding.inflate(inflater, parent, false)
             MultipleNotificationsViewHolder(binding)
         }
     }
@@ -42,21 +42,21 @@ class NotificationRVAdapter(private var notifications: List<Notification>) :
 
     override fun getItemCount(): Int = notifications.size
 
-    class SingleNotificationViewHolder(private val binding: ItemSingleNotificationBinding) :
+    class SingleNotificationViewHolder(private val binding: ItemCommentNotificationBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(notification: Notification) {
-            // 예시로 직접 이미지 리소스를 설정했습니다. 실제로는 URL을 로드하거나 다른 방식으로 설정할 수 있습니다.
+            // 예시 bind
             binding.notificationUserimage.setImageResource(R.drawable.userimage)
             binding.notificationUserName.text = notification.userName
         }
     }
 
-    class MultipleNotificationsViewHolder(private val binding: ItemMultipleNotificationsBinding) :
+    class MultipleNotificationsViewHolder(private val binding: ItemLikeNotificationsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(notification: Notification) {
-            // 예시로 직접 이미지 리소스를 설정했습니다. 실제로는 URL을 로드하거나 다른 방식으로 설정할 수 있습니다.
+            // 예시 bind
             binding.notificationUserImage1.setImageResource(R.drawable.userimage)
             binding.notificationUserImage2.setImageResource(R.drawable.userimage)
             binding.notificationUserName.text = notification.userName
