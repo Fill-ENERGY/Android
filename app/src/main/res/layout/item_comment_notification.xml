@@ -18,7 +18,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintWidth_percent="0.18"
+                app:layout_constraintWidth_percent="0.20"
                 android:background="@color/gray_scale5">
 
                 <ImageView
@@ -27,7 +27,8 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:padding="12dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     android:src="@drawable/icon_alarm_delete"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -38,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:id="@+id/comment_notify">
+            android:id="@+id/notify_view">
 
             <ImageView
                 android:id="@+id/notification_userimage"
@@ -110,7 +111,6 @@
                 app:layout_constraintWidth_percent="1"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

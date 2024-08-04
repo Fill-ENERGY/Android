@@ -18,8 +18,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintWidth_percent="0.18"
-                android:background="@color/gray_scale5">
+                android:background="@color/gray_scale5"
+                app:layout_constraintWidth_percent="0.20">
 
                 <ImageView
                     android:id="@+id/ExitButton"
@@ -27,7 +27,8 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:padding="14dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     android:src="@drawable/icon_alarm_delete"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -37,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:id="@+id/like_notify">
+            android:id="@+id/notify_view">
 
             <FrameLayout
                 android:id="@+id/notification_userimage"

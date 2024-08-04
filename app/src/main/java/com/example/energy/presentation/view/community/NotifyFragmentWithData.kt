@@ -1,10 +1,11 @@
 package com.example.energy.presentation.view.community
 
-import Swipe
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.energy.R
 import com.example.energy.data.repository.community.Notification
 import com.example.energy.databinding.FragmentCommunityNotifiWithDataBinding
@@ -30,8 +31,18 @@ class NotifyFragmentWithData : BaseFragment<FragmentCommunityNotifiWithDataBindi
         binding.notificationRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-        //스와이프 삭제 리사이클러뷰와 연결
-        val itemTouchHelper = ItemTouchHelper(Swipe(notificationRVAdapter))
+        // 리사이클러뷰에 스와이프 기능 달기
+        val swipeHelperCallback = SwipeHelperCallback(notificationRVAdapter).apply {
+            // 스와이프한 뒤 고정시킬 위치 지정
+            setClamp(resources.displayMetrics.widthPixels.toFloat() / 5)    // 1080 / 5 = 216
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeHelperCallback)
         itemTouchHelper.attachToRecyclerView(binding.notificationRecyclerView)
+
+        // 다른 곳 터치 시 기존 선택했던 뷰 닫기
+        binding.notificationRecyclerView.setOnTouchListener { _, _ ->
+            swipeHelperCallback.removePreviousClamp(binding.notificationRecyclerView)
+            false
+        }
     }
 }

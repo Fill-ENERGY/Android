@@ -14,96 +14,81 @@ class NotificationRVAdapter(private val notifications: ArrayList<Notification>) 
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
-        private const val TYPE_SINGLE = 1
-        private const val TYPE_MULTIPLE = 2
+        private const val TYPE_COMMENT = 1
+        private const val TYPE_LIKE = 2
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (notifications[position].isSingle!!) TYPE_SINGLE else TYPE_MULTIPLE
+        return if (notifications[position].isComment!!) TYPE_COMMENT else TYPE_LIKE
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return if (viewType == TYPE_SINGLE) {
+        return if (viewType == TYPE_COMMENT) {
             val binding = ItemCommentNotificationBinding.inflate(inflater, parent, false)
-            SingleNotificationViewHolder(binding)
+            CommentNotificationViewHolder(binding)
         } else {
             val binding = ItemLikeNotificationsBinding.inflate(inflater, parent, false)
-            MultipleNotificationsViewHolder(binding)
+            LikeNotificationsViewHolder(binding)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val notification = notifications[position]
-        if (holder is SingleNotificationViewHolder) {
+        if (holder is CommentNotificationViewHolder) {
             holder.bind(notification)
-        } else if (holder is MultipleNotificationsViewHolder) {
+//            holder.deleteButton.setOnClickListener {
+//                removeData(holder.layoutPosition)
+//            }
+        } else if (holder is LikeNotificationsViewHolder) {
             holder.bind(notification)
+//            holder.deleteButton.setOnClickListener {
+//                removeData(holder.layoutPosition)
+//            }
         }
+
     }
 
     override fun getItemCount(): Int = notifications.size
 
+    // position 위치의 데이터를 삭제 후 어댑터 갱신
     fun removeData(position: Int) {
-        if (position < 0 || position >= notifications.size) return
         notifications.removeAt(position)
         notifyItemRemoved(position)
     }
 
-    inner class SingleNotificationViewHolder(private val binding: ItemCommentNotificationBinding) :
+    inner class CommentNotificationViewHolder(private val binding: ItemCommentNotificationBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            binding.eraseItemView.setOnClickListener {
-                removeData(adapterPosition)
-                Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
-            }
-        }
+        val deleteButton: View = itemView.findViewById(R.id.erase_item_view)
 
         fun bind(notification: Notification) {
             binding.notificationUserimage.setImageResource(R.drawable.userimage)
             binding.notificationUserName.text = notification.userName
-        }
 
-        fun getSwipeView(): View {
-            return binding.root.findViewById(R.id.comment_notify)
-        }
-
-        fun setClamped(isClamped: Boolean) {
-            binding.root.tag = isClamped
-        }
-
-        fun getClamped(): Boolean {
-            return binding.root.tag as? Boolean ?: false
-        }
-    }
-
-    inner class MultipleNotificationsViewHolder(private val binding: ItemLikeNotificationsBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        init {
-            binding.eraseItemView.setOnClickListener {
-                removeData(adapterPosition)
+            // 삭제 텍스트뷰 클릭시 토스트 표시
+            deleteButton.setOnClickListener {
+                removeData(this.layoutPosition)
                 Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    inner class LikeNotificationsViewHolder(private val binding: ItemLikeNotificationsBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        val deleteButton: View = itemView.findViewById(R.id.erase_item_view)
 
         fun bind(notification: Notification) {
             binding.notificationUserImage1.setImageResource(R.drawable.userimage)
             binding.notificationUserImage2.setImageResource(R.drawable.userimage)
             binding.notificationUserName.text = notification.userName
-        }
 
-        fun getSwipeView(): View {
-            return binding.root.findViewById(R.id.like_notify)
-        }
-
-        fun setClamped(isClamped: Boolean) {
-            binding.root.tag = isClamped
-        }
-
-        fun getClamped(): Boolean {
-            return binding.root.tag as? Boolean ?: false
+            // 삭제 텍스트뷰 클릭시 토스트 표시
+            deleteButton.setOnClickListener {
+                removeData(this.layoutPosition)
+                Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }
