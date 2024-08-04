@@ -1,14 +1,16 @@
 package com.example.energy.presentation.view.community
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.energy.R
 import com.example.energy.data.repository.community.Notification
 import com.example.energy.databinding.ItemCommentNotificationBinding
 import com.example.energy.databinding.ItemLikeNotificationsBinding
 
-class NotificationRVAdapter(private var notifications: List<Notification>) :
+class NotificationRVAdapter(private val notifications: ArrayList<Notification>) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -42,24 +44,67 @@ class NotificationRVAdapter(private var notifications: List<Notification>) :
 
     override fun getItemCount(): Int = notifications.size
 
-    class SingleNotificationViewHolder(private val binding: ItemCommentNotificationBinding) :
+    fun removeData(position: Int) {
+        if (position < 0 || position >= notifications.size) return
+        notifications.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    inner class SingleNotificationViewHolder(private val binding: ItemCommentNotificationBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            binding.eraseItemView.setOnClickListener {
+                removeData(adapterPosition)
+                Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         fun bind(notification: Notification) {
-            // 예시 bind
             binding.notificationUserimage.setImageResource(R.drawable.userimage)
             binding.notificationUserName.text = notification.userName
         }
+
+        fun getSwipeView(): View {
+            return binding.root.findViewById(R.id.comment_notify)
+        }
+
+        fun setClamped(isClamped: Boolean) {
+            binding.root.tag = isClamped
+        }
+
+        fun getClamped(): Boolean {
+            return binding.root.tag as? Boolean ?: false
+        }
     }
 
-    class MultipleNotificationsViewHolder(private val binding: ItemLikeNotificationsBinding) :
+    inner class MultipleNotificationsViewHolder(private val binding: ItemLikeNotificationsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            binding.eraseItemView.setOnClickListener {
+                removeData(adapterPosition)
+                Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         fun bind(notification: Notification) {
-            // 예시 bind
             binding.notificationUserImage1.setImageResource(R.drawable.userimage)
             binding.notificationUserImage2.setImageResource(R.drawable.userimage)
             binding.notificationUserName.text = notification.userName
         }
+
+        fun getSwipeView(): View {
+            return binding.root.findViewById(R.id.like_notify)
+        }
+
+        fun setClamped(isClamped: Boolean) {
+            binding.root.tag = isClamped
+        }
+
+        fun getClamped(): Boolean {
+            return binding.root.tag as? Boolean ?: false
+        }
     }
 }
+

@@ -70,7 +70,15 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
                 updateFinishButtonState()
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s.isNullOrEmpty()) {
+                    // Hint 상태일 때의 스타일 지정
+                    titleEditText.setTextAppearance(R.style.Title3)
+                } else {
+                    // 텍스트가 입력되었을 때의 스타일 지정
+                    titleEditText.setTextAppearance(R.style.Title2)
+                }
+            }
         })
 
         // 내용 EditText 변화 listener

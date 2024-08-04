@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="김규리"
-            android:textSize="14sp"
+            style="@style/Body1"
             android:textColor="@color/gray_scale8"
             android:layout_marginStart="6dp"
             app:layout_constraintStart_toEndOf="@id/comment_user_image"
@@ -81,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="comment"
-            android:textSize="14sp"
+            style="@style/Body2"
             android:textColor="@color/gray_scale8"
             android:layout_marginTop="10dp"
             android:layout_marginStart="20dp"
@@ -93,7 +93,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="1분 전"
-            android:textSize="10sp"
+            style="@style/Caption1"
             android:textColor="@color/gray_scale7"
             android:layout_marginEnd="15dp"
             app:layout_constraintEnd_toStartOf="@id/comment_see_more_icon"
@@ -130,7 +130,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintWidth_percent="0.95"/>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
