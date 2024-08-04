@@ -24,6 +24,7 @@ class ItemCommentAdapter(
     interface OnItemClickListener {
         fun addSubComment(comment: Comment)
 //        fun userClick(userInfo: String)
+        fun showDialog(comment: Comment)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemCommentViewHolder {
@@ -79,6 +80,11 @@ class ItemCommentAdapter(
             // 대댓글 작성 버튼
             binding.commentWriteCommentBtn.setOnClickListener {
                 onItemClickListener?.addSubComment(data)
+            }
+
+            // "더 보기" 아이콘 클릭 시 Dialog 띄우기
+            binding.commentSeeMoreIcon.setOnClickListener {
+                onItemClickListener?.showDialog(data)
             }
         }
     }
