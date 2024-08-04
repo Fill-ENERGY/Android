@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:text="정상적으로 등록되었습니다."
             android:textColor="@color/gray_scale8"
-            android:textSize="16sp"
+            style="@style/Title2"
             android:layout_marginTop="30dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"

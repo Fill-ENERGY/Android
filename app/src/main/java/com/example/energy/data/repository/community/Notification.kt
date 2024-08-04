@@ -8,5 +8,5 @@ data class Notification(
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     var userProfile: Int? = null,
     var userName: String? = "",
-    var isSingle: Boolean? = true, // test용
+    var isComment: Boolean? = true, // test용
 )

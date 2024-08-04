@@ -1,5 +1,6 @@
 package com.example.energy.presentation.view.community
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Message
 import android.text.InputType
@@ -18,6 +19,7 @@ import com.example.energy.data.CommunityPostDatabase
 import com.example.energy.data.repository.community.Comment
 import com.example.energy.data.repository.community.CommunityPost
 import com.example.energy.databinding.ActivityCommunityDetailBinding
+import com.example.energy.databinding.DialogCommunityCommentSeeMoreBinding
 import com.example.energy.databinding.DialogCommunityUserSeeMoreBinding
 import com.example.energy.databinding.DialogCommunityWriterSeeMoreBinding
 import com.example.energy.databinding.DialogHelpStatusBinding
@@ -29,7 +31,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemClickListener{
+class CommunityDetailActivity : AppCompatActivity(){
     private lateinit var binding: ActivityCommunityDetailBinding
     private lateinit var communityDB: CommunityPostDatabase
     private lateinit var dataList: ArrayList<Comment>
@@ -48,9 +50,21 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
 
         // 댓글 RecyclerView 연결
         commentAdapter = ItemCommentAdapter(this, dataList)
-        commentAdapter.onItemClickListener = this
         binding.communityDetailCommentView.adapter = commentAdapter
         binding.communityDetailCommentView.layoutManager = LinearLayoutManager(this)
+
+        // Adapter에 리스너 설정
+        commentAdapter.onItemClickListener = object : ItemCommentAdapter.OnItemClickListener {
+            override fun addSubComment(comment: Comment) {
+                // 대댓글 추가 로직 구현
+                // 부모 댓글 ID를 설정하여 자식 댓글을 작성할 준비
+                parentCommentId = comment.commentId
+            }
+
+            override fun showDialog(comment: Comment) {
+                showCommentDialog(comment)
+            }
+        }
 
         // 인텐트로부터 전달받은 postId 가져옴. 기본값은 -1로 설정하여 예외처리
         val postId = intent.getIntExtra("postId", -1)
@@ -206,12 +220,6 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
         }.start()
     }
 
-    // 대댓글 추가 기능
-    override fun addSubComment(comment: Comment) {
-        // 부모 댓글 ID를 설정하여 자식 댓글을 작성할 준비
-        parentCommentId = comment.commentId
-    }
-
     // Comment 업데이트 함수
     private fun updateCommentsList(newComment: Comment) {
 //        val fragmentManager: FragmentManager = supportFragmentManager
@@ -306,6 +314,26 @@ class CommunityDetailActivity : AppCompatActivity(), ItemCommentAdapter.OnItemCl
         val bottomSheetDialog = BottomSheetDialog(this)
         val binding = DialogCommunityUserSeeMoreBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(binding.root)
+
+        bottomSheetDialog.show()
+    }
+
+    private fun showCommentDialog(comment: Comment){ // 댓글 더보기 Dialog
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val binding = DialogCommunityCommentSeeMoreBinding.inflate(layoutInflater)
+        bottomSheetDialog.setContentView(binding.root)
+
+        // 댓글 수정 버튼
+        binding.dialogCommentEdit.setOnClickListener {
+//            val intent = Intent(binding.root.context, CommentEditActivity::class.java)
+//            intent.putExtra("postId", postInfo.id)
+//            binding.root.context.startActivity(intent)
+        }
+
+        // 댓글 삭제 버튼
+        binding.dialogCommentDelete.setOnClickListener {
+
+        }
 
         bottomSheetDialog.show()
     }

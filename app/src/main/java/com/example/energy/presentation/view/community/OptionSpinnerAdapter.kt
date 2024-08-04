@@ -7,7 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
+import com.example.energy.R
 import com.example.energy.databinding.ItemSelectCategoryBinding
+import com.google.android.material.color.MaterialColors.getColor
 
 class OptionSpinnerAdapter(
     context: Context, @LayoutRes private val resId: Int,
@@ -23,6 +26,15 @@ class OptionSpinnerAdapter(
         binding.itemCategoryCheckbox.visibility = View.GONE
         binding.itemCategoryUncheckbox.visibility = View.GONE
         binding.itemCategoryTitle.text = if (selectedPosition == -1) initText else menuList[selectedPosition]
+        if (selectedPosition == -1) {
+            // 아무것도 선택되지 않은 상태
+            binding.itemCategoryTitle.setTextAppearance(R.style.Title3)
+            binding.itemCategoryTitle.setTextColor(ContextCompat.getColor(context, R.color.gray_scale6))
+        } else {
+            // 선택된 아이템 상태
+            binding.itemCategoryTitle.setTextAppearance(R.style.Title2)
+            binding.itemCategoryTitle.setTextColor(ContextCompat.getColor(context, R.color.gray_scale8))
+        }
         return binding.root
     }
 
@@ -30,6 +42,9 @@ class OptionSpinnerAdapter(
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         val binding = ItemSelectCategoryBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         binding.itemCategoryTitle.text = menuList[position]
+
+        binding.itemCategoryTitle.setTextAppearance(R.style.Title3) // 드롭다운 아이템 스타일
+        binding.itemCategoryTitle.setTextColor(ContextCompat.getColor(context, R.color.gray_scale8)) // 드롭다운 아이템 색상
 
         if (position == selectedPosition) { //item이 선택되었을 때
             binding.itemCategoryCheckbox.visibility = View.VISIBLE
