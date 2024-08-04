@@ -11,7 +11,7 @@
         android:title="@string/map" />
     <item
         android:id="@+id/communityFragment"
-        android:icon="@drawable/navitem_cummunity"
+        android:icon="@drawable/navitem_community"
         android:title="@string/community" />
     <item
         android:id="@+id/noteFragment"

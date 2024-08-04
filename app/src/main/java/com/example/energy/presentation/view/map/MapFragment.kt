@@ -22,6 +22,7 @@ import com.example.energy.data.model.MarkerModel
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.DialogLoginBinding
 import com.example.energy.databinding.FragmentMapBinding
+import com.example.energy.presentation.util.EnergyUtils
 import com.example.energy.presentation.util.MapLocation
 import com.example.energy.presentation.view.MainActivity
 import com.example.energy.presentation.view.base.BaseFragment
@@ -38,6 +39,7 @@ import com.kakao.vectormap.label.LabelLayer
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import com.kakao.vectormap.label.LabelTextStyle
 import com.kakao.vectormap.shape.MapPoints
 
 
@@ -79,7 +81,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
 
         //sos 기능
         binding.cvSos.setOnClickListener {
-            showSOSDialog()
+            EnergyUtils.showSOSDialog(requireContext())
         }
 
         //현재 위치 재조정
@@ -151,13 +153,15 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                 var labelManager = kakaoMap.labelManager
                 if (labelManager != null) {
                     var markerStyle =
-                        labelManager.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.iv_marker)))
+                        labelManager.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.iv_marker).setTextStyles(
+                            LabelTextStyle.from(32, R.color.gray_scale8))))
                     var layer = labelManager.layer
                     if (layer != null) {
                         layer.removeAll()
                             val label =
                                 LabelOptions.from(LatLng.from(location.latitude, location.longitude))
-                                    .setStyles(markerStyle);
+                                    .setStyles(markerStyle)
+                                    .setTexts("")
                             label.clickable = true
                             layer.addLabel(label)
 
@@ -175,6 +179,8 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                     mapViewModel.setStationTime("정상영업")
                     mapViewModel.setStationCall("010")
 
+                    //마커 클릭 시 충전소 이름 갱신
+                    //label.changeText("my town")
                     (context as MainActivity).supportFragmentManager.beginTransaction()
                         .replace(R.id.main_frm, SearchResultFragment())
                         .commitAllowingStateLoss()
@@ -207,39 +213,5 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
             }
         }
     }
-
-    private fun showSOSDialog() {
-        val dialogBinding = DialogCustomBinding.inflate(layoutInflater)
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setView(dialogBinding.root)
-
-        val dialog = builder.create()
-        dialog.setOnShowListener {
-            val window = dialog.window
-            val layoutParams = window?.attributes
-
-            // 디바이스 너비의 70%로 설정
-            val width = (resources.displayMetrics.widthPixels * 0.7).toInt()
-
-            //radius 적용
-            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-            layoutParams?.width = width
-            window?.attributes = layoutParams
-        }
-        dialog.show()
-
-        dialogBinding.btnDialog.setOnClickListener {
-            var intent = Intent(Intent.ACTION_DIAL)
-            intent.data = Uri.parse("tel:112")
-
-            startActivity(intent)
-            dialog.dismiss()
-        }
-
-        dialogBinding.ivClose.setOnClickListener {
-            dialog.dismiss()
-        }
-    }
-
+    
 }

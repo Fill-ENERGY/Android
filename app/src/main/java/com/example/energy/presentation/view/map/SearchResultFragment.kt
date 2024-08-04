@@ -2,6 +2,7 @@ package com.example.energy.presentation.view.map
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.PointF
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
@@ -29,6 +30,7 @@ import com.kakao.vectormap.MapView
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import com.kakao.vectormap.label.LabelTextStyle
 
 class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ FragmentSearchResultBinding.inflate(it) }) {
     val mapViewModel by activityViewModels<MapViewModel>()
@@ -93,6 +95,8 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
         //충전소 즐겨찾기
         binding.ivBookmark.setOnClickListener {
             //즐겨찾기 로직 추가
+
+            binding.ivBookmark.setImageResource(R.drawable.iv_bookmark_fill)
         }
 
         //충전소 길안내
@@ -138,14 +142,16 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
                 //내 위치
                 var labelManager = kakaoMap.labelManager
                 if (labelManager != null) {
-                    var markerStyle =
-                        labelManager.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.iv_marker)))
+                    var markerStyle = LabelStyle.from(R.drawable.iv_marker).setTextStyles(
+                        LabelTextStyle.from(32, R.color.gray_scale8))
+                    var styles = labelManager.addLabelStyles(LabelStyles.from(markerStyle))
                     var layer = labelManager.layer
                     if (layer != null) {
                         layer.removeAll()
                         val label =
                             LabelOptions.from(LatLng.from(location.latitude, location.longitude))
-                                .setStyles(markerStyle);
+                                .setStyles(styles)
+                                .setTexts("my town")
                         label.clickable = true
                         layer.addLabel(label)
 
