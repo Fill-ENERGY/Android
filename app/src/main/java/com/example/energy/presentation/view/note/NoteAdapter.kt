@@ -35,8 +35,8 @@ class NoteAdapter(private val noteList: ArrayList<NoteItem>) :
 
 
 
-            // 스와이프-> 채팅 버튼 클릭 시, 채팅 목록 삭제
-            binding.eraseItemView.setOnClickListener {
+            // 스와이프-> 스와이프 영역 클릭 시, 채팅 목록 삭제
+            binding.swipespace.setOnClickListener {
                 removeData(this.layoutPosition)
                 Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
             }
