@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".presentation.view.community.CommunityWritingActivity">
+    tools:context=".presentation.view.community.CommunityWritingActivity"
+    android:id="@+id/activity_community_writing">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,21 +15,21 @@
 
         <ImageView
             android:id="@+id/community_writing_back_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/back_icon"
-            android:layout_marginTop="8dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/ic_back"
             android:layout_marginStart="10dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/divider1"/>
 
         <TextView
             android:id="@+id/community_writing_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="글쓰기"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            style="@style/Title1"
+            android:textColor="@color/gray_scale8"
             android:layout_marginTop="15dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -37,9 +38,8 @@
             android:id="@+id/community_writing_finish_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="완료"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:text="등록"
+            style="@style/Title2"
             android:textColor="@color/gray_scale5"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
@@ -50,33 +50,26 @@
             android:id="@+id/divider1"
             android:layout_width="wrap_content"
             android:layout_height="2dp"
-            android:background="@color/gray_scale4"
+            android:background="@color/gray_scale3"
             android:layout_marginTop="15dp"
             app:layout_constraintTop_toBottomOf="@id/community_writing_name_tv"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <TextView
-            android:id="@+id/community_writing_category_tv"
-            android:layout_width="wrap_content"
+        <Spinner
+            android:id="@+id/community_select_category"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="게시글의 카테고리를 선택해주세요."
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/gray_scale5"
-            android:layout_marginTop="15dp"
-            android:layout_marginStart="20dp"
-            app:layout_constraintTop_toBottomOf="@id/divider1"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <ImageView
-            android:id="@+id/community_writing_category_under_btn"
-            android:layout_width="14dp"
-            android:layout_height="7dp"
-            android:layout_marginRight="20dp"
-            android:src="@drawable/under_vector"
-            app:layout_constraintBottom_toBottomOf="@id/community_writing_category_tv"
+            android:background="@drawable/background_spinner_option"
+            android:overlapAnchor="false"
+            android:popupBackground="@color/white"
+            android:textColor="@color/gray_scale6"
+            style="@style/Title3"
+            android:theme="@style/SpinnerTheme"
+            app:layout_constraintBottom_toBottomOf="@id/divider2"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/community_writing_category_tv" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/divider1" />
 
         <FrameLayout
             android:id="@+id/category_dialog_container"
@@ -85,11 +78,11 @@
             android:visibility="gone"
             android:layout_marginEnd="20dp"
             android:layout_marginTop="10dp"
-            app:layout_constraintTop_toBottomOf="@id/community_writing_category_under_btn"
+            app:layout_constraintTop_toBottomOf="@id/community_select_category"
             app:layout_constraintEnd_toEndOf="parent">
 
             <include
-                layout="@layout/dialog_select_category" />
+                layout="@layout/item_select_category" />
         </FrameLayout>
 
 
@@ -97,9 +90,8 @@
             android:id="@+id/divider2"
             android:layout_width="wrap_content"
             android:layout_height="2dp"
-            android:background="@color/gray_scale4"
-            android:layout_marginTop="15dp"
-            app:layout_constraintTop_toBottomOf="@id/community_writing_category_tv"
+            android:background="@color/gray_scale3"
+            app:layout_constraintTop_toBottomOf="@id/community_select_category"
             app:layout_constraintStart_toStartOf="parent"/>
 
         <EditText
@@ -107,12 +99,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="제목을 작성해 주세요"
+            android:textColorHint="@color/gray_scale6"
             android:background="@android:color/transparent"
             android:inputType="none"
             android:singleLine="true"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/gray_scale5"
+            style="@style/Title3"
+            android:textColor="@color/gray_scale8"
             android:layout_marginTop="15dp"
             android:layout_marginStart="20dp"
             app:layout_constraintTop_toBottomOf="@id/divider2"
@@ -122,7 +114,7 @@
             android:id="@+id/divider3"
             android:layout_width="wrap_content"
             android:layout_height="2dp"
-            android:background="@color/gray_scale4"
+            android:background="@color/gray_scale3"
             android:layout_marginTop="15dp"
             app:layout_constraintTop_toBottomOf="@id/community_writing_title_tv"
             app:layout_constraintStart_toStartOf="parent"/>
@@ -131,7 +123,7 @@
             android:id="@+id/community_writing_image_select"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:src="@drawable/community_image_upload"
+            android:src="@drawable/button_photo"
             android:layout_marginTop="15dp"
             android:layout_marginStart="20dp"
             app:layout_constraintTop_toBottomOf="@id/divider3"
@@ -151,7 +143,7 @@
             android:id="@+id/divider4"
             android:layout_width="wrap_content"
             android:layout_height="2dp"
-            android:background="@color/gray_scale4"
+            android:background="@color/gray_scale3"
             android:layout_marginTop="15dp"
             app:layout_constraintTop_toBottomOf="@id/community_writing_image_select"
             app:layout_constraintStart_toStartOf="parent"/>
@@ -161,8 +153,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="자유롭게 글을 작성해 주세요.(최소 10자 이상)"
+            android:textColorHint="@color/gray_scale6"
             android:background="@android:color/transparent"
+            android:textColor="@color/gray_scale8"
+            style="@style/Body2"
             android:inputType="none"
+            android:imeOptions="actionDone"
             android:layout_marginTop="15dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"

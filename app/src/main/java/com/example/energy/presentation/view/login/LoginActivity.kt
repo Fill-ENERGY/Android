@@ -7,6 +7,7 @@ import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
+import com.example.energy.data.repository.auth.AuthRepository
 import com.example.energy.databinding.ActivityLoginBinding
 import com.example.energy.presentation.view.MainActivity
 import com.example.energy.presentation.view.base.BaseActivity
@@ -32,7 +33,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>({ ActivityLoginBinding.
                     Log.e("로그인테스트", "카카오계정으로 로그인 실패", error)
                 } else if (token != null) {
                     Log.i("로그인테스트", "카카오계정으로 로그인 성공 ${token.accessToken}")
-                    loginSuccess()
+                    loginSuccess(token.accessToken)
                 }
             }
 
@@ -52,7 +53,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>({ ActivityLoginBinding.
                         UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
                     } else if (token != null) {
                         Log.i("로그인테스트", "카카오톡으로 로그인 성공 ${token.accessToken}")
-                        loginSuccess()
+                        loginSuccess(token.accessToken)
                     }
                 }
             } else {
@@ -64,10 +65,25 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>({ ActivityLoginBinding.
     private fun loginFail() {
         showToast("로그인에 실패했습니다.")
     }
-    private fun loginSuccess() {
+    private fun loginSuccess(accessToken: String) {
         showToast("로그인에 성공했습니다.")
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
+        AuthRepository.kakaoLogin(accessToken) {
+            response ->
+            response.let {
+                //통신 성공
+
+                //토큰 저장
+                val sharedPreferences = getSharedPreferences("userToken", MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+
+                editor.putString("accessToken", accessToken)
+                editor.apply()
+
+                //홈으로 이동
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            }
+        }
     }
 
 }

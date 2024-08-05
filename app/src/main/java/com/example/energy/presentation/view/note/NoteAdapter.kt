@@ -3,12 +3,15 @@ package com.example.energy.presentation.view.note
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.energy.databinding.ChatItemBinding
+import java.util.Collections
 
-class NoteAdapter(private val noteList: List<NoteItem>) :
+class NoteAdapter(private val noteList: ArrayList<NoteItem>) :
     RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
+
 
     inner class NoteViewHolder(private val binding: ChatItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -28,6 +31,31 @@ class NoteAdapter(private val noteList: List<NoteItem>) :
                 intent.putExtra("Id",note.userId)
                 ContextCompat.startActivity(itemView.context, intent, null)
             }
+
+
+
+
+            // 스와이프-> 스와이프 영역 클릭 시, 채팅 목록 삭제
+            binding.swipespace.setOnClickListener {
+                removeData(this.layoutPosition)
+                Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
+            }
+
+
+
+
+        }
+
+
+
+        fun setClamped(clamped: Boolean) {
+
+            itemView.tag = clamped
+
+        }
+
+        fun getClamped(): Boolean{
+            return itemView.tag as? Boolean ?: false
         }
     }
 
@@ -35,13 +63,35 @@ class NoteAdapter(private val noteList: List<NoteItem>) :
         val binding = ChatItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return NoteViewHolder(binding)
+
+
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         holder.bind(noteList[position])
 
 
+
+
     }
 
     override fun getItemCount(): Int = noteList.size
+
+
+
+    // 채팅 item 삭제 함수
+    fun removeData(position: Int) {
+        noteList.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+
+
+
+
+
+
+
+
+
 }

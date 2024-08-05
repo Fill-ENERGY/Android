@@ -36,7 +36,8 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/location"
             android:layout_marginStart="3dp"
-            android:textSize="12sp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
             android:text="도로명" />
 
 
@@ -45,7 +46,8 @@
             android:layout_height="wrap_content"
             android:text="서울 서대문구 연희로 248 1층"
             android:layout_marginStart="92dp"
-            android:textSize="12sp" />
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8" />
 
 
         <TextView
@@ -55,7 +57,8 @@
             android:layout_toEndOf="@id/location"
             android:layout_marginStart="3dp"
             android:layout_marginTop="25dp"
-            android:textSize="12sp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
             android:text="지번" />
 
         <TextView
@@ -64,7 +67,8 @@
             android:text="연희동 168-6"
             android:layout_marginTop="25dp"
             android:layout_marginStart="92dp"
-            android:textSize="12sp" />
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8" />
 
     </RelativeLayout>
 
@@ -90,7 +94,8 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/time"
             android:layout_marginStart="8dp"
-            android:textSize="12sp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
             android:text="평일" />
 
 
@@ -99,7 +104,8 @@
             android:layout_height="wrap_content"
             android:text="0:00 ~ 24:00"
             android:layout_marginStart="92dp"
-            android:textSize="12sp" />
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8" />
 
 
         <TextView
@@ -109,7 +115,8 @@
             android:layout_toEndOf="@id/time"
             android:layout_marginStart="8dp"
             android:layout_marginTop="25dp"
-            android:textSize="12sp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
             android:text="토요일" />
 
 
@@ -119,7 +126,8 @@
 
             android:layout_marginTop="25dp"
             android:layout_marginStart="92dp"
-            android:textSize="12sp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
             android:text="0:00 ~ 24:00"/>
 
 
@@ -132,7 +140,8 @@
             android:layout_toEndOf="@id/time"
             android:layout_marginStart="8dp"
             android:layout_marginTop="50dp"
-            android:textSize="12sp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
             android:text="공휴일" />
 
 
@@ -142,7 +151,8 @@
 
             android:layout_marginTop="50dp"
             android:layout_marginStart="92dp"
-            android:textSize="12sp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
             android:text="0:00 ~ 24:00"/>
 
     </RelativeLayout>
@@ -169,7 +179,8 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/call"
             android:layout_marginStart="8dp"
-            android:textSize="12sp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
             android:text="번호" />
 
 
@@ -178,7 +189,8 @@
             android:layout_height="wrap_content"
             android:text="02-879-4317"
             android:layout_marginStart="92dp"
-            android:textSize="12sp" />
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8" />
 
 
 
@@ -205,7 +217,8 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/use"
             android:layout_marginStart="8dp"
-            android:textSize="12sp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
             android:text="동시 가능 사용대 수" />
 
 
@@ -214,7 +227,8 @@
             android:layout_height="wrap_content"
             android:text="2"
             android:layout_marginStart="152dp"
-            android:textSize="12sp" />
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8" />
 
 
     </RelativeLayout>
@@ -223,8 +237,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="435dp">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="435dp"
+        android:layout_marginBottom="38dp">
 
         <ImageView
             android:id="@+id/push"
@@ -240,7 +255,8 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/push"
             android:layout_marginStart="8dp"
-            android:textSize="12sp"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale8"
             android:text="공기압주입 가능 여부" />
 
 
@@ -248,7 +264,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="151dp"
-            android:textSize="12sp"
+            style="@style/Body3"
             android:textColor="#FF4C13"
             android:text="N"/>
 

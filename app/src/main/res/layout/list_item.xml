@@ -10,8 +10,8 @@
         android:id="@+id/location_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="16sp"
+        style="@style/Title2"
+        android:textColor="#222019"
         android:layout_marginStart="20dp"
         android:layout_marginTop="16dp"
         android:text="장소"/>
@@ -27,9 +27,8 @@
             android:id="@+id/distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
             android:text="거리"
-            android:fontFamily="@font/pretendard_regular"
+            style="@style/Body2"
             android:textColor="@color/gray_scale7"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -53,8 +52,7 @@
             android:id="@+id/grade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:fontFamily="@font/pretendard_regular"
+            style="@style/Body2"
             android:textColor="@color/gray_scale7"
             android:text="평점"
             app:layout_constraintTop_toTopOf="parent"
@@ -79,8 +77,7 @@
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:fontFamily="@font/pretendard_regular"
+            style="@style/Body2"
             android:textColor="@color/gray_scale7"
             android:text="시간"
             app:layout_constraintTop_toTopOf="parent"
@@ -94,24 +91,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="18dp">
 
         <ImageView
             android:id="@+id/call_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/list_call"
+            android:src="@drawable/button_phone"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="18dp"
             android:layout_marginBottom="16dp"/>
 
         <ImageView
             android:id="@+id/navi_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/list_navi"
+            android:src="@drawable/button_directions"
             android:layout_marginStart="18dp"
-            android:layout_marginTop="18dp"
             android:layout_marginBottom="16dp"/>
 
     </LinearLayout>
