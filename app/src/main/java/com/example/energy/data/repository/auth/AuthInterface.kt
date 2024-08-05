@@ -18,5 +18,10 @@ interface AuthInterface {
     fun withdraw(
     ): Call<AuthResponse>
 
+    //일반 회원가입
+    @POST("/api/v1/members/signup")
+    fun customSignUp(
+        @Body authSignUpBody : AuthSignUpBody
+    ): Call<AuthSignUpResponse>
 
 }

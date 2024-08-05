@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.example.energy.R
+import com.example.energy.data.repository.auth.AuthRepository
 import com.example.energy.databinding.FragmentMypageBinding
 import com.example.energy.presentation.util.EnergyUtils
 import com.example.energy.presentation.view.base.BaseFragment
@@ -20,6 +21,10 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //커스텀 회원가입 테스트
+        AuthRepository.customSignUp {
+        }
 
         setToolBar()
 

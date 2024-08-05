@@ -3,6 +3,7 @@ package com.example.energy.data.repository.map
 import ResultSearchKeyword
 import android.util.Log
 import com.example.energy.BuildConfig
+import com.example.energy.data.getRetrofit
 import com.example.energy.data.repository.map.search.SearchData
 import retrofit2.Call
 import retrofit2.Callback
@@ -12,12 +13,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MapRepository {
     companion object{
-        //카카오 로그인
+        //지도에 띄울 데이터
         fun getMapModel(accessToken: String, callback: (StationMapModel?)-> Unit){
             val mapService = getRetrofit().create(MapInterface::class.java)
             val call = mapService.getAllStation(accessToken)
 
-            call.enqueue(object : retrofit2.Callback<MapResponse> {
+            call.enqueue(object : Callback<MapResponse> {
                 override fun onResponse(call: Call<MapResponse>, response: Response<MapResponse>
                 ) {
                     if(response.isSuccessful){
