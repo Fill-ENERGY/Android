@@ -53,15 +53,16 @@ class ItemCommentAdapter(
                 binding.itemComment.layoutParams = layoutParams //자식 뷰에 마진을 넣어줌
             }
             binding.commentText.text = data.body
+            binding.commentUserName.text = data.userInfo
 
-            // 댓글 작성 시간 계산
-            val commentTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(data.createTime)
-            val currentTime = Date() //현재 시간
-            if (commentTime != null) {
-                val diffInMillis = currentTime.time - commentTime.time
-                val diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(diffInMillis)
-                binding.commentTimeText.text = if (diffInMinutes < 1) "방금 전" else "${diffInMinutes}분 전"
-            }
+//            // 댓글 작성 시간 계산
+//            val commentTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(data.createTime)
+//            val currentTime = Date() //현재 시간
+//            if (commentTime != null) {
+//                val diffInMillis = currentTime.time - commentTime.time
+//                val diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(diffInMillis)
+//                binding.commentTimeText.text = if (diffInMinutes < 1) "방금 전" else "${diffInMinutes}분 전"
+//            }
 
 //            data.userInfo?.let { user ->
 //                binding.commentUserName.text = user.id
