@@ -12,6 +12,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.example.energy.R
@@ -27,6 +28,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -45,8 +47,10 @@ class CommunityDetailActivity : AppCompatActivity(){
         binding = ActivityCommunityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Initialize dataList
+        // Initialize comment dataList
         dataList = ArrayList()
+        dataList.add(Comment(1, "김한주", "제가 도와드릴 수 있습니다", parentCommentId, "10분 전"))
+        dataList.add(Comment(2, "김규리", "혹시 쪽지로 연락 가능하신가요? 도움 주시면 정말 감사할 것 같습니다...", 0, "10분 전"))
 
         // 댓글 RecyclerView 연결
         commentAdapter = ItemCommentAdapter(this, dataList)
@@ -328,6 +332,7 @@ class CommunityDetailActivity : AppCompatActivity(){
 //            val intent = Intent(binding.root.context, CommentEditActivity::class.java)
 //            intent.putExtra("postId", postInfo.id)
 //            binding.root.context.startActivity(intent)
+            startActivity(Intent(this, CommentEditActivity::class.java))
         }
 
         // 댓글 삭제 버튼

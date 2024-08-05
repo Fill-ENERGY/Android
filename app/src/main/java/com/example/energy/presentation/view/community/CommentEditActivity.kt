@@ -11,5 +11,16 @@ class CommentEditActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         binding = ActivityCommunityCommentEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+        // 뒤로 가기 버튼
+        binding.commentEditBackIcon.setOnClickListener {
+            finish()
+        }
+
+        // 완료 버튼
+        binding.commentEditDone.setOnClickListener {
+            finish()
+        }
     }
 }

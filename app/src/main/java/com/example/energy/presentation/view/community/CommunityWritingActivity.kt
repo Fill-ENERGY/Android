@@ -172,17 +172,36 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
     ) {
         // 결과 코드 OK, 결과값 null 아니면 (이미지를 선택하면..)
         if (it.resultCode == RESULT_OK) {
-            // 멀티 선택은 clip Data
-            if (it.data!!.clipData != null) { // 멀티 이미지
-                val count = it.data!!.clipData!!.itemCount // 선택한 이미지 갯수
-                for (index in 0 until count) {
-                    val imageUri = it.data!!.clipData!!.getItemAt(index).uri // 이미지 담기
-                    addImageToList(imageUri) // 이미지 추가
+            val clipData = it.data?.clipData //멀티 이미지
+            val data = it.data?.data //단일 이미지
+
+            if (clipData != null) { // 멀티 이미지 선택 시
+                val count = clipData.itemCount // 선택한 이미지 갯수
+                if (count > 10) {
+                    Toast.makeText(this, "10장까지 선택할 수 있습니다.", Toast.LENGTH_SHORT).show()
+                } else {
+                    for (index in 0 until count) {
+                        val imageUri = clipData.getItemAt(index).uri // 이미지 담기
+                        addImageToList(imageUri)
+                    }
                 }
-            } else { // 싱글 이미지
-                val imageUri = it.data!!.data
-                addImageToList(imageUri!!)
+            } else if (data != null) { // 단일 이미지 선택 시
+                addImageToList(data)
             }
+
+
+//            // 멀티 선택은 clip Data
+//            if (it.data!!.clipData != null) { // 멀티 이미지
+//                val count = it.data!!.clipData!!.itemCount // 선택한 이미지 갯수
+//                for (index in 0 until count) {
+//                    val imageUri = it.data!!.clipData!!.getItemAt(index).uri // 이미지 담기
+//                    addImageToList(imageUri) // 이미지 추가
+//                }
+//            } else { // 싱글 이미지
+//                val imageUri = it.data!!.data
+//                addImageToList(imageUri!!)
+//            }
+
             adapter.notifyDataSetChanged()
         }
     }

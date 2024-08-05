@@ -67,6 +67,9 @@
             android:name=".presentation.view.community.NotificationActivity" />
 
         <activity
+            android:name=".presentation.view.community.CommentEditActivity" />
+
+        <activity
             android:name=".presentation.view.login.LoginActivity" />
 
         <activity android:name=".presentation.view.note.NoteLiveChatActivity" />
