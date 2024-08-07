@@ -1,5 +1,6 @@
 package com.example.energy.presentation.view.mypage
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.energy.R
 import com.example.energy.data.repository.auth.AuthRepository
@@ -18,13 +20,30 @@ import com.kakao.sdk.user.UserApiClient
 
 class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBinding.inflate(it)}) {
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //커스텀 회원가입 테스트
+        //토큰 가져오기
+        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        var accessToken = sharedPreferences?.getString("accessToken", "none")
+        var refreshToken = sharedPreferences?.getString("refreshToken", "none")
+        var test = accessToken ?: "dd"
+        var test2 = refreshToken ?: "dd"
+
+        Log.d("sharedp", test)
+        Log.d("sharedpRe", test2)
+
+
+        //api 테스트
         AuthRepository.customSignUp {
         }
+        AuthRepository.refreshToken(accessToken!!, refreshToken!!) {
+        }
+        AuthRepository.logout(accessToken!!) {
+        }
+
+
+
 
         setToolBar()
 
