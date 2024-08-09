@@ -7,6 +7,9 @@ import androidx.lifecycle.ViewModel
 
 class MapViewModel: ViewModel() {
    private var _searchHint = MutableLiveData<String>()
+   fun setSearchHint(hintText: String){
+      _searchHint.value = hintText
+   }
    val searchHint: LiveData<String>
       get() = _searchHint
 

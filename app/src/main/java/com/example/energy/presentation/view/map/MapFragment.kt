@@ -19,6 +19,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.energy.R
 import com.example.energy.data.model.MarkerModel
+import com.example.energy.data.repository.map.MapRepository
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.DialogLoginBinding
 import com.example.energy.databinding.FragmentMapBinding
@@ -55,6 +56,15 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
         super.onViewCreated(view, savedInstanceState)
 
         val mapView: MapView = binding.mapView
+
+        //test
+        MapRepository.getMapModel("123424324") {
+            response ->
+            response.let {
+                //통신성공
+
+            }
+        }
 
         if (!MapLocation.hasPermission(requireContext())) {
             requestPermissions(
