@@ -2,23 +2,13 @@ package com.example.energy.presentation.view.map
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.location.Geocoder
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.Observer
 import com.example.energy.R
-import com.example.energy.data.model.MarkerModel
 import com.example.energy.data.repository.map.MapRepository
 import com.example.energy.data.repository.map.StationMapModel
 import com.example.energy.databinding.FragmentMapBinding
@@ -26,15 +16,12 @@ import com.example.energy.presentation.util.EnergyUtils
 import com.example.energy.presentation.util.MapLocation
 import com.example.energy.presentation.view.MainActivity
 import com.example.energy.presentation.view.base.BaseFragment
-import com.example.energy.presentation.view.login.LoginActivity
 import com.example.energy.presentation.viewmodel.MapViewModel
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
-import com.kakao.vectormap.camera.CameraUpdate
-import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelLayer
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
@@ -49,7 +36,6 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
     private var seachLatitude: Double = 0.0
     private var searchLongitude: Double = 0.0
 
-    var markerList = ArrayList<StationMapModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,9 +60,11 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                 //통신성공
                 if (response != null) {
                     //response 데이터 리스트에 전달
-                    markerList.addAll(response)
+                    mapViewModel.setMarkerList(response)
+                    mapViewModel.getMarkerList.observe(viewLifecycleOwner, Observer { markerList ->
+                        Log.d("markerList", markerList.toString())
+                    })
                 }
-
                 //현재 위치 재조정
                 binding.ivLocation.setOnClickListener {
                     showToast("현재 위치를 가져옵니다")
@@ -165,8 +153,10 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                 //주소창 텍스트를 현재 주소 기준으로 설정
                 binding.tvCurrentLocation.text = MapLocation.getGeoCoder(location.latitude, location.longitude, requireContext())
 
-                setMarker(kakaoMap, markerList)
-                Log.d("markerList", markerList.toString())
+                mapViewModel.getMarkerList.observe(viewLifecycleOwner, Observer { markerList ->
+                    setMarker(kakaoMap, markerList)
+                    Log.d("markerList", markerList.toString())
+                })
 
 
                 //내 위치
@@ -214,7 +204,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
     }
 
     //마커 띄우기
-    private fun setMarker(kakaoMap: KakaoMap, markerList: ArrayList<StationMapModel>) {
+    private fun setMarker(kakaoMap: KakaoMap, markerList: List<StationMapModel>) {
         var labelManager = kakaoMap.labelManager
         if (labelManager != null) {
             var markerStyle =

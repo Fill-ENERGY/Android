@@ -4,8 +4,26 @@ import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.energy.data.repository.map.StationMapModel
 
 class MapViewModel: ViewModel() {
+   //accessToken
+   private var _accessToken = MutableLiveData<String>()
+   fun setAccessToken(token: String){
+      _accessToken.value = token
+   }
+   val getAccessToken: LiveData<String>
+      get() = _accessToken
+
+   //markerList
+   private var _markerList = MutableLiveData<List<StationMapModel>>()
+   fun setMarkerList(markerList: List<StationMapModel>){
+      _markerList.value = markerList
+   }
+   val getMarkerList: LiveData<List<StationMapModel>>
+      get() = _markerList
+
+   //힌트 텍스트
    private var _searchHint = MutableLiveData<String>()
    fun setSearchHint(hintText: String){
       _searchHint.value = hintText
