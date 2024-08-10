@@ -14,7 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class MapRepository {
     companion object{
         //리스트 데이터
-        fun getListStation(accessToken: String, sort: String, lastId: Int, offset: Int?, currentLatitude: Double, currentLongitude: Double, callback: (ListMapModel?)-> Unit){
+        fun getListStation(accessToken: String, sort: String, lastId: Int, offset: Int?, currentLatitude: Double, currentLongitude: Double, callback: (List<ListMapModel>?)-> Unit){
             val mapService = getRetrofit().create(MapInterface::class.java)
             val call = mapService.getListStation(accessToken, sort, lastId, offset, currentLatitude, currentLongitude)
 
@@ -25,7 +25,7 @@ class MapRepository {
                         //통신 성공
                         Log.d("맵리스트api테스트", "통신 성공 ${response.code()}, ${response.body()?.result}")
                         val listMapModel = response.body()?.result
-                        //callback(listMapModel)
+                        callback(listMapModel)
                     } else {
                         //통신 실패
                         val error = response.errorBody()?.toString()
@@ -74,7 +74,7 @@ class MapRepository {
         }
 
         //지도에 띄울 데이터
-        fun getAllStation(accessToken: String, callback: (StationMapModel?)-> Unit){
+        fun getAllStation(accessToken: String, callback: (List<StationMapModel>?)-> Unit){
             val mapService = getRetrofit().create(MapInterface::class.java)
             val call = mapService.getAllStation(accessToken)
 
@@ -85,7 +85,7 @@ class MapRepository {
                         //통신 성공
                         Log.d("맵api테스트", "통신 성공 ${response.code()}, ${response.body()?.result}")
                         val mapModel = response.body()?.result
-                        //callback(mapModel)
+                        callback(mapModel)
                     } else {
                         //통신 실패
                         val error = response.errorBody()?.toString()
