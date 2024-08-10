@@ -54,15 +54,29 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //토큰 가져오기
+        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        var accessToken = sharedPreferences?.getString("accessToken", "none")
 
         val mapView: MapView = binding.mapView
 
         //test
-        MapRepository.getMapModel("123424324") {
+        MapRepository.getListStation(accessToken!!, "DISTANCE", 1, 10, 37.34, 116.54) {
+                response ->
+            response.let {
+                //통신성공
+            }
+        }
+        MapRepository.getStation(accessToken!!, 10, 37.34, 116.54) {
+                response ->
+            response.let {
+                //통신성공
+            }
+        }
+        MapRepository.getAllStation(accessToken!!) {
             response ->
             response.let {
                 //통신성공
-
             }
         }
 

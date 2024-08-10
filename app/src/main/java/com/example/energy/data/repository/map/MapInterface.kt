@@ -15,16 +15,29 @@ interface MapInterface {
         @Query("query") query: String // 검색을 원하는 질의어 [필수]
     ): Call<ResultSearchKeyword> // 받아온 정보가 ResultSearchKeyword 클래스의 구조로 담김
 
-    //모든 충전소 정보 조회
-    @GET("/api/v1/stations/location")
-    fun getAllStation(
-        @Header("Authorization") key: String,
-    ): Call<MapResponse>
+    //충전소 전체 가져오는 API
+    @GET("/api/v1/stations")
+    fun getListStation(
+        @Header("Authorization") accessToken: String,
+        @Query("query") query: String,
+        @Query("lastId") lastId: Int,
+        @Query("offset") offset: Int?,
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double
+    ): Call<ListResponse>
 
     //충전소 개별 조회
     @GET("/api/v1/stations/{stationId}")
     fun getStation(
-        @Header("Authorization") key: String,
-        @Path("stationId") stationId: String,
+        @Header("Authorization") accessToken: String,
+        @Path("stationId") stationId: Int,
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double
+    ): Call<StationResponse>
+
+    //지도에 표시할 모든 충전소 정보 조회
+    @GET("/api/v1/stations/location")
+    fun getAllStation(
+        @Header("Authorization") accessToken: String,
     ): Call<MapResponse>
 }

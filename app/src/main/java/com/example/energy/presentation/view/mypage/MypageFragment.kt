@@ -12,8 +12,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.energy.R
 import com.example.energy.data.repository.auth.AuthRepository
+import com.example.energy.data.repository.block.BlockRepository
 import com.example.energy.databinding.FragmentMypageBinding
 import com.example.energy.presentation.util.EnergyUtils
+import com.example.energy.presentation.view.MainActivity
 import com.example.energy.presentation.view.base.BaseFragment
 import com.example.energy.presentation.view.login.LoginActivity
 import com.kakao.sdk.user.UserApiClient
@@ -34,13 +36,26 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
         Log.d("sharedpRe", test2)
 
 
-        //api 테스트
-        AuthRepository.customSignUp {
+        //로그인 api 테스트
+//        AuthRepository.customSignUp {
+//        }
+//        AuthRepository.refreshToken(accessToken!!, refreshToken!!) {
+//        }
+//        AuthRepository.logout(accessToken!!) {
+//        }
+        //차단 api 테스트
+//        BlockRepository.postBlockMember(accessToken!!, 2){
+//        }
+        BlockRepository.getBlockMembers(accessToken!!, 0, 10) {
+            response ->
+            response.let {
+
+            }
+
         }
-        AuthRepository.refreshToken(accessToken!!, refreshToken!!) {
-        }
-        AuthRepository.logout(accessToken!!) {
-        }
+//        BlockRepository.deleteBlockMember(accessToken!!, 6){
+//
+//        }
 
 
 
