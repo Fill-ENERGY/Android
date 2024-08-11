@@ -285,17 +285,6 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         dialog.show()
     }
 
-    // 카테고리 String -> Int로 바꾸는 함수
-    fun fromString(category: String): Int {
-        return when (category) {
-            "일상" -> R.drawable.tag_daily
-            "궁금해요" -> R.drawable.tag_curious
-            "도와줘요" -> R.drawable.tag_help
-            "휠체어" -> R.drawable.tag_wheelchair
-            else -> R.drawable.tag_scooter
-        }
-    }
-
     fun toEnglish(category: String): String{
         return when(category){
             "일상" -> "DAILY"

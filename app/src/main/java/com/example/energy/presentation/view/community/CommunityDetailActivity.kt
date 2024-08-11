@@ -1,5 +1,6 @@
 package com.example.energy.presentation.view.community
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Message
@@ -19,6 +20,7 @@ import com.example.energy.R
 import com.example.energy.data.CommunityPostDatabase
 import com.example.energy.data.repository.community.Comment
 import com.example.energy.data.repository.community.CommunityPost
+import com.example.energy.data.repository.community.CommunityRepository
 import com.example.energy.databinding.ActivityCommunityDetailBinding
 import com.example.energy.databinding.DialogCommunityCommentSeeMoreBinding
 import com.example.energy.databinding.DialogCommunityUserSeeMoreBinding
@@ -41,11 +43,16 @@ class CommunityDetailActivity : AppCompatActivity(){
     private var parentCommentId: Int = -1 // 자식 댓글의 부모 댓글 ID
     private var writerStatus: String = "" //기본 값
     private var status : String = ""
+    private var accessToken: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCommunityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //토큰 가져오기
+        val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        accessToken = sharedPreferences?.getString("accessToken", "none")
 
         // Initialize comment dataList
         dataList = ArrayList()
@@ -70,70 +77,131 @@ class CommunityDetailActivity : AppCompatActivity(){
             }
         }
 
-        // 인텐트로부터 전달받은 postId 가져옴. 기본값은 -1로 설정하여 예외처리
-        val postId = intent.getIntExtra("postId", -1)
+        // 인텐트로부터 전달받은 postId(board_id) 가져옴. 기본값은 -1로 설정하여 예외처리
+        val postId = intent.getLongExtra("postId", -1)
 
-        // 전달받은 데이터 수신
-        if (postId != -1) {
-            Thread {
-                communityDB = CommunityPostDatabase.getInstance(this@CommunityDetailActivity)!!
-                val postInfo = communityDB.communityPostDao().getPostById(postId)
-                runOnUiThread {
-                    // CommunityPost 객체의 데이터를 UI 요소에 반영
-                    binding.communityDetailUserProfile.setImageResource(postInfo.userProfile!!)
-                    binding.communityDetailUserName.text = postInfo.userName
-                    binding.communityDetailTitle.text = postInfo.title
-                    binding.communityDetailContent.text = postInfo.content
-                    binding.communityDetailLikeNum.text = postInfo.likes
-                    binding.communityDetailCommentNum.text = postInfo.comments
-                    binding.communityDetailCategoryTitle.text = postInfo.categoryString
-                    if (postInfo.isLiked) { // true일 때
-                        binding.communityDetailLikeIcon.setImageResource(R.drawable.icon_like)
-                    } else { // false일 때
-                        binding.communityDetailLikeIcon.setImageResource(R.drawable.icon_unlike)
+        // 상세 게시글 조회 API 호출
+        CommunityRepository.getDetailCommunity(accessToken?: "none", postId) { response ->
+            if (response != null) {
+                //통신성공
+                //binding.communityDetailUserProfile.setImageResource(postInfo.userProfile!!)
+                binding.communityDetailUserName.text = response.board.member_name
+                binding.communityDetailTitle.text = response.board.title
+                binding.communityDetailContent.text = response.board.content
+                binding.communityDetailLikeNum.text = response.board.like_num.toString()
+                binding.communityDetailCommentNum.text = response.board.comment_count.toString()
+                binding.communityDetailCategoryTitle.text = toKorean(response.board.category!!)
+//                if (postInfo.isLiked) { // true일 때
+//                    binding.communityDetailLikeIcon.setImageResource(R.drawable.icon_like)
+//                } else { // false일 때
+//                    binding.communityDetailLikeIcon.setImageResource(R.drawable.icon_unlike)
+//                }
+                Log.d("커뮤니티이미지리스트2", response.board.images.toString())
+
+                // 이미지 RecyclerView 설정
+                if(response.board.images!!.isEmpty()){
+                    // 이미지가 없는 경우 RecyclerView 숨기기
+                    binding.communityDetailImage.visibility = View.GONE
+                } else{
+                    binding.communityDetailImage.visibility = View.VISIBLE
+                    // RecyclerView의 LayoutManager 및 Adapter 설정
+                    val layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+                    binding.communityDetailImage.layoutManager = layoutManager
+
+                    val imageAdapter = ItemFeedPhotoAdapter(response.board.images!!)
+                    Log.d("커뮤니티이미지리스트2", response.board.images.toString())
+                    binding.communityDetailImage.adapter = imageAdapter
+                }
+
+                // 도와줘요 카테고리 & 작성자일 경우
+                if(response.board.category == "HELP" && response.board.is_author == true){
+                    binding.communityDetailChattingBtn.visibility = View.GONE
+                    binding.communityDetailWriterRequestBtn.visibility = View.VISIBLE
+
+                    // 더보기 버튼
+                    binding.communityDetailSeeMore.setOnClickListener {
+                        showSeeMoreWriterDialog()
                     }
-                    Log.d("imageUrl2", postInfo.imageUrl.toString())
+                }
 
-                    // 이미지 RecyclerView 설정
-                    if(postInfo.imageUrl.isEmpty()){
-                        // 이미지가 없는 경우 RecyclerView 숨기기
-                        binding.communityDetailImage.visibility = View.GONE
-                    } else{
-                        binding.communityDetailImage.visibility = View.VISIBLE
-                        // RecyclerView의 LayoutManager 및 Adapter 설정
-                        val layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
-                        binding.communityDetailImage.layoutManager = layoutManager
-
-                        val imageAdapter = ItemFeedPhotoAdapter(postInfo.imageUrl)
-                        Log.d("imageUrl", postInfo.imageUrl.toString())
-                        binding.communityDetailImage.adapter = imageAdapter
-                    }
-
-                    // 도와줘요 카테고리 & (작성자일 경우 추가 해야됨)
-                    if(postInfo.categoryString == "도와줘요"){
-                        binding.communityDetailChattingBtn.visibility = View.GONE
-                        binding.communityDetailWriterRequestBtn.visibility = View.VISIBLE
+                // 도와줘요 카테고리인 경우 & 일반 사용자일 경우
+                if(response.board.category == "HELP" && response.board.is_author == false){
+                    binding.communityDetailHelpCategory.visibility = View.VISIBLE
 
                         // 더보기 버튼
                         binding.communityDetailSeeMore.setOnClickListener {
-                            showSeeMoreWriterDialog()
+                            showSeeMoreUserDialog()
                         }
-                    }
+                } else{
+                    binding.communityDetailHelpCategory.visibility = View.GONE
+                }
+            } else {
+                // 데이터가 null인 경우 처리
+                Log.e("상세커뮤니티조회", "상세 게시글 데이터가 없습니다.")
+            }
+        }
 
-                    // 도와줘요 카테고리인 경우 & (일반 사용자일 경우 추가 해야됨)
-                    if(postInfo.categoryString == "도와줘요"){
-                        binding.communityDetailHelpCategory.visibility = View.VISIBLE
-
+//        // 전달받은 데이터 수신
+//        if (postId != -1) {
+//            Thread {
+//                communityDB = CommunityPostDatabase.getInstance(this@CommunityDetailActivity)!!
+//                val postInfo = communityDB.communityPostDao().getPostById(postId)
+//                runOnUiThread {
+//                    // CommunityPost 객체의 데이터를 UI 요소에 반영
+//                    binding.communityDetailUserProfile.setImageResource(postInfo.userProfile!!)
+//                    binding.communityDetailUserName.text = postInfo.userName
+//                    binding.communityDetailTitle.text = postInfo.title
+//                    binding.communityDetailContent.text = postInfo.content
+//                    binding.communityDetailLikeNum.text = postInfo.likes
+//                    binding.communityDetailCommentNum.text = postInfo.comments
+//                    binding.communityDetailCategoryTitle.text = postInfo.categoryString
+//                    if (postInfo.isLiked) { // true일 때
+//                        binding.communityDetailLikeIcon.setImageResource(R.drawable.icon_like)
+//                    } else { // false일 때
+//                        binding.communityDetailLikeIcon.setImageResource(R.drawable.icon_unlike)
+//                    }
+//                    Log.d("imageUrl2", postInfo.imageUrl.toString())
+//
+//                    // 이미지 RecyclerView 설정
+//                    if(postInfo.imageUrl.isEmpty()){
+//                        // 이미지가 없는 경우 RecyclerView 숨기기
+//                        binding.communityDetailImage.visibility = View.GONE
+//                    } else{
+//                        binding.communityDetailImage.visibility = View.VISIBLE
+//                        // RecyclerView의 LayoutManager 및 Adapter 설정
+//                        val layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+//                        binding.communityDetailImage.layoutManager = layoutManager
+//
+//                        val imageAdapter = ItemFeedPhotoAdapter(postInfo.imageUrl)
+//                        Log.d("imageUrl", postInfo.imageUrl.toString())
+//                        binding.communityDetailImage.adapter = imageAdapter
+//                    }
+//
+//                    // 도와줘요 카테고리 & (작성자일 경우 추가 해야됨)
+//                    if(postInfo.categoryString == "도와줘요"){
+//                        binding.communityDetailChattingBtn.visibility = View.GONE
+//                        binding.communityDetailWriterRequestBtn.visibility = View.VISIBLE
+//
 //                        // 더보기 버튼
 //                        binding.communityDetailSeeMore.setOnClickListener {
-//                            showSeeMoreUserDialog()
+//                            showSeeMoreWriterDialog()
 //                        }
-                    } else{
-                        binding.communityDetailHelpCategory.visibility = View.GONE
-                    }
-                }
-            }.start()
-        }
+//                    }
+//
+//                    // 도와줘요 카테고리인 경우 & (일반 사용자일 경우 추가 해야됨)
+//                    if(postInfo.categoryString == "도와줘요"){
+//                        binding.communityDetailHelpCategory.visibility = View.VISIBLE
+//
+////                        // 더보기 버튼
+////                        binding.communityDetailSeeMore.setOnClickListener {
+////                            showSeeMoreUserDialog()
+////                        }
+//                    } else{
+//                        binding.communityDetailHelpCategory.visibility = View.GONE
+//                    }
+//                }
+//            }.start()
+//        }
 
         // 키보드 외부 화면 클릭 시 키보드 숨기기
         binding.communityDetail.setOnTouchListener { v, event ->
@@ -211,6 +279,16 @@ class CommunityDetailActivity : AppCompatActivity(){
                 binding.messageInput.text.clear()
 
             }
+        }
+    }
+
+    fun toKorean(category: String): String{
+        return when(category){
+            "DAILY" -> "일상"
+            "INQUIRY" -> "궁금해요"
+            "HELP" -> "도와줘요"
+            "WHEELCHAIR" -> "휠체어"
+            else -> "스쿠터"
         }
     }
 

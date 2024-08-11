@@ -10,11 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.energy.R
 import com.example.energy.data.repository.community.CommunityPost
+import com.example.energy.data.repository.community.ImagesResponse
 import com.example.energy.data.repository.community.WritingCommunityImage
 import com.example.energy.databinding.ItemCommunityFeedPhotoBinding
 import retrofit2.http.Url
 
-class ItemFeedPhotoAdapter (private val imageUrl: List<Uri>): RecyclerView.Adapter<ItemFeedPhotoAdapter.ViewHolder>(){
+class ItemFeedPhotoAdapter (private val imageUrl: List<ImagesResponse>): RecyclerView.Adapter<ItemFeedPhotoAdapter.ViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemCommunityFeedPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
