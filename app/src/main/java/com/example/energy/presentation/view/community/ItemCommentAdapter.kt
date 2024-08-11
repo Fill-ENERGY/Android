@@ -3,8 +3,11 @@ package com.example.energy.presentation.view.community
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.energy.R
 import com.example.energy.data.repository.community.Comment
 import com.example.energy.databinding.ItemCommentBinding
 import java.text.SimpleDateFormat
@@ -51,6 +54,19 @@ class ItemCommentAdapter(
                     ,ViewGroup.LayoutParams.WRAP_CONTENT)
                 layoutParams.setMargins(100,0,0,0)
                 binding.itemComment.layoutParams = layoutParams //자식 뷰에 마진을 넣어줌
+
+                // 이미지뷰 생성
+                val imageView = ImageView(itemView.context)
+                imageView.setImageResource(R.drawable.reply_vector)
+                val imageParams = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                imageParams.setMargins(0, 0, 16, 0) // 텍스트와 이미지 사이 간격 설정
+                imageView.layoutParams = imageParams
+
+                // 이미지를 레이아웃에 추가
+                (binding.root as LinearLayout).addView(imageView, 0) // 0 위치에 이미지를 추가
             }
             binding.commentText.text = data.body
             binding.commentUserName.text = data.userInfo

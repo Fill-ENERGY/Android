@@ -1,6 +1,7 @@
 package com.example.energy.presentation.view.community
 
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -8,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -27,6 +29,8 @@ import com.example.energy.data.repository.community.WritingCommunityImage
 import com.example.energy.databinding.ActivityCommunityWritingBinding
 import com.example.energy.data.CommunityPostDatabase
 import com.example.energy.data.repository.community.CommunityPost
+import com.example.energy.data.repository.community.CommunityRepository
+import com.example.energy.data.repository.community.PostBoardRequest
 import com.example.energy.databinding.DialogPostCommunityCancelBinding
 import com.example.energy.databinding.DialogPostCommunitySuccessBinding
 import kotlinx.coroutines.CoroutineScope
@@ -49,11 +53,16 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
     private var isCategorySelected = false
     private var isTitleFilled = false
     private var isContentFilled = false
+    private var accessToken: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCommunityWritingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //토큰 가져오기
+        val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        accessToken = sharedPreferences?.getString("accessToken", "none")
 
         // Room 데이터베이스 인스턴스 생성
         communityDB = CommunityPostDatabase.getInstance(this)!!
@@ -287,46 +296,81 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         }
     }
 
+    fun toEnglish(category: String): String{
+        return when(category){
+            "일상" -> "DAILY"
+            "궁금해요" -> "INQUIRY"
+            "도와줘요" -> "HELP"
+            "휠체어" -> "WHEELCHAIR"
+            else -> "SCOOTER"
+        }
+    }
+
     // 게시글 저장 함수
     private fun savePostWithImages() {
+        //카테고리 -> 영어로 변환
+        val category: String = toEnglish(spinner.selectedItem.toString())
 
         // 이미지 Uri 리스트 추출
-        val imageUriList: List<Uri> = imageList.map { it.imageUrl }
-//        val imageUriList: List<String> = imageList.map { it.imageUrl.toString() } // Uri를 String으로 변환
+        val imageUriList: List<String> = imageList.map { it.imageUrl.toString() } // Uri를 String으로 변환
 
-        val category: Int = fromString(spinner.selectedItem.toString())
 
-        // CommunityPost 객체 생성
-        val newPost = CommunityPost(
-            userProfile = R.drawable.userimage, // 예시로 설정된 값
-            userName = "사용자 이름", // 예시로 설정된 값
+        // 게시글 작성 요청 데이터
+        val postBoardRequest = PostBoardRequest(
             title = titleEditText.text.toString(),
             content = contentEditText.text.toString(),
-            categoryString = spinner.selectedItem.toString(),
             category = category,
-            imageUrl = imageUriList, //imageUriList, // 이미지 Uri 리스트 저장
-            likes = "0",
-            comments = "0"
+            images = imageUriList // 이미지 리스트
         )
+
+        // 게시글 작성 API 호출
+        CommunityRepository.postBoard(accessToken?: "none", postBoardRequest) { uploadResponse  ->
+            if (uploadResponse != null) {
+                // 성공적으로 게시글이 작성됨
+                Log.d("커뮤니티업로드", "게시글 작성 성공: ${uploadResponse.result?.title}")
+            } else {
+                // 게시글 작성 실패
+                Log.e("커뮤니티업로드", "게시글 작성 실패: ${uploadResponse}")
+            }
+        }
+
+        showSuccessDialog()
+
+//        val imageUriList: List<Uri> = imageList.map { it.imageUrl }
+
+//        val category: Int = fromString(spinner.selectedItem.toString())
+//
+//        // CommunityPost 객체 생성
+//        val newPost = CommunityPost(
+//            userProfile = R.drawable.userimage, // 예시로 설정된 값
+//            userName = "사용자 이름", // 예시로 설정된 값
+//            title = titleEditText.text.toString(),
+//            content = contentEditText.text.toString(),
+//            categoryString = spinner.selectedItem.toString(),
+//            category = category,
+//            imageUrl = imageUriList, //imageUriList, // 이미지 Uri 리스트 저장
+//            likes = "0",
+//            comments = "0"
+//        )
 
         // 데이터베이스에 저장 (비동기 작업)
 //        communityDB.communityPostDao().insertPost(newPost)
 //        postInfo.addAll(communityDB.communityPostDao().getAllPosts())
 //        Log.d("community", communityDB.communityPostDao().getAllPosts().toString())
 //        showSuccessDialog()
-        CoroutineScope(Dispatchers.IO).launch {
-            communityDB.communityPostDao().insertPost(newPost)
-            runOnUiThread {
-                showSuccessDialog()
-                updateCommunityFragment(newPost)
-            }
-        }
+//        CoroutineScope(Dispatchers.IO).launch {
+//            communityDB.communityPostDao().insertPost(newPost)
+//            runOnUiThread {
+//                showSuccessDialog()
+//                updateCommunityFragment(newPost)
+//            }
+//        }
     }
 
-    // CommunityWholeFragment 업데이트 함수
-    private fun updateCommunityFragment(newPost: CommunityPost) {
-        val fragmentManager: FragmentManager = supportFragmentManager
-        val communityWholeFragment = fragmentManager.findFragmentByTag("CommunityWholeFragment") as CommunityWholeFragment?
-        communityWholeFragment?.updatePostList(newPost)
-    }
+//    // CommunityWholeFragment 업데이트 함수
+//    private fun updateCommunityFragment(newPost: CommunityPost) {
+//        val fragmentManager: FragmentManager = supportFragmentManager
+//        val communityWholeFragment = fragmentManager.findFragmentByTag("CommunityWholeFragment") as CommunityWholeFragment?
+//        communityWholeFragment?.updatePostList(newPost)
+//    }
 }
