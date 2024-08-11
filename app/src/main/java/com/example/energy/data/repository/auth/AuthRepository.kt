@@ -100,7 +100,7 @@ class AuthRepository {
                 ) {
                     if(response.isSuccessful){
                         //통신 성공
-                        Log.d("customLogin", "통신 성공 ${response.body()?.code}")
+                        Log.d("customLogin", "통신 성공 ${response.code()}, ${response.body()?.result}")
                         val userModel = response.body()?.result
                         callback(userModel)
                     } else {

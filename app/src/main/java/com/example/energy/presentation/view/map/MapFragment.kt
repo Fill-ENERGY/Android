@@ -2,40 +2,26 @@ package com.example.energy.presentation.view.map
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.location.Geocoder
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.Observer
 import com.example.energy.R
-import com.example.energy.data.model.MarkerModel
 import com.example.energy.data.repository.map.MapRepository
-import com.example.energy.databinding.DialogCustomBinding
-import com.example.energy.databinding.DialogLoginBinding
+import com.example.energy.data.repository.map.StationMapModel
 import com.example.energy.databinding.FragmentMapBinding
 import com.example.energy.presentation.util.EnergyUtils
 import com.example.energy.presentation.util.MapLocation
 import com.example.energy.presentation.view.MainActivity
 import com.example.energy.presentation.view.base.BaseFragment
-import com.example.energy.presentation.view.login.LoginActivity
 import com.example.energy.presentation.viewmodel.MapViewModel
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
-import com.kakao.vectormap.camera.CameraUpdate
-import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelLayer
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
@@ -50,22 +36,59 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
     private var seachLatitude: Double = 0.0
     private var searchLongitude: Double = 0.0
 
-    val markerList = ArrayList<MarkerModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //토큰 가져오기
+        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        var accessToken = sharedPreferences?.getString("accessToken", "none")
 
         val mapView: MapView = binding.mapView
 
         //test
-        MapRepository.getMapModel("123424324") {
-            response ->
+        MapRepository.getStation(accessToken!!, 10, 37.34, 116.54) {
+                response ->
             response.let {
                 //통신성공
-
             }
         }
 
+        //현재 위치로 설정 후 마커 띄운 지도 표시
+        MapRepository.getAllStation(accessToken!!) {
+            response ->
+            response.let {
+                //통신성공
+                if (response != null) {
+                    //response 데이터 리스트에 전달
+                    mapViewModel.setMarkerList(response)
+                    mapViewModel.getMarkerList.observe(viewLifecycleOwner, Observer { markerList ->
+                        Log.d("markerList", markerList.toString())
+                    })
+                }
+                //현재 위치 재조정
+                binding.ivLocation.setOnClickListener {
+                    showToast("현재 위치를 가져옵니다")
+                    MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) {
+                            location ->  Log.d("CurrentLocation", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+
+                        //뷰모델에 현재 위치 전달
+                        mapViewModel.setCurrentLocation(location)
+
+                        //지도 표시
+                        getMap(mapView, location)
+                    }
+
+                    //bundle로 데이터 받기
+                    arguments?.let { bundle ->
+                        seachLatitude = bundle.getDouble("latitude", 0.0)
+                        searchLongitude = bundle.getDouble("longitude", 0.0)
+                        Log.d("검색데이터전달", "${searchLongitude}, ${seachLatitude}")
+                    }
+                }
+            }
+        }
+
+        //위치 권한 확인
         if (!MapLocation.hasPermission(requireContext())) {
             requestPermissions(
                 MapLocation.MAPPERMISSIONS,
@@ -93,27 +116,6 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
         binding.cvSos.setOnClickListener {
             EnergyUtils.showSOSDialog(requireContext())
         }
-
-        //현재 위치 재조정
-        binding.ivLocation.setOnClickListener {
-            showToast("현재 위치를 가져옵니다")
-            MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) {
-                    location ->  Log.d("CurrentLocation", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
-
-                //뷰모델에 현재 위치 전달
-                mapViewModel.setCurrentLocation(location)
-
-                getMap(mapView, location)
-            }
-
-            //bundle로 데이터 받기
-            arguments?.let { bundle ->
-                seachLatitude = bundle.getDouble("latitude", 0.0)
-                searchLongitude = bundle.getDouble("longitude", 0.0)
-                Log.d("검색데이터전달", "${searchLongitude}, ${seachLatitude}")
-            }
-        }
-
 
     }
 
@@ -151,33 +153,31 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                 //주소창 텍스트를 현재 주소 기준으로 설정
                 binding.tvCurrentLocation.text = MapLocation.getGeoCoder(location.latitude, location.longitude, requireContext())
 
-                //setMarker(kakaoMap, markerList)
+                mapViewModel.getMarkerList.observe(viewLifecycleOwner, Observer { markerList ->
+                    setMarker(kakaoMap, markerList)
+                    Log.d("markerList", markerList.toString())
+                })
 
-                // 현재 위치를 표시하거나 초기 위치를 설정하는 로직
-                if (seachLatitude != 0.0 && searchLongitude != 0.0) {
-                    //지도에 선택한 위치 표시하는 로직
-                    //myKakaoMap.setCenter(location.latitude, location.longitude)
-                }
 
                 //내 위치
-                var labelManager = kakaoMap.labelManager
-                if (labelManager != null) {
-                    var markerStyle =
-                        labelManager.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.iv_marker).setTextStyles(
-                            LabelTextStyle.from(32, R.color.gray_scale8))))
-                    var layer = labelManager.layer
-                    if (layer != null) {
-                        layer.removeAll()
-                            val label =
-                                LabelOptions.from(LatLng.from(location.latitude, location.longitude))
-                                    .setStyles(markerStyle)
-                                    .setTexts("")
-                            label.clickable = true
-                            layer.addLabel(label)
-
-
-                    }
-                }
+//                var labelManager = kakaoMap.labelManager
+//                if (labelManager != null) {
+//                    var markerStyle =
+//                        labelManager.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.iv_marker).setTextStyles(
+//                            LabelTextStyle.from(32, R.color.gray_scale8))))
+//                    var layer = labelManager.layer
+//                    if (layer != null) {
+//                        layer.removeAll()
+//                            val label =
+//                                LabelOptions.from(LatLng.from(location.latitude, location.longitude))
+//                                    .setStyles(markerStyle)
+//                                    .setTexts("")
+//                            label.clickable = true
+//                            layer.addLabel(label)
+//
+//
+//                    }
+//                }
 
                 //마커 클릭 이벤트
                 myKakaoMap.setOnLabelClickListener { kakaoMap, layer, label ->
@@ -204,7 +204,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
     }
 
     //마커 띄우기
-    private fun setMarker(kakaoMap: KakaoMap, markerList: ArrayList<MarkerModel>) {
+    private fun setMarker(kakaoMap: KakaoMap, markerList: List<StationMapModel>) {
         var labelManager = kakaoMap.labelManager
         if (labelManager != null) {
             var markerStyle =
@@ -214,7 +214,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                 layer.removeAll()
                 for (data in markerList) {
                     val label =
-                        LabelOptions.from(LatLng.from(data.latitude, data.longitude))
+                        LabelOptions.from(LatLng.from(data.latitude!!, data.longitude!!))
                             .setStyles(markerStyle);
                     label.clickable = true
                     layer.addLabel(label)
