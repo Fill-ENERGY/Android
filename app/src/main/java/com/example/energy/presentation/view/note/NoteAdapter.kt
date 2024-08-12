@@ -38,8 +38,8 @@ class NoteAdapter(private val noteList: ArrayList<NoteItem>,
 
             // 스와이프-> 스와이프 영역 클릭 시, 채팅 목록 삭제
             binding.swipespace.setOnClickListener {
-                //removeData(this.layoutPosition)
-                //Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
+                removeData(this.layoutPosition)
+                Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
                 onSwipeClickListener(note, layoutPosition)
             }
 
