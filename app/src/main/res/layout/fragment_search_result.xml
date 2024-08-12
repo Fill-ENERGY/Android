@@ -94,12 +94,23 @@
                 style="@style/Body4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="4.41(15)"
+                android:text="4.41"
                 android:layout_marginStart="6dp"
                 android:textColor="@color/gray_scale8"
                 app:layout_constraintStart_toEndOf="@+id/iv_star"
                 app:layout_constraintTop_toTopOf="@id/tv_distance"
                 />
+            <TextView
+                android:id="@+id/tv_reviewCount"
+                style="@style/Body4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(15)"
+                android:textColor="@color/gray_scale8"
+                app:layout_constraintStart_toEndOf="@+id/tv_star"
+                app:layout_constraintTop_toTopOf="@id/tv_distance"
+                />
+
 
             <ImageView
                 android:id="@+id/iv_time"
@@ -107,19 +118,55 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/iv_time"
                 android:layout_marginStart="25dp"
-                app:layout_constraintStart_toEndOf="@+id/tv_star"
+                app:layout_constraintStart_toEndOf="@+id/tv_reviewCount"
                 app:layout_constraintTop_toTopOf="@id/tv_distance"
                 />
 
             <TextView
-                android:id="@+id/tv_time"
+                android:id="@+id/tv_dayType"
                 style="@style/Body4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="(평일) 0:00 ~ 24:00"
-                android:layout_marginStart="8dp"
+                android:text="(평일)"
+                android:layout_marginStart="6dp"
                 android:textColor="@color/gray_scale8"
                 app:layout_constraintStart_toEndOf="@+id/iv_time"
+                app:layout_constraintTop_toTopOf="@id/tv_distance"
+                />
+
+            <TextView
+                android:id="@+id/tv_openTime"
+                style="@style/Body4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0:00"
+                android:layout_marginStart="4dp"
+                android:textColor="@color/gray_scale8"
+                app:layout_constraintStart_toEndOf="@+id/tv_dayType"
+                app:layout_constraintTop_toTopOf="@id/tv_distance"
+                />
+
+            <TextView
+                android:id="@+id/tv_startToEnd"
+                style="@style/Body4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" ~ "
+                android:layout_marginStart="3dp"
+                android:textColor="@color/gray_scale8"
+                app:layout_constraintStart_toEndOf="@+id/tv_openTime"
+                app:layout_constraintTop_toTopOf="@id/tv_distance"
+                />
+
+            <TextView
+                android:id="@+id/tv_closeTime"
+                style="@style/Body4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="24:00"
+                android:layout_marginStart="3dp"
+                android:textColor="@color/gray_scale8"
+                app:layout_constraintStart_toEndOf="@+id/tv_startToEnd"
                 app:layout_constraintTop_toTopOf="@id/tv_distance"
                 />
 

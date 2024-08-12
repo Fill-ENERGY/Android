@@ -4,6 +4,7 @@ import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.energy.data.repository.map.StationDetailModel
 import com.example.energy.data.repository.map.StationMapModel
 
 class MapViewModel: ViewModel() {
@@ -41,18 +42,17 @@ class MapViewModel: ViewModel() {
    }
 
    //충전소 정보
-   private var _stationName = MutableLiveData<String>()  //이름
+   private var _stationDetailModel = MutableLiveData<StationDetailModel>()
+
    private var _stationLongitude = MutableLiveData<Double>() //길찾기
    private var _stationLatitude = MutableLiveData<Double>()   //길찾기
-   private var _stationTime = MutableLiveData<String>()  //운영시간
-   private var _stationCall = MutableLiveData<String>()  //전화번호
 
-   //충전소 이름
-   fun setStationName(name: String){
-      _stationName.value = name
+   //충전소 디테일 정보
+   val getStationDetailModel: LiveData<StationDetailModel>
+      get() = _stationDetailModel
+   fun setStationDetailModel(stationDetailModel: StationDetailModel) {
+      _stationDetailModel.value = stationDetailModel
    }
-   val getStationName: LiveData<String>
-      get() = _stationName
 
    //충전소 경도
    fun setStationLongitude(longtitude: Double){
@@ -68,19 +68,6 @@ class MapViewModel: ViewModel() {
    val getStationLatitude: LiveData<Double>
       get() = _stationLatitude
 
-   //충전소 운영 시간
-   fun setStationTime(time: String){
-      _stationTime.value = time
-   }
-   val getStationTime: LiveData<String>
-      get() = _stationTime
-
-   //충전소 전화번호
-   fun setStationCall(callNumber: String){
-      _stationCall.value = callNumber
-   }
-   val getStationCall: LiveData<String>
-      get() = _stationCall
 
    //현재 위치에서 떨어진 거리 구하기
    fun getDistanceFromCurrentLocation(currentLatitude: Double, currentLongitude: Double): Float {

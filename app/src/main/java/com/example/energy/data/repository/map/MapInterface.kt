@@ -30,7 +30,7 @@ interface MapInterface {
     @GET("/api/v1/stations/{stationId}")
     fun getStation(
         @Header("Authorization") accessToken: String,
-        @Path("stationId") stationId: Int,
+        @Path("stationId") stationId: Any,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
     ): Call<StationResponse>

@@ -1,15 +1,10 @@
 package com.example.energy.data.repository.map
 
-import ResultSearchKeyword
 import android.util.Log
-import com.example.energy.BuildConfig
 import com.example.energy.data.getRetrofit
-import com.example.energy.data.repository.map.search.SearchData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class MapRepository {
     companion object{
@@ -44,7 +39,7 @@ class MapRepository {
         }
 
         //충전소 개별 조회
-        fun getStation(accessToken: String, stationId: Int, currentLatitude: Double, currentLongitude: Double, callback: (StationDetailModel?)-> Unit){
+        fun getStation(accessToken: String, stationId: Any, currentLatitude: Double, currentLongitude: Double, callback: (StationDetailModel?)-> Unit){
             val mapService = getRetrofit().create(MapInterface::class.java)
             val call = mapService.getStation(accessToken, stationId, currentLatitude, currentLongitude)
 
