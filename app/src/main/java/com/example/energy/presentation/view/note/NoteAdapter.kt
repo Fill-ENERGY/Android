@@ -9,7 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.energy.databinding.ChatItemBinding
 import java.util.Collections
 
-class NoteAdapter(private val noteList: ArrayList<NoteItem>) :
+class NoteAdapter(private val noteList: ArrayList<NoteItem>,
+                  private val onSwipeClickListener: (NoteItem, Int) -> Unit) :
     RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 
 
@@ -37,8 +38,9 @@ class NoteAdapter(private val noteList: ArrayList<NoteItem>) :
 
             // 스와이프-> 스와이프 영역 클릭 시, 채팅 목록 삭제
             binding.swipespace.setOnClickListener {
-                removeData(this.layoutPosition)
-                Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
+                //removeData(this.layoutPosition)
+                //Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
+                onSwipeClickListener(note, layoutPosition)
             }
 
 
