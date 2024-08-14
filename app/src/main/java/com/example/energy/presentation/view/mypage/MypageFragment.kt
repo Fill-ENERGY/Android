@@ -49,6 +49,10 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
 
 
 
+        //login 다이얼로그
+        binding.btnAccountSetting.setOnClickListener {
+            EnergyUtils.showLoginDialog(requireContext())
+        }
 
 
         setToolBar()
