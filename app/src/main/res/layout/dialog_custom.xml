@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="7dp"
-    android:background="@drawable/background_spinner_option">
+    android:background="@drawable/dialog_basic">
 
 
     <ImageView
@@ -35,13 +35,13 @@
         android:layout_marginBottom="10dp"/>
 
     <TextView
-        style="@style/Body4"
         android:id="@+id/tv_subTitle"
+        style="@style/Body4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="@string/help"
-        android:textColor="@color/gray_scale6"
-        android:gravity="center" />
+        android:textColor="@color/gray_scale6" />
 
     <androidx.appcompat.widget.AppCompatButton
         style="@style/Title2"

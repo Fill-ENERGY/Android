@@ -46,18 +46,13 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
         //차단 api 테스트
 //        BlockRepository.postBlockMember(accessToken!!, 2){
 //        }
-        BlockRepository.getBlockMembers(accessToken!!, 0, 10) {
-            response ->
-            response.let {
 
-            }
 
+
+        //login 다이얼로그
+        binding.btnAccountSetting.setOnClickListener {
+            EnergyUtils.showLoginDialog(requireContext())
         }
-//        BlockRepository.deleteBlockMember(accessToken!!, 6){
-//
-//        }
-
-
 
 
         setToolBar()

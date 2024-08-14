@@ -39,7 +39,7 @@ class BlockRepository {
         }
 
         //차단 멤버 전체 조회
-        fun getBlockMembers(accessToken: String, cursor: Int, limit: Int, callback: (BlockUserModel?)-> Unit){
+        fun getBlockMembers(accessToken: String, cursor: Int, limit: Int, callback: (BlockListResult?)-> Unit){
             val blockService = getRetrofit().create(BlockInterface::class.java)
             val call = blockService.getBlockMembers(accessToken, cursor, limit)
 
@@ -49,8 +49,8 @@ class BlockRepository {
                     if(response.isSuccessful){
                         //통신 성공
                         Log.d("차단조회api테스트", "통신 성공 ${response.code()}, ${response.body()}")
-                        val blockUsersModel = response.body()?.result?.blocks
-                        //callback(blockUsersModel)
+                        val blockListResult = response.body()?.result
+                        callback(blockListResult)
                     } else {
                         //통신 실패
                         val error = response.errorBody()?.string()

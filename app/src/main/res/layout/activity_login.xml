@@ -8,14 +8,14 @@
     tools:context=".presentation.view.login.LoginActivity">
 
   <ImageView
-      android:id="@+id/btn_kakaoLogin"
+      android:id="@+id/iv_redirect"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:src="@drawable/kakao_login"
-      android:layout_marginBottom="70dp"
+      android:src="@drawable/iv_logo"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent" />
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
 
 
 

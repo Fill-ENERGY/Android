@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="7dp"
-    android:background="@drawable/background_spinner_option">
+    android:background="@drawable/dialog_basic">
 
 
     <ImageView
