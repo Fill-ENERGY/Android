@@ -46,16 +46,7 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
         //차단 api 테스트
 //        BlockRepository.postBlockMember(accessToken!!, 2){
 //        }
-        BlockRepository.getBlockMembers(accessToken!!, 0, 10) {
-            response ->
-            response.let {
 
-            }
-
-        }
-//        BlockRepository.deleteBlockMember(accessToken!!, 6){
-//
-//        }
 
 
 
