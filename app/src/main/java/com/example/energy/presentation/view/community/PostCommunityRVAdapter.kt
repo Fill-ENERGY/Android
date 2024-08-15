@@ -17,8 +17,8 @@ import com.example.energy.databinding.ItemCommunityFeedBinding
 class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerView.Adapter<PostCommunityRVAdapter.ViewHolder>() {
 
     interface PeopleItemClickListener {
-        fun onItemClick(position: Int, community: CommunityPost)
-        fun onCheckIconClick(community: CommunityPost)
+        fun onItemClick(position: Int, community: BoardModel)
+        fun onCheckIconClick(community: BoardModel)
     }
 
     // 외부에서 전달받은 Listener 객체를 Adapter에서 사용할 수 있도록 따로 저장할 변수 선언

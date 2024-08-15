@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
 import com.example.energy.databinding.FragmentCommunityNotifiWithDataBinding
+import com.example.energy.data.repository.community.Notification
 import com.example.energy.presentation.view.base.BaseFragment
 
 class NotifyFragmentWithData : BaseFragment<FragmentCommunityNotifiWithDataBinding>({ FragmentCommunityNotifiWithDataBinding.inflate(it)}){

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.energy.R
+import com.example.energy.data.repository.community.Notification
 import com.example.energy.databinding.ItemCommentNotificationBinding
 import com.example.energy.databinding.ItemLikeNotificationsBinding
 

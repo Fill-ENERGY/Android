@@ -208,6 +208,11 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
 
     // 데이터 리스트에 업로드하는 이미지 저장
     private fun addImageToList(imageUri: String) {
+//        val isRepresentative = imageList.isEmpty() // 첫 번째 이미지인 경우 대표 이미지로 설정
+//        imageList.add(WritingCommunityImage(imageUri, isRepresentative))
+//        adapter.notifyItemInserted(imageList.size - 1)
+
+
         // 이미지 리스트에 추가
         isRepresentative = imageList.isEmpty()
         imageList.map { it.img_uri = imageUri }

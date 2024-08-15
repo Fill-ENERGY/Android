@@ -39,6 +39,7 @@ class GalleryAdapter (private val imageUrl: List<ImagesModel>): RecyclerView.Ada
 
         // 대표 이미지 표시
         holder.binding.representativeLabel.visibility = if (position == 0) View.VISIBLE else View.GONE
+        //(currentImage.isRepresentative)
 
         // X 아이콘 클릭 시 해당데이터 삭제
         holder.binding.writingCommunityImageCancel.setOnClickListener {
