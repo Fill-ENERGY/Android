@@ -8,8 +8,7 @@ data class AuthSignUpBody(
     var passwordCheck : String = "test1234!!"
 )
 
-//일반 로그인
-data class AuthLoginBody(
-    var email: String = "test1234@umc.com",
-    var password: String = "test1234!!"
+//카카오 로그인
+data class AuthKakaoBody(
+    var accessToken : String
 )

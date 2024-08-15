@@ -23,27 +23,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>({ ActivityLoginBinding.
         super.onCreate(savedInstanceState)
 
         kakaoLogin()
-        AuthRepository.customLogin {
-            response ->
-            response.let {
-                //통신 성공
-                var test = response?.accessToken ?: "dd"
-
-                //토큰 저장
-                val sharedPreferences = getSharedPreferences("userToken", MODE_PRIVATE)
-                val editor = sharedPreferences.edit()
-
-                Log.d("유저토큰테스트", test)
-                editor.putString("accessToken", "Bearer ${response?.accessToken}")
-                editor.putString("refreshToken", response?.refreshToken)
-                editor.apply()
-
-                //홈으로 이동
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
-
-            }
-        }
 
     }
 
