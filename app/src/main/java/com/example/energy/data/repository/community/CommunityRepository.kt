@@ -76,7 +76,7 @@ class CommunityRepository {
         }
 
         // 커뮤니티 글 작성
-        fun postBoard(accessToken: String, request: PostBoardRequest, callback: (UploadResponse?)-> Unit){
+        fun postBoard(accessToken: String, request: PostBoardRequest, callback: (BoardModel?)-> Unit){
             val communityService = getRetrofit().create(CommunityInterface::class.java)
             val call = communityService.postBoard(accessToken, request)
 
@@ -87,7 +87,7 @@ class CommunityRepository {
                         //통신 성공
                         Log.d("커뮤니티작성api테스트", "통신 성공 ${response.code()}, ${response.body()?.result}")
                         val postBoardModel = response.body()?.result
-                        callback(response.body())
+                        callback(postBoardModel)
                     } else {
                         //통신 실패
                         val error = response.errorBody()?.toString()

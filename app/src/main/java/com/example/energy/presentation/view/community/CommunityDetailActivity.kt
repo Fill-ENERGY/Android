@@ -126,7 +126,7 @@ class CommunityDetailActivity : AppCompatActivity(){
 
                 // 도와줘요 카테고리인 경우 & 일반 사용자일 경우
                 if(response.board.category == "HELP" && response.board.is_author == false){
-                    binding.communityDetailHelpCategory.visibility = View.VISIBLE
+                    binding.communityDetailSeeMore.visibility = View.VISIBLE
 
                         // 더보기 버튼
                         binding.communityDetailSeeMore.setOnClickListener {

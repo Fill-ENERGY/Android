@@ -2,6 +2,7 @@ package com.example.energy.presentation.view.community
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,14 @@ class CommunityWheelchairFragment : BaseFragment<FragmentCommunityWheelchairBind
                 response ->
             response.let {
                 //통신성공
+                if (response != null && response.board != null) {
+                    // RecyclerView 초기화 및 데이터 연결 (메인 스레드)
+                    postCommunityAdapter = PostCommunityRVAdapter(response.board)
+                    binding.wheelchairCommunityPostRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    binding.wheelchairCommunityPostRv.adapter = postCommunityAdapter
+                } else {
+                    Log.e("전체커뮤니티api테스트", "응답 결과가 null이거나 board가 없습니다.")
+                }
             }
         }
 

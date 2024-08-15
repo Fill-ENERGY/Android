@@ -4,7 +4,7 @@ package com.example.energy.data.repository.community
 data class CommunityResponse (
     val code: String,
     val message: String,
-    val result: CommunityModel,
+    val result: CommunityModel?,
 )
 data class CommunityModel (
     var board: List<BoardModel>,
@@ -33,8 +33,8 @@ data class BoardModel(
 
 // 게시글 이미지
 data class ImagesResponse (
-    var board_img_id: String?,
-    var img_uri: String?,
+    var board_img_id: String,
+    var img_uri: String,
 )
 
 
@@ -50,7 +50,7 @@ data class UploadResponse (
 data class DetailResponse(
     val code: String?,
     val message: String?,
-    val result: DetailModel,
+    val result: DetailModel
 )
 data class DetailModel(
     var board: BoardModel,

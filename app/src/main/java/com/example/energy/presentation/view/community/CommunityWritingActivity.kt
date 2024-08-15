@@ -316,7 +316,7 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         CommunityRepository.postBoard(accessToken?: "none", postBoardRequest) { uploadResponse  ->
             if (uploadResponse != null) {
                 // 성공적으로 게시글이 작성됨
-                Log.d("커뮤니티업로드", "게시글 작성 성공: ${uploadResponse.result?.title}")
+                Log.d("커뮤니티업로드", "게시글 작성 성공: ${uploadResponse.title}")
             } else {
                 // 게시글 작성 실패
                 Log.e("커뮤니티업로드", "게시글 작성 실패: ${uploadResponse}")

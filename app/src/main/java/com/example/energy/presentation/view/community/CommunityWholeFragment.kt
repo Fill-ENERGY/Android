@@ -3,6 +3,7 @@ package com.example.energy.presentation.view.community
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,7 +39,16 @@ class CommunityWholeFragment : BaseFragment<FragmentCommunityWholeBinding>({ Fra
         CommunityRepository.getListCommunity(accessToken!!, "", 0, 10, "") {
                 response ->
             response.let {
+                Log.d("게시글정보", "${response}")
                 //통신성공
+                if (response != null && response.board != null) {
+                    // RecyclerView 초기화 및 데이터 연결 (메인 스레드)
+                    postCommunityAdapter = PostCommunityRVAdapter(response.board)
+                    binding.wholeCommunityPostRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    binding.wholeCommunityPostRv.adapter = postCommunityAdapter
+                } else {
+                    Log.e("전체커뮤니티api테스트", "응답 결과가 null이거나 board가 없습니다.")
+                }
             }
         }
 
