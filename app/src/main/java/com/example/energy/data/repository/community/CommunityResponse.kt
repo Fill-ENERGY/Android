@@ -27,15 +27,21 @@ data class BoardModel(
     var updated_at: String,
     var like_num: Int? = 0,
     var comment_count: Int? = 0,
-    var images: List<ImagesResponse>?,
+    var images: List<ImagesModel>?,
 )
 
 
 // 게시글 이미지
-data class ImagesResponse (
+data class UploadImagesResponse(
+    val code: String?,
+    val message: String?,
+    val result: ImagesModel?,
+)
+data class ImagesModel (
     var board_img_id: String,
     var img_uri: String,
-)
+) {
+}
 
 
 // 게시글 작성
@@ -57,16 +63,32 @@ data class DetailModel(
     var comment: List<CommentModel>,
 )
 
-// 댓글
+// 댓글 조회
+data class CommentListResponse(
+    val code: String?,
+    val message: String?,
+    val result: List<CommentModel>?,
+)
+
+// 댓글 작성
+data class CommentResponse(
+    val code: String?,
+    val message: String?,
+    val result: CommentModel?,
+)
 data class CommentModel(
     var comment_id: Long?,
     var content: String?,
-    var isSecret: Boolean?,
+    var secret: Boolean?,
     var memberId: Long?,
     var memberName: String?,
     var createdAt: String?,
-    var images: List<String>?,
-    var secret: Boolean,
+    var images: List<ImagesModel>?,
+    var deleted: Boolean?,
+    var parentId: Long?,
+    var author: Boolean,
+    var canViewSecret: Boolean,
+    var replies: List<CommentModel>,
 )
 
 

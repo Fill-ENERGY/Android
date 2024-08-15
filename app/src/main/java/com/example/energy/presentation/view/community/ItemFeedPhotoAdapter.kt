@@ -1,19 +1,12 @@
 package com.example.energy.presentation.view.community
 
-import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.energy.R
-import com.example.energy.data.repository.community.CommunityPost
 import com.example.energy.data.repository.community.ImagesResponse
-import com.example.energy.data.repository.community.WritingCommunityImage
 import com.example.energy.databinding.ItemCommunityFeedPhotoBinding
-import retrofit2.http.Url
 
 class ItemFeedPhotoAdapter (private val imageUrl: List<ImagesResponse>): RecyclerView.Adapter<ItemFeedPhotoAdapter.ViewHolder>(){
 

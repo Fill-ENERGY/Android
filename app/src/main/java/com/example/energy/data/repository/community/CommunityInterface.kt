@@ -38,10 +38,33 @@ interface CommunityInterface {
     ): Call<UploadResponse>
 
 
+    //이미지 업로드 api
+    @POST("/api/v1/boards/images")
+    fun uploadImages(
+        @Header("Authorization") accessToken: String,
+        @Body request: UploadImagesRequest,
+    ): Call<UploadImagesResponse>
+
+
     //게시글 좋아요 추가 api
     @POST("/api/v1/boards/{boardId}/likes")
     fun postLikeBoard(
         @Header("Authorization") accessToken: String,
         @Path("boardId") boardId: Long,
     ): Call<LikeResponse>
+
+    //커뮤니티 댓글 조회 api
+    @GET("/api/v1/boards/{boardId}/comments")
+    fun getListComment(
+        @Header("Authorization") accessToken: String,
+        @Path("boardId") boardId: Long,
+    ): Call<CommentListResponse>
+
+    //댓글 작성 api
+    @POST("/api/v1/boards/{boardId}/comments")
+    fun writeCommentBoard(
+        @Header("Authorization") accessToken: String,
+        @Path("boardId") boardId: Long,
+        @Body request: WriteCommentRequest,
+    ): Call<CommentResponse>
 }

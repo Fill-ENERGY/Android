@@ -7,3 +7,17 @@ data class PostBoardRequest(
     val category: String?,
     val images: List<String>?,
 )
+
+
+// 이미지 업로드 요청
+data class UploadImagesRequest(
+    val images: List<String>?,
+)
+
+// 댓글 작성 요청
+data class WriteCommentRequest(
+    val content: String?,
+    val secret: Boolean?,
+    val parentCommentId: Long?,
+    val images: List<String>?,
+)

@@ -22,30 +22,22 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
-import com.example.energy.data.repository.community.WritingCommunityImage
 import com.example.energy.databinding.ActivityCommunityWritingBinding
-import com.example.energy.data.CommunityPostDatabase
-import com.example.energy.data.repository.community.CommunityPost
 import com.example.energy.data.repository.community.CommunityRepository
+import com.example.energy.data.repository.community.ImagesModel
 import com.example.energy.data.repository.community.PostBoardRequest
+import com.example.energy.data.repository.community.UploadImagesRequest
 import com.example.energy.databinding.DialogPostCommunityCancelBinding
 import com.example.energy.databinding.DialogPostCommunitySuccessBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClickListener {
     private lateinit var binding: ActivityCommunityWritingBinding
-    private lateinit var communityDB: CommunityPostDatabase
-    var imageList = ArrayList<WritingCommunityImage>() // 선택한 이미지 데이터 리스트
-    var postInfo = ArrayList<CommunityPost>()
+    var imageList = mutableListOf<ImagesModel>() // 선택한 이미지 데이터 리스트
     val adapter = GalleryAdapter(imageList) // Recycler View Adapter
     val initText = "카테고리를 선택해 주세요"
     private val menuList = listOf("카테고리를 선택해 주세요", "일상","궁금해요","도와줘요","휠체어", "스쿠터")
-
     private lateinit var spinner: Spinner
     private lateinit var titleEditText: EditText
     private lateinit var contentEditText: EditText
@@ -54,6 +46,7 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
     private var isTitleFilled = false
     private var isContentFilled = false
     private var accessToken: String? = null
+    private var isRepresentative = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,8 +57,6 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
         accessToken = sharedPreferences?.getString("accessToken", "none")
 
-        // Room 데이터베이스 인스턴스 생성
-        communityDB = CommunityPostDatabase.getInstance(this)!!
 
         spinner = binding.communitySelectCategory
         titleEditText = binding.communityWritingTitleTv
@@ -191,11 +182,11 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
                 } else {
                     for (index in 0 until count) {
                         val imageUri = clipData.getItemAt(index).uri // 이미지 담기
-                        addImageToList(imageUri)
+                        addImageToList(imageUri.toString())
                     }
                 }
             } else if (data != null) { // 단일 이미지 선택 시
-                addImageToList(data)
+                addImageToList(data.toString())
             }
 
 
@@ -216,20 +207,21 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
     }
 
     // 데이터 리스트에 업로드하는 이미지 저장
-    private fun addImageToList(imageUri: Uri) {
-        val isRepresentative = imageList.isEmpty() // 첫 번째 이미지인 경우 대표 이미지로 설정
-        imageList.add(WritingCommunityImage(imageUri, isRepresentative))
+    private fun addImageToList(imageUri: String) {
+        // 이미지 리스트에 추가
+        isRepresentative = imageList.isEmpty()
+        imageList.map { it.img_uri = imageUri }
         adapter.notifyItemInserted(imageList.size - 1)
     }
 
     // 이미지 삭제
     override fun onRemoveImage(position: Int) {
         adapter.removeImage(position)
-        // 대표 이미지가 삭제된 경우 새로운 대표 이미지 설정
-        if (imageList.isNotEmpty() && !imageList.any { it.isRepresentative }) {
-            imageList[0].isRepresentative = true
-            adapter.notifyItemChanged(0)
-        }
+//        // 대표 이미지가 삭제된 경우 새로운 대표 이미지 설정
+//        if (imageList.isNotEmpty() && !imageList.any { it.isRepresentative }) {
+//            imageList[0].isRepresentative = true
+//            adapter.notifyItemChanged(0)
+//        }
     }
 
     // 키보드 내리는 함수
@@ -301,7 +293,7 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         val category: String = toEnglish(spinner.selectedItem.toString())
 
         // 이미지 Uri 리스트 추출
-        val imageUriList: List<String> = imageList.map { it.imageUrl.toString() } // Uri를 String으로 변환
+        val imageUriList: List<String> = imageList.map { it.img_uri } // Uri를 String으로 변환
 
 
         // 게시글 작성 요청 데이터
@@ -311,6 +303,22 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
             category = category,
             images = imageUriList // 이미지 리스트
         )
+
+        // 이미지 업로드 요청 데이터
+        val uploadImagesRequest = UploadImagesRequest(
+            images = imageUriList
+        )
+
+        // 이미지 업로드 API 호출
+        CommunityRepository.uploadImages(accessToken?: "none", uploadImagesRequest) { uploadResponse  ->
+            if (uploadResponse != null) {
+                // 성공적으로 게시글이 작성됨
+                Log.d("이미지업로드", "이미지 업로드 성공: ${uploadResponse.img_uri}")
+            } else {
+                // 게시글 작성 실패
+                Log.e("이미지업로드", "이미지 업로드 실패: ${uploadResponse}")
+            }
+        }
 
         // 게시글 작성 API 호출
         CommunityRepository.postBoard(accessToken?: "none", postBoardRequest) { uploadResponse  ->

@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.energy.data.repository.community.WritingCommunityImage
+import com.example.energy.data.repository.community.ImagesModel
 import com.example.energy.databinding.ItemWritingCommunityImageBinding
 
 
-class GalleryAdapter (private val imageUrl: ArrayList<WritingCommunityImage>): RecyclerView.Adapter<GalleryAdapter.ViewHolder>() {
+class GalleryAdapter (private val imageUrl: List<ImagesModel>): RecyclerView.Adapter<GalleryAdapter.ViewHolder>() {
 
     interface MyItemClickListener{
         fun onRemoveImage(position: Int)
@@ -34,11 +34,11 @@ class GalleryAdapter (private val imageUrl: ArrayList<WritingCommunityImage>): R
         val currentImage = imageUrl[position]
 
         Glide.with(holder.itemView.context)
-            .load(imageUrl[position].imageUrl) //이미지 위치
+            .load(imageUrl[position]) //이미지 위치
             .into(holder.galleryView) //보여줄 위치
 
         // 대표 이미지 표시
-        holder.binding.representativeLabel.visibility = if (currentImage.isRepresentative) View.VISIBLE else View.GONE
+        holder.binding.representativeLabel.visibility = if (position == 0) View.VISIBLE else View.GONE
 
         // X 아이콘 클릭 시 해당데이터 삭제
         holder.binding.writingCommunityImageCancel.setOnClickListener {
@@ -50,7 +50,6 @@ class GalleryAdapter (private val imageUrl: ArrayList<WritingCommunityImage>): R
 
     @SuppressLint("NotifyDataSetChanged")
     fun removeImage(position: Int) {
-        imageUrl.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, itemCount)
     }

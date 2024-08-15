@@ -1,20 +1,16 @@
 package com.example.energy.presentation.view.community
 
-import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
-import android.opengl.Visibility
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.energy.R
-import com.example.energy.data.CommunityPostDatabase
 import com.example.energy.data.repository.community.BoardModel
-import com.example.energy.data.repository.community.CommunityPost
+import com.example.energy.data.repository.community.CommunityRepository
 import com.example.energy.databinding.ItemCommunityFeedBinding
 
 
@@ -71,6 +67,10 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
             binding.itemCommunityPostCommentNum.text = postInfo.comment_count.toString()
             binding.itemCommunityPostCategoryView.setImageResource(fromString(postInfo.category!!))
 
+            //토큰 가져오기
+            val sharedPreferences = binding.root.context.getSharedPreferences("userToken", Context.MODE_PRIVATE)
+            val accessToken = sharedPreferences.getString("accessToken", "none")
+
 //            // 좋아요 아이콘 설정
 //            select(postInfo.isLiked)
 
@@ -109,11 +109,29 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
                 binding.itemCommunityPostCategoryHelp.visibility = View.GONE
             }
 
-//            // 좋아요 아이콘 클릭 리스너
-//            binding.itemCommunityPostLikeIcon.setOnClickListener {
-//                postInfo.isLiked = !postInfo.isLiked
-//                select(postInfo.isLiked)
-//            }
+            // 좋아요 아이콘 클릭 리스너
+            binding.itemCommunityPostLikeIcon.setOnClickListener {
+                toggleLike(postInfo, postInfo.board_id ?: 0, postInfo.like_num ?: 0, accessToken?: "none")
+            }
+        }
+
+        // 좋아요 기능 함수
+        fun toggleLike(postInfo: BoardModel, boardId: Long, likeCount: Int, accessToken: String) {
+            // 현재 좋아요 상태를 토글 (이미 좋아요를 눌렀으면 false, 아니면 true)
+            val newLikeStatus = likeCount == 0
+            val newLikeCount = if (newLikeStatus) likeCount + 1 else likeCount - 1
+
+            // 서버에 좋아요 상태 업데이트 요청
+            CommunityRepository.postLikeBoard(accessToken, boardId) { response ->
+                if (response != null) {
+                    // 좋아요 상태 업데이트 성공 시
+                    postInfo.like_num = response.like_count ?: newLikeCount
+                    select(newLikeStatus)
+                } else {
+                    // 좋아요 상태 업데이트 실패 시
+                    Log.d("커뮤니티좋아요상태변경", "좋아요 상태 업데이트 실패")
+                }
+            }
         }
 
         fun select(isLike: Boolean) {

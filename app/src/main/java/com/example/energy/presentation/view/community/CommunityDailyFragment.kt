@@ -1,29 +1,16 @@
 package com.example.energy.presentation.view.community
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.energy.R
-import com.example.energy.data.CommunityPostDatabase
-import com.example.energy.data.repository.community.CommunityPost
 import com.example.energy.data.repository.community.CommunityRepository
 import com.example.energy.databinding.FragmentCommunityDailyBinding
 import com.example.energy.presentation.view.base.BaseFragment
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CommunityDailyFragment : BaseFragment<FragmentCommunityDailyBinding>({ FragmentCommunityDailyBinding.inflate(it)}) {
 
-    var postInfo = ArrayList<CommunityPost>() //커뮤니티 데이터 리스트
-    private lateinit var communityDB: CommunityPostDatabase
     private lateinit var postCommunityAdapter: PostCommunityRVAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

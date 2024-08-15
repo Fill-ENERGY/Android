@@ -295,6 +295,16 @@
             app:layout_constraintTop_toTopOf="@id/message_input"
             app:layout_constraintBottom_toBottomOf="@id/message_input"
             app:layout_constraintEnd_toEndOf="@id/message_input"/>
+        <ImageButton
+            android:id="@+id/lock_button"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/icon_lock"
+            android:visibility="gone"
+            android:layout_marginEnd="3dp"
+            app:layout_constraintTop_toTopOf="@id/message_input"
+            app:layout_constraintBottom_toBottomOf="@id/message_input"
+            app:layout_constraintEnd_toEndOf="@id/message_input"/>
 
         <ImageButton
             android:id="@+id/send_button"

@@ -1,16 +1,12 @@
 package com.example.energy.presentation.view.community
 
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.energy.R
-import com.example.energy.data.repository.community.Notification
 import com.example.energy.databinding.FragmentCommunityNotifiWithDataBinding
 import com.example.energy.presentation.view.base.BaseFragment
-import com.example.energy.presentation.view.note.SwipeHelper
 
 class NotifyFragmentWithData : BaseFragment<FragmentCommunityNotifiWithDataBinding>({ FragmentCommunityNotifiWithDataBinding.inflate(it)}){
 

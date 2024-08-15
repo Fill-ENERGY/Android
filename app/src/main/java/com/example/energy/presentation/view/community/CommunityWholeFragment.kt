@@ -5,27 +5,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Room
-import com.example.energy.R
-import com.example.energy.data.CommunityPostDatabase
-import com.example.energy.data.repository.community.CommunityPost
 import com.example.energy.data.repository.community.CommunityRepository
-import com.example.energy.data.repository.map.MapRepository
 import com.example.energy.databinding.FragmentCommunityWholeBinding
 import com.example.energy.presentation.view.base.BaseFragment
-import com.kakao.vectormap.MapView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CommunityWholeFragment : BaseFragment<FragmentCommunityWholeBinding>({ FragmentCommunityWholeBinding.inflate(it)}) {
 
-    var postInfo = ArrayList<CommunityPost>() //커뮤니티 데이터 리스트
     val categoriesList = "도와줘요" //임시 카테고리 리스트
     val imageUrlsList: List<Uri> = emptyList() // 임시 이미지 리스트
-    private lateinit var communityDB: CommunityPostDatabase
     private lateinit var postCommunityAdapter: PostCommunityRVAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,7 +23,7 @@ class CommunityWholeFragment : BaseFragment<FragmentCommunityWholeBinding>({ Fra
         var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
         var accessToken = sharedPreferences?.getString("accessToken", "none")
 
-        //test
+        // 조회 test
         CommunityRepository.getListCommunity(accessToken!!, "", 0, 10, "") {
                 response ->
             response.let {
