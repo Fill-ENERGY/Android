@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_list_info"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -31,7 +32,7 @@
             android:layout_marginStart="14dp" />
 
         <TextView
-            android:id="@+id/locationtext"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/location"
@@ -42,6 +43,7 @@
 
 
         <TextView
+            android:id="@+id/locationtext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="서울 서대문구 연희로 248 1층"
@@ -62,6 +64,7 @@
             android:text="지번" />
 
         <TextView
+            android:id="@+id/streetnumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="연희동 168-6"
@@ -100,6 +103,7 @@
 
 
         <TextView
+            android:id="@+id/weekday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0:00 ~ 24:00"
@@ -121,6 +125,7 @@
 
 
         <TextView
+            android:id="@+id/saturday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
@@ -146,6 +151,7 @@
 
 
         <TextView
+            android:id="@+id/holiday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
@@ -174,7 +180,7 @@
             android:layout_marginStart="21dp" />
 
         <TextView
-            android:id="@+id/calltext"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/call"
@@ -185,6 +191,7 @@
 
 
         <TextView
+            android:id="@+id/calltext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="02-879-4317"
@@ -223,6 +230,7 @@
 
 
         <TextView
+            android:id="@+id/currentusagecount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2"
@@ -261,6 +269,7 @@
 
 
         <TextView
+            android:id="@+id/airinjection"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="151dp"
