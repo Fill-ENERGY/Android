@@ -33,6 +33,8 @@ data class StationDetailModel (
     var distance: String?,
     var score: Double?,
     var scoreCount: Int?,
+    var latitude: Double?,
+    var longitude: Double?,
     var address: String?,
     var streetNumber: String?,
     var weekdayOpen: String?,
@@ -47,6 +49,27 @@ data class StationDetailModel (
     var phoneChargingAvailable: Boolean?,
     var favorite: Boolean?
 )
+
+//즐겨찾기한 충전소 조회
+data class StationBookmarkResponse (
+    val code: String,
+    val message: String,
+    val result: List<StationBookmarkModel>?
+)
+
+data class StationBookmarkModel (
+    var id: Int?,
+    var name: String?,
+    var distance: String?,
+    var score: Double?,
+    var scoreCount: Int?,
+    var latitude: Double?,
+    var longitude: Double?,
+    var dayOfWeek: String?,
+    var openTime: String?,
+    var closeTime: String?,
+)
+
 
 //지도에 표시할 모든 충전소 정보 조회
 data class MapResponse (
