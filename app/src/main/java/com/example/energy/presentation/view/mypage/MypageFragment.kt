@@ -17,6 +17,7 @@ import com.example.energy.databinding.FragmentMypageBinding
 import com.example.energy.presentation.util.EnergyUtils
 import com.example.energy.presentation.view.MainActivity
 import com.example.energy.presentation.view.base.BaseFragment
+import com.example.energy.presentation.view.community.NotificationActivity
 import com.example.energy.presentation.view.login.LoginActivity
 import com.kakao.sdk.user.UserApiClient
 
@@ -49,16 +50,15 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
 
 
 
-        //login 다이얼로그
-        binding.btnAccountSetting.setOnClickListener {
-            EnergyUtils.showLoginDialog(requireContext())
-        }
 
 
         setToolBar()
 
         setUserInfo()
 
+        binding.btnBlocks.setOnClickListener {
+            startActivity(Intent(activity, BlockActivity::class.java))
+        }
         binding.btnLogout.setOnClickListener {
             // 로그아웃
             UserApiClient.instance.logout { error ->
@@ -114,8 +114,7 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.appbar_notification -> {
-                    showToast("notification")
-                    startActivity(Intent(activity, BlockActivity::class.java))
+                    startActivity(Intent(activity, NotificationActivity::class.java))
                     true
                 }
 
