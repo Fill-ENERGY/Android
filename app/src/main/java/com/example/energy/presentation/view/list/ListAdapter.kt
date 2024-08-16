@@ -1,9 +1,12 @@
 package com.example.energy.presentation.view.list
 
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.energy.data.repository.list.StationDetailModel
 import com.example.energy.data.repository.map.ListMapModel
 import com.example.energy.databinding.ListItemBinding
 
@@ -20,7 +23,10 @@ class ListAdapter(private val itemList: List<ListMapModel>,
     class ListViewHolder(private val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
 
-        fun bind(data: ListMapModel, onItemClick: (ListMapModel) -> Unit) {
+
+
+
+        fun bind(data: ListMapModel,  onItemClick: (ListMapModel) -> Unit) {
 
             //거리, 평점, 시간 출력
             binding.locationName.text = data.name
@@ -33,14 +39,19 @@ class ListAdapter(private val itemList: List<ListMapModel>,
 
 
 
+
+
+
         }
     }
 
     // RecyclerView의 각 항목을 위한 ViewHolder를 생성
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
+
         val inflater = LayoutInflater.from(parent.context)
         val binding = ListItemBinding.inflate(inflater, parent, false)
         return ListViewHolder(binding)
+
     }
 
     // ViewHolder에 데이터를 바인딩

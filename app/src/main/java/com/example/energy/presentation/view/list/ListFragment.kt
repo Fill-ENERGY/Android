@@ -18,6 +18,7 @@ import com.example.energy.data.repository.list.ListRepository
 
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.FragmentListBinding
+import com.example.energy.presentation.util.EnergyUtils.Companion.showSOSDialog
 import com.example.energy.presentation.view.base.BaseFragment
 
 class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inflate(it)}) {
@@ -41,43 +42,6 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
         //데이터 로드 함수 호출
         loadData(accessToken, currentSortType)
-
-
-
-
-
-
-        /*
-        ListRepository.getListStation(accessToken, "DISTANCE", 12, 10, 37.5665, 126.9780
-        ) { ListModel ->
-
-            if (ListModel != null) {
-                // 리스트 어댑터 생성
-                val listAdapter = ListAdapter(ListModel) { selectedItem ->
-                    // 클릭된 아이템을 ListInformationActivity로 전달
-                    val intent = Intent(activity, ListInformationActivity::class.java).apply {
-                        putExtra("location_name", selectedItem.name)
-                        putExtra("distance", selectedItem.distance)
-                        putExtra("grade", "${selectedItem.score}(${selectedItem.scoreCount})")
-                        putExtra("time", "${selectedItem.openTime} ~ ${selectedItem.closeTime}")
-                    }
-                    startActivity(intent)
-                }
-
-                binding.recyclerView.apply {
-                    layoutManager = LinearLayoutManager(context)
-                    adapter = listAdapter
-                    addItemDecoration(CustomDividerItemDecoration(context))
-                }
-            } else {
-                Log.e("리스트api연결", "데이터 연결 실패")
-            }
-        }
-
-
-         */
-
-
 
 
 
@@ -131,6 +95,7 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
         { ListModel ->
 
             if (ListModel != null) {
+
 
                 // 리스트 어댑터 생성
                 val listAdapter = ListAdapter(ListModel) { selectedItem ->
