@@ -2,27 +2,19 @@ package com.example.energy.presentation.view.map
 
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.PointF
 import android.location.Location
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.example.energy.R
-import com.example.energy.databinding.FragmentSearchBinding
+import com.example.energy.data.repository.map.MapRepository
 import com.example.energy.databinding.FragmentSearchResultBinding
 import com.example.energy.presentation.util.EnergyUtils
 import com.example.energy.presentation.util.MapLocation
-import com.example.energy.presentation.view.MainActivity
 import com.example.energy.presentation.view.base.BaseFragment
-import com.example.energy.presentation.view.mypage.BlockActivity
 import com.example.energy.presentation.viewmodel.MapViewModel
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
@@ -39,6 +31,7 @@ import java.time.LocalDate
 class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ FragmentSearchResultBinding.inflate(it) }) {
     val mapViewModel by activityViewModels<MapViewModel>()
     lateinit var stationName: String
+    var stationId: Int = 0
     var stationLatitude: Double = 0.0
     var stationLongitude: Double = 0.0
     var today = LocalDate.now()
@@ -50,14 +43,6 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
         super.onViewCreated(view, savedInstanceState)
 
         val mapView: MapView = binding.mapView
-
-        //충전소 위도 경도 받아오기
-//        mapViewModel.getStationLatitude.observe(viewLifecycleOwner, Observer { latitude ->
-//            stationLatitude = latitude
-//        })
-//        mapViewModel.getStationLongitude.observe(viewLifecycleOwner, Observer { longitude ->
-//            stationLongitude = longitude
-//        })
 
         //충전소 정보 세팅
         setStationInfo()
@@ -78,6 +63,9 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
             setToolBar(detail.name!!)
             //bottomSheet 타이틀
             binding.tvMarkerBottom.text = detail.name!!
+
+            //충전소 id (즐겨찾기용)
+            stationId = detail.id!!
 
             //충전소 위도, 경도
             stationLatitude = detail.latitude!!
@@ -134,6 +122,9 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
                     binding.ivBookmark.setImageResource(R.drawable.iv_bookmark)
                 } else {
                     //즐겨찾기 추가
+                    mapViewModel.getAccessToken.observe(viewLifecycleOwner, Observer { accessToken ->
+                        MapRepository.postBookmarkStation(accessToken, stationId)
+                    })
                     binding.ivBookmark.setImageResource(R.drawable.iv_bookmark_fill)
                 }
             }
@@ -143,7 +134,6 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
 
         //충전소 길안내
         binding.ivGuide.setOnClickListener {
-            //searchCharging(location.latitude, location.longitude, mapViewModel.getLocation())
             mapViewModel.getCurrentLocation.observe(viewLifecycleOwner, Observer { currentLocation ->
              searchCharging(currentLocation, stationLatitude, stationLongitude)
             })

@@ -10,7 +10,7 @@ import retrofit2.Response
 class MapRepository {
     companion object{
        //충전소 즐겨찾기
-       fun postBookmarkStation(accessToken: String, stationId: Any, callback: ()-> Unit){
+       fun postBookmarkStation(accessToken: String, stationId: Any){
            val mapService = getRetrofit().create(MapInterface::class.java)
            val call = mapService.postBookmarkStation(accessToken, stationId)
 
