@@ -61,7 +61,7 @@ class ReviewRepository {
                 ) {
                     if (response.isSuccessful) {
                         //통신 성공
-                        Log.d("getReviewInfo", "통신 성공 ${response.body()?.code}")
+                        Log.d("getReviewInfo", "통신 성공 ${response.body()?.result}")
                         val reviewModel = response.body()?.result
                         callback(reviewModel)
                     } else {
@@ -164,17 +164,20 @@ class ReviewRepository {
                     if (response.isSuccessful) {
                         //통신 성공
                         Log.d("editReview", "통신 성공 ${response.body()?.code}")
-
+                        val reviewEditModel = response.body()?.result
+                        callback(reviewEditModel)
                     } else {
                         //통신 실패
                         val error = response.errorBody()?.toString()
                         Log.e("editReview", "통신 실패 $error")
+                        callback(null)
                     }
                 }
 
                 override fun onFailure(call: Call<ReviewResponse>, t: Throwable) {
                     // 통신 실패
                     Log.w("editReview", "통신 실패: ${t.message}")
+                    callback(null)
                 }
             }
             )
@@ -223,7 +226,7 @@ class ReviewRepository {
                 ) {
                     if (response.isSuccessful) {
                         //통신 성공
-                        Log.d("getMyReviews", "통신 성공 ${response.body()?.code}")
+                        Log.d("getMyReviews", "통신 성공 ${response.body()?.result}")
                         val reviewModel = response.body()?.result
                         callback(reviewModel)
                     } else {
@@ -261,7 +264,7 @@ class ReviewRepository {
                 ) {
                     if (response.isSuccessful) {
                         //통신 성공
-                        Log.d("getReviewsStation", "통신 성공 ${response.body()?.code}")
+                        Log.d("getReviewsStation", "통신 성공 ${response.body()?.result}")
                         val reviewModel = response.body()?.result
                         callback(reviewModel)
                     } else {
@@ -294,7 +297,7 @@ class ReviewRepository {
                 ) {
                     if (response.isSuccessful) {
                         //통신 성공
-                        Log.d("getReviewKeywords", "통신 성공 ${response.body()?.code}")
+                        Log.d("getReviewKeywords", "통신 성공 ${response.body()?.result}")
                         val keywordModel = response.body()?.result
                         callback(keywordModel)
                     } else {
