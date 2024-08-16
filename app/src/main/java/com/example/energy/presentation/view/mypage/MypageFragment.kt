@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.example.energy.R
 import com.example.energy.data.repository.auth.AuthRepository
 import com.example.energy.data.repository.block.BlockRepository
+import com.example.energy.data.repository.map.MapRepository
 import com.example.energy.databinding.FragmentMypageBinding
 import com.example.energy.presentation.util.EnergyUtils
 import com.example.energy.presentation.view.MainActivity
@@ -28,29 +29,16 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
 
         //토큰 가져오기
         var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
-        var accessToken = sharedPreferences?.getString("accessToken", "none")
+        //var accessToken = sharedPreferences?.getString("accessToken", "none")
         var refreshToken = sharedPreferences?.getString("refreshToken", "none")
-        var test = accessToken ?: "dd"
-        var test2 = refreshToken ?: "dd"
+        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODE3OTA5LCJleHAiOjE3MjY0MDk5MDl9.D8cHYgTwnv-k3GdJpSexakAnn7rtZvML1cfkGm9qJoY"
 
-        Log.d("sharedp", test)
-        Log.d("sharedpRe", test2)
-
-
-        //로그인 api 테스트
-//        AuthRepository.customSignUp {
-//        }
-//        AuthRepository.refreshToken(accessToken!!, refreshToken!!) {
-//        }
-//        AuthRepository.logout(accessToken!!) {
-//        }
-        //차단 api 테스트
-//        BlockRepository.postBlockMember(accessToken!!, 2){
-//        }
-
-
-
-
+        MapRepository.getBookmarkStation(accessToken, 35.5, 35.5) {
+            response ->
+            if (response != null) {
+                binding.tvBookmark.text = response.size.toString()
+            }
+        }
 
         setToolBar()
 
