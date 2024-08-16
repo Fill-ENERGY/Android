@@ -88,9 +88,9 @@ class ReviewRepository {
             val reviewService = getRetrofit().create(ReviewInterface::class.java)
             val call = reviewService.recommendReview(accessToken, reviewId)
 
-            call.enqueue(object : retrofit2.Callback<BaseResponse> {
+            call.enqueue(object : retrofit2.Callback<RecommendReviewResponse> {
                 override fun onResponse(
-                    call: Call<BaseResponse>, response: Response<BaseResponse>
+                    call: Call<RecommendReviewResponse>, response: Response<RecommendReviewResponse>
                 ) {
                     if (response.isSuccessful) {
                         //통신 성공
@@ -103,7 +103,7 @@ class ReviewRepository {
                     }
                 }
 
-                override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+                override fun onFailure(call: Call<RecommendReviewResponse>, t: Throwable) {
                     // 통신 실패
                     Log.w("recommendReview", "통신 실패: ${t.message}")
                 }

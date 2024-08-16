@@ -34,7 +34,7 @@ interface ReviewInterface {
     fun recommendReview(
         @Header("Authorization") accessToken: String,
         @Path("reviewId") reviewId: Int,
-    ): Call<BaseResponse>
+    ): Call<RecommendReviewResponse>
 
     //평가 삭제 API
     @DELETE("/api/v1/reviews/{reviewId}")
@@ -60,7 +60,7 @@ interface ReviewInterface {
     ): Call<UploadImageResponse>
 
     //본인 평가 목록 가져오는 API
-    @GET("/api/v1/reviews/users")
+    @GET("/api/v1/reviews/members")
     fun getMyReviews(
         @Header("Authorization") accessToken: String,
     ): Call<AllReviewResponse>

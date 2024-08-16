@@ -52,12 +52,12 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
         val mapView: MapView = binding.mapView
 
         //충전소 위도 경도 받아오기
-        mapViewModel.getStationLatitude.observe(viewLifecycleOwner, Observer { latitude ->
-            stationLatitude = latitude
-        })
-        mapViewModel.getStationLongitude.observe(viewLifecycleOwner, Observer { longitude ->
-            stationLongitude = longitude
-        })
+//        mapViewModel.getStationLatitude.observe(viewLifecycleOwner, Observer { latitude ->
+//            stationLatitude = latitude
+//        })
+//        mapViewModel.getStationLongitude.observe(viewLifecycleOwner, Observer { longitude ->
+//            stationLongitude = longitude
+//        })
 
         //충전소 정보 세팅
         setStationInfo()
@@ -78,6 +78,10 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
             setToolBar(detail.name!!)
             //bottomSheet 타이틀
             binding.tvMarkerBottom.text = detail.name!!
+
+            //충전소 위도, 경도
+            stationLatitude = detail.latitude!!
+            stationLongitude = detail.longitude!!
 
             //떨어진 거리
             binding.tvDistance.text = detail.distance
@@ -187,7 +191,7 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
                     if (layer != null) {
                         layer.removeAll()
                         val label =
-                            LabelOptions.from(LatLng.from(location.latitude, location.longitude))
+                            LabelOptions.from(LatLng.from(stationLatitude, stationLongitude))
                                 .setStyles(styles)
                                 .setTexts(stationName)
                         label.clickable = true
@@ -199,7 +203,7 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
             }
 
             override fun getPosition(): LatLng {
-                return LatLng.from(location.latitude, location.longitude)
+                return LatLng.from(stationLatitude, stationLongitude)
             }
         })
     }

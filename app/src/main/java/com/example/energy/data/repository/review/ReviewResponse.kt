@@ -21,6 +21,11 @@ data class ReviewResponse(
 )
 
 //평가 추천, 삭제
+data class RecommendReviewResponse(
+    val code: String,
+    val message: String,
+    val result: RecommendReviewModel
+)
 
 //이미지 업로드
 data class UploadImageResponse(
@@ -61,15 +66,21 @@ data class ReviewModel(
     var recommended: Boolean,
 )
 
+data class RecommendReviewModel(
+    var reviewId: Int?,
+    var memberId: Int?,
+    var recommendCount: Int?,
+)
+
 data class KeywordModel(
     var name: String?,
     var content: String?,
 )
 
 data class ProfileModel(
-    var profileImg: String?,
-    val createdAt: String?,
-    val updatedAt: String?,
-    val name: String?,
-    var nickname: String?,
-)
+    var score: Double?,
+    var authorId: Int?,
+    var authorName: String?,
+    val username: String?,
+    var recommended: Boolean,
+    )
