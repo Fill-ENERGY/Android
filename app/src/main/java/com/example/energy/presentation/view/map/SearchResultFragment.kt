@@ -2,25 +2,19 @@ package com.example.energy.presentation.view.map
 
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.PointF
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.example.energy.R
-import com.example.energy.databinding.FragmentSearchBinding
+import com.example.energy.data.repository.map.MapRepository
 import com.example.energy.databinding.FragmentSearchResultBinding
 import com.example.energy.presentation.util.EnergyUtils
 import com.example.energy.presentation.util.MapLocation
-import com.example.energy.presentation.view.MainActivity
 import com.example.energy.presentation.view.base.BaseFragment
-import com.example.energy.presentation.view.mypage.BlockActivity
 import com.example.energy.presentation.viewmodel.MapViewModel
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
@@ -31,12 +25,17 @@ import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
 import com.kakao.vectormap.label.LabelTextStyle
+import java.time.DayOfWeek
+import java.time.LocalDate
 
 class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ FragmentSearchResultBinding.inflate(it) }) {
     val mapViewModel by activityViewModels<MapViewModel>()
     lateinit var stationName: String
+    var stationId: Int = 0
     var stationLatitude: Double = 0.0
     var stationLongitude: Double = 0.0
+    var today = LocalDate.now()
+    var dayType = today.dayOfWeek
 
     lateinit var myKakaoMap: KakaoMap
 
@@ -45,63 +44,96 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
 
         val mapView: MapView = binding.mapView
 
-        //충전소 위도 경도 받아오기
-        mapViewModel.getStationLatitude.observe(viewLifecycleOwner, Observer { latitude ->
-            stationLatitude = latitude
-        })
-        mapViewModel.getStationLongitude.observe(viewLifecycleOwner, Observer { longitude ->
-            stationLongitude = longitude
-        })
-
         //충전소 정보 세팅
         setStationInfo()
 
         //지도 보여주기
         MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) {
                 location ->  Log.d("CurrentLocation", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
-            val distance = mapViewModel.getDistanceFromCurrentLocation(location.latitude, location.longitude)
-
-            //거리 구하기
-            binding.tvDistance.text = "${distance} m"
 
             getMap(mapView, location)
         }
     }
 
     private fun setStationInfo() {
-        mapViewModel.getStationName.observe(viewLifecycleOwner, Observer { name ->
-            stationName = name
+        //충전소 디테일 정보 가져오기
+        mapViewModel.getStationDetailModel.observe(viewLifecycleOwner, Observer { detail ->
+            stationName = detail.name!!
             //상단바
-            setToolBar(name)
+            setToolBar(detail.name!!)
             //bottomSheet 타이틀
-            binding.tvMarkerBottom.text = name
-        })
+            binding.tvMarkerBottom.text = detail.name!!
 
-        //운영시간
-        mapViewModel.getStationTime.observe(viewLifecycleOwner, Observer { time ->
-            binding.tvTime.text = time
-        })
+            //충전소 id (즐겨찾기용)
+            stationId = detail.id!!
 
-        //충전소 전화번호
-        mapViewModel.getStationCall.observe(viewLifecycleOwner, Observer { callNumber ->
+            //충전소 위도, 경도
+            stationLatitude = detail.latitude!!
+            stationLongitude = detail.longitude!!
+
+            //떨어진 거리
+            binding.tvDistance.text = detail.distance
+
+            //별점
+            binding.tvStar.text = detail.score.toString()
+
+            //리뷰 수
+            binding.tvReviewCount.text = '(' + detail.scoreCount.toString() + ')'
+
+            //운영시간
+            when (dayType) {
+                DayOfWeek.SATURDAY -> {
+                    binding.tvDayType.text = "(토요일)"
+                    binding.tvOpenTime.text = detail.saturdayOpen
+                    binding.tvCloseTime.text = detail.saturdayClose
+                }
+                DayOfWeek.SUNDAY -> {
+                    binding.tvDayType.text = "(일요일)"
+                    binding.tvOpenTime.text = detail.holidayOpen
+                    binding.tvCloseTime.text = detail.holidayClose
+                }
+                else -> {
+                    //평일
+                    binding.tvOpenTime.text = detail.weekdayOpen
+                    binding.tvCloseTime.text = detail.weekdayClose
+                }
+            }
+
+            //전화번호
             binding.ivCall.setOnClickListener {
                 var intent = Intent(Intent.ACTION_DIAL)
-                intent.data = Uri.parse("tel:${callNumber}")
+                intent.data = Uri.parse("tel:${detail.phoneNumber}")
 
                 startActivity(intent)
             }
+
+            //즐겨찾기 상태 관리
+            if(detail.favorite == true) {
+                binding.ivBookmark.setImageResource(R.drawable.iv_bookmark_fill)
+            } else {
+                binding.ivBookmark.setImageResource(R.drawable.iv_bookmark)
+            }
+
+            //충전소 즐겨찾기
+            binding.ivBookmark.setOnClickListener {
+                //즐겨찾기 로직 추가
+                if(detail.favorite == true) {
+                    //즐겨찾기 해제
+                    binding.ivBookmark.setImageResource(R.drawable.iv_bookmark)
+                } else {
+                    //즐겨찾기 추가
+                    mapViewModel.getAccessToken.observe(viewLifecycleOwner, Observer { accessToken ->
+                        MapRepository.postBookmarkStation(accessToken, stationId)
+                    })
+                    binding.ivBookmark.setImageResource(R.drawable.iv_bookmark_fill)
+                }
+            }
+
         })
 
-        //충전소 즐겨찾기
-        binding.ivBookmark.setOnClickListener {
-            //즐겨찾기 로직 추가
-
-            binding.ivBookmark.setImageResource(R.drawable.iv_bookmark_fill)
-        }
 
         //충전소 길안내
         binding.ivGuide.setOnClickListener {
-            //searchCharging(location.latitude, location.longitude, mapViewModel.getLocation())
             mapViewModel.getCurrentLocation.observe(viewLifecycleOwner, Observer { currentLocation ->
              searchCharging(currentLocation, stationLatitude, stationLongitude)
             })
@@ -149,9 +181,9 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
                     if (layer != null) {
                         layer.removeAll()
                         val label =
-                            LabelOptions.from(LatLng.from(location.latitude, location.longitude))
+                            LabelOptions.from(LatLng.from(stationLatitude, stationLongitude))
                                 .setStyles(styles)
-                                .setTexts("my town")
+                                .setTexts(stationName)
                         label.clickable = true
                         layer.addLabel(label)
 
@@ -161,7 +193,7 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
             }
 
             override fun getPosition(): LatLng {
-                return LatLng.from(location.latitude, location.longitude)
+                return LatLng.from(stationLatitude, stationLongitude)
             }
         })
     }
