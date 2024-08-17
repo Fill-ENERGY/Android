@@ -16,7 +16,6 @@ class ListRepository {
     companion object{
 
 
-
         //리스트 데이터
         fun getListStation(accessToken: String, sort: String, lastId: Int, offset: Int?, currentLatitude: Double, currentLongitude: Double, callback: (List<ListMapModel>?)-> Unit){
             val mapService = getRetrofit().create(ListInterface::class.java)
