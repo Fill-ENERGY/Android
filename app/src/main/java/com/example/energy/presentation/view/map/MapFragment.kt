@@ -41,7 +41,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
         //토큰 가져오기
         var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
         //var accessToken = sharedPreferences?.getString("accessToken", "none")
-        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODczNzk1LCJleHAiOjE3MjY0NjU3OTV9.XCE8KBKnNX358LtWQmSuDuo9eNHl_fdZznYk0yxs70M"
+        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODg3ODYzLCJleHAiOjE3MjY0Nzk4NjN9.qGR9PibGimGon0_82i_Z73nxXJzK1BDoPLWRLjC0QI4"
         if (accessToken != null) {
             mapViewModel.setAccessToken(accessToken)
         }

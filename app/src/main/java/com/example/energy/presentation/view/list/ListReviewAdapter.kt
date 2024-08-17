@@ -23,12 +23,12 @@ class ListReviewAdapter(private val itemList: ArrayList<ReviewModel>): RecyclerV
         holder.bind(itemList[position]) //받아온 데이터를 객체에 넣어주는 작업
 
         // 아이템 클릭 이벤트
-        holder.itemView.setOnClickListener {
-            itemClickListener.onItemClick(itemList[position])
-        }
+//        holder.itemView.setOnClickListener {
+//            itemClickListener.onItemClick(itemList[position])
+//        }
 
         holder.binding.tvRecommendReview.setOnClickListener {
-            itemClickListener.onRecommendReview(position)
+            itemClickListener.onRecommendReview(itemList[position].id)
         }
     }
 
@@ -40,9 +40,8 @@ class ListReviewAdapter(private val itemList: ArrayList<ReviewModel>): RecyclerV
     }
 
     interface OnItemClickListener {
-        fun onItemClick(reviewModel: ReviewModel)
-
-        fun onRecommendReview(position: Int)
+        //리뷰 추천
+        fun onRecommendReview(reviewId: Int)
     }
 
     fun setItemClickListener(onItemClickListener: OnItemClickListener) {
