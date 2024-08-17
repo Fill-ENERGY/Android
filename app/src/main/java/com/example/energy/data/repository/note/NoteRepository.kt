@@ -9,6 +9,36 @@ import retrofit2.Response
 
 class NoteRepository {
     companion object{
+
+
+        // 메시지를 보내는 함수
+        fun sendMessage(accessToken: String, messageRequest: MessageRequest, callback: (MessageResponse?) -> Unit) {
+
+
+            val noteApiService = getRetrofit().create(ChatInterface::class.java)
+            val call = noteApiService.sendMessages(accessToken, messageRequest)
+
+            call.enqueue(object : Callback<MessageResponse> {
+
+                override fun onResponse(call: Call<MessageResponse>, response: Response<MessageResponse>) {
+                    if (response.isSuccessful) {
+                        Log.d("NoteRepository", "메시지 전송 성공: ${response.body()?.message}")
+                        callback(response.body())
+                    } else {
+                        Log.e("NoteRepository", "메시지 전송 실패: ${response.errorBody()?.string()}")
+                        callback(null)
+                    }
+                }
+
+                override fun onFailure(call: Call<MessageResponse>, t: Throwable) {
+                    Log.e("NoteRepository", "메시지 전송 중 오류 발생: ${t.message}")
+                    callback(null)
+                }
+            })
+        }
+
+
+        /*
         //지도에 띄울 데이터
         fun leaveChatRoom(accessToken: String, threadId: Int, callback: (StationMapModel?)-> Unit){
             val noteService = getRetrofit().create(ChatInterface::class.java)
@@ -38,6 +68,13 @@ class NoteRepository {
             }
             )
         }
+
+
+
+         */
+
+
+
     }
 
 }

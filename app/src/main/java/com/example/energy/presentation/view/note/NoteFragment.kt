@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
 import com.example.energy.data.getRetrofit
 import com.example.energy.data.repository.note.ChatInterface
-import com.example.energy.data.repository.note.LeaveChatResponse
-import com.example.energy.data.repository.note.NoteRepository.Companion.leaveChatRoom
+
+//import com.example.energy.data.repository.note.NoteRepository.Companion.leaveChatRoom
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.FragmentNoteBinding
 import com.example.energy.presentation.view.base.BaseFragment
@@ -95,6 +95,8 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
 
 
         }
+
+
 
 
 
