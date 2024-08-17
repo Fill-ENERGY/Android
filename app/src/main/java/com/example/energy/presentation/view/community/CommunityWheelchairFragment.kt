@@ -16,17 +16,18 @@ class CommunityWheelchairFragment : BaseFragment<FragmentCommunityWheelchairBind
         super.onViewCreated(view, savedInstanceState)
 
         //토큰 가져오기
-        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
-        var accessToken = sharedPreferences?.getString("accessToken", "none")
+//        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+//        var accessToken = sharedPreferences?.getString("accessToken", "none")
+        val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODg3ODYzLCJleHAiOjE3MjY0Nzk4NjN9.qGR9PibGimGon0_82i_Z73nxXJzK1BDoPLWRLjC0QI4"
 
         //test
-        CommunityRepository.getListCommunity(accessToken!!, "WHEELCHAIR", 0, 10, "") {
+        CommunityRepository.getListCommunity(accessToken, "WHEELCHAIR", 0, 10, "") {
                 response ->
             response.let {
                 //통신성공
-                if (response != null && response.board != null) {
+                if (response != null && response.boards != null) {
                     // RecyclerView 초기화 및 데이터 연결 (메인 스레드)
-                    postCommunityAdapter = PostCommunityRVAdapter(response.board)
+                    postCommunityAdapter = PostCommunityRVAdapter(response.boards)
                     binding.wheelchairCommunityPostRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                     binding.wheelchairCommunityPostRv.adapter = postCommunityAdapter
                 } else {

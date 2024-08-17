@@ -5,7 +5,7 @@ import com.example.energy.data.repository.community.CommentModel
 // 댓글 정렬 알고리즘
 fun makeChildComment(dataSet : List<CommentModel>): List<CommentModel>{
     val newDataSet = mutableListOf<CommentModel>() //새로운 댓글 리스트
-    val hashList = HashMap<Long,ArrayList<CommentModel>>() //부모 뷰에 해당하는 자식 뷰들을 관리하기 위한 리스트
+    val hashList = HashMap<Int,ArrayList<CommentModel>>() //부모 뷰에 해당하는 자식 뷰들을 관리하기 위한 리스트
 
     //같은 부모뷰를 가지는 댓글들을 해쉬함수를 통해서 묶어줌
     for (data in dataSet){
@@ -26,7 +26,7 @@ fun makeChildComment(dataSet : List<CommentModel>): List<CommentModel>{
     var i = 0
     while(i < newDataSet.size){
         // 자식 댓글 발견 -> 위치에 자식 댓글 리스트 추가
-        val parentId = newDataSet[i].comment_id
+        val parentId = newDataSet[i].id
         if (parentId != null && hashList.containsKey(parentId)) {
             val subData = hashList[parentId]!!
             newDataSet.addAll(i + 1, subData)

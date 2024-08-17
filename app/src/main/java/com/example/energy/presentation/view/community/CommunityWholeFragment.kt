@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.energy.data.repository.community.BoardModel
 import com.example.energy.data.repository.community.CommunityRepository
 import com.example.energy.databinding.FragmentCommunityWholeBinding
 import com.example.energy.presentation.view.base.BaseFragment
@@ -15,27 +16,29 @@ class CommunityWholeFragment : BaseFragment<FragmentCommunityWholeBinding>({ Fra
     val categoriesList = "도와줘요" //임시 카테고리 리스트
     val imageUrlsList: List<Uri> = emptyList() // 임시 이미지 리스트
     private lateinit var postCommunityAdapter: PostCommunityRVAdapter
+    private val postList = mutableListOf<BoardModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         //토큰 가져오기
-        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
-        var accessToken = sharedPreferences?.getString("accessToken", "none")
+//        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+//        var accessToken = sharedPreferences?.getString("accessToken", "none")
+        val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODg3ODYzLCJleHAiOjE3MjY0Nzk4NjN9.qGR9PibGimGon0_82i_Z73nxXJzK1BDoPLWRLjC0QI4"
 
-        // 조회 test
-        CommunityRepository.getListCommunity(accessToken!!, "", 0, 10, "") {
+        // 게시글 조회 test
+        CommunityRepository.getListCommunity(accessToken, "", 0, 10, "LATEST") {
                 response ->
             response.let {
                 Log.d("게시글정보", "${response}")
                 //통신성공
-                if (response != null && response.board != null) {
+                if (response != null && response.boards != null) {
                     // RecyclerView 초기화 및 데이터 연결 (메인 스레드)
-                    postCommunityAdapter = PostCommunityRVAdapter(response.board)
+                    postCommunityAdapter = PostCommunityRVAdapter(response.boards)
                     binding.wholeCommunityPostRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                     binding.wholeCommunityPostRv.adapter = postCommunityAdapter
                 } else {
-                    Log.e("전체커뮤니티api테스트", "응답 결과가 null이거나 board가 없습니다.")
+                    Log.e("전체커뮤니티api테스트", "응답 결과가 null이거나 board가 없습니다. ${response}")
                 }
             }
         }

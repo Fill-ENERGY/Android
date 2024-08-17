@@ -1,5 +1,6 @@
 package com.example.energy.presentation.view.community
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -24,41 +25,32 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 class CommunityDetailActivity : AppCompatActivity(){
     private lateinit var binding: ActivityCommunityDetailBinding
     private lateinit var commentAdapter: ItemCommentAdapter
-    private var parentCommentId: Long = -1 // 자식 댓글의 부모 댓글 ID
+    private var parentCommentId: Int = -1 // 자식 댓글의 부모 댓글 ID
     private var writerStatus: String = "" //기본 값
     private var status : String = ""
     private var accessToken: String? = null
     private var isLiked: Boolean = false  // 좋아요 상태를 저장하는 변수
     private var likeCount: Int = 0 // 좋아요 개수를 저장하는 변수
     private var isSecret: Boolean = false  // 좋아요 상태를 저장하는 변수
+    private var postId: Int = 0
 
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCommunityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         //토큰 가져오기
-        val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
-        accessToken = sharedPreferences?.getString("accessToken", "none")
-
-        // Adapter에 리스너 설정
-        commentAdapter.onItemClickListener = object : ItemCommentAdapter.OnItemClickListener {
-            override fun addSubComment(commentModel: CommentModel) {
-                // 대댓글 추가 로직 구현
-                // 부모 댓글 ID를 설정하여 자식 댓글을 작성할 준비
-                parentCommentId = commentModel.comment_id!!
-            }
-
-            override fun showDialog(commentModel: CommentModel) {
-                showCommentDialog(commentModel)
-            }
-        }
+//        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+//        var accessToken = sharedPreferences?.getString("accessToken", "none")
+        val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODg3ODYzLCJleHAiOjE3MjY0Nzk4NjN9.qGR9PibGimGon0_82i_Z73nxXJzK1BDoPLWRLjC0QI4"
 
         // 인텐트로부터 전달받은 postId(board_id) 가져옴. 기본값은 -1로 설정하여 예외처리
-        val postId = intent.getLongExtra("postId", -1)
+        postId = intent.getIntExtra("postId", -1)
+        val likeStatus = intent.getBooleanExtra("likeStatus", false)
 
         // 커뮤니티 댓글 조회 api
-        CommunityRepository.getListComment(accessToken!!, postId) {
+        CommunityRepository.getListComment(accessToken, postId) {
                 response ->
             response.let {
                 Log.d("게시글댓글정보", "${response}")
@@ -68,6 +60,19 @@ class CommunityDetailActivity : AppCompatActivity(){
                     commentAdapter = ItemCommentAdapter(this, response)
                     binding.communityDetailCommentView.adapter = commentAdapter
                     binding.communityDetailCommentView.layoutManager = LinearLayoutManager(this)
+
+                    // 댓글 Adapter에 리스너 설정
+                    commentAdapter.onItemClickListener = object : ItemCommentAdapter.OnItemClickListener {
+                        override fun addSubComment(commentModel: CommentModel) {
+                            // 대댓글 추가 로직 구현
+                            // 부모 댓글 ID를 설정하여 자식 댓글을 작성할 준비
+                            parentCommentId = commentModel.id
+                        }
+
+                        override fun showDialog(commentModel: CommentModel) {
+                            showCommentDialog(commentModel)
+                        }
+                    }
                 } else {
                     Log.e("커뮤니티댓글조회api테스트", "응답 결과가 null이거나 comment가 없습니다.")
                 }
@@ -79,26 +84,24 @@ class CommunityDetailActivity : AppCompatActivity(){
         CommunityRepository.getDetailCommunity(accessToken?: "none", postId) { response ->
             if (response != null) {
                 //통신성공
-                likeCount = response.board.like_num ?: 0
-                isLiked = likeCount > 0 // 초기 좋아요 상태 설정
 
                 //binding.communityDetailUserProfile.setImageResource(postInfo.userProfile!!)
-                binding.communityDetailUserName.text = response.board.member_name
+                binding.communityDetailUserName.text = response.board.memberName
                 binding.communityDetailTitle.text = response.board.title
                 binding.communityDetailContent.text = response.board.content
-                binding.communityDetailCommentNum.text = response.board.comment_count.toString()
-                binding.communityDetailCategoryTitle.text = toKorean(response.board.category!!)
+                binding.communityDetailCommentNum.text = response.board.commentCount.toString()
+                binding.communityDetailCategoryTitle.text = toKorean(response.board.category)
                 // 좋아요 아이콘 클릭 시 toggleLike 함수 호출
                 binding.communityDetailLikeIcon.setOnClickListener {
-                    toggleLike(response.board, response.board.board_id ?: 0, accessToken ?: "none")
+                    toggleLike(response.board, response.board.id ?: 0, accessToken ?: "none")
                 }
-                updateLikeIcon(isLiked)
-                binding.communityDetailLikeNum.text = likeCount.toString()
+                updateLikeIcon(likeStatus)
+                binding.communityDetailLikeNum.text = response.board.likeNum.toString()
 
                 Log.d("커뮤니티이미지리스트2", response.board.images.toString())
 
                 // 이미지 RecyclerView 설정
-                if(response.board.images!!.isEmpty()){
+                if(response.board.images.isEmpty()){
                     // 이미지가 없는 경우 RecyclerView 숨기기
                     binding.communityDetailImage.visibility = View.GONE
                 } else{
@@ -107,13 +110,13 @@ class CommunityDetailActivity : AppCompatActivity(){
                     val layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
                     binding.communityDetailImage.layoutManager = layoutManager
 
-                    val imageAdapter = ItemFeedPhotoAdapter(response.board.images!!)
+                    val imageAdapter = ItemFeedPhotoAdapter(response.board.images)
                     Log.d("커뮤니티이미지리스트2", response.board.images.toString())
                     binding.communityDetailImage.adapter = imageAdapter
                 }
 
                 // 도와줘요 카테고리 & 작성자일 경우
-                if(response.board.category == "HELP" && response.board.is_author == true){
+                if(response.board.category == "HELP" && response.board.isAuthor == true){
                     binding.communityDetailChattingBtn.visibility = View.GONE
                     binding.communityDetailWriterRequestBtn.visibility = View.VISIBLE
 
@@ -124,7 +127,7 @@ class CommunityDetailActivity : AppCompatActivity(){
                 }
 
                 // 도와줘요 카테고리인 경우 & 일반 사용자일 경우
-                if(response.board.category == "HELP" && response.board.is_author == false){
+                if(response.board.category == "HELP" && response.board.isAuthor == false){
                     binding.communityDetailSeeMore.visibility = View.VISIBLE
 
                         // 더보기 버튼
@@ -152,22 +155,22 @@ class CommunityDetailActivity : AppCompatActivity(){
                     val commentText = binding.messageInput.text.toString()
                     if(commentText.isNotBlank()){
 
-                        // 게시글 작성 요청 데이터
+                        // 댓글 작성 요청 데이터
                         val writeCommentRequest = WriteCommentRequest(
                             content = commentText,
                             secret = isSecret,
                             parentCommentId = parentCommentId,
-                            images = null,
+                            images = emptyList(),
                         )
 
                         // 댓글 API 호출
-                        CommunityRepository.writeCommentBoard(accessToken?: "none", response.board.board_id!!, writeCommentRequest) { response  ->
+                        CommunityRepository.writeCommentBoard(accessToken?: "none", response.board.id, writeCommentRequest) { response  ->
                             if (response != null) {
                                 // 성공적으로 댓글 작성됨
-                                Log.d("커뮤니티업로드", "게시글 작성 성공: ${response.content}")
+                                Log.d("댓글업로드", "댓글 작성 성공: ${response.content}")
                             } else {
                                 // 댓글 작성 실패
-                                Log.e("커뮤니티업로드", "게시글 작성 실패: ${response}")
+                                Log.e("댓글업로드", "댓글 작성 실패: ${response}")
                             }
                         }
                     }
@@ -360,6 +363,12 @@ class CommunityDetailActivity : AppCompatActivity(){
         val binding = DialogCommunityWriterSeeMoreBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(binding.root)
 
+        binding.dialogCommunityEdit.setOnClickListener {
+            val intent = Intent(binding.root.context, CommunityWritingActivity::class.java)
+            intent.putExtra("postId", postId)
+            binding.root.context.startActivity(intent)
+        }
+
         bottomSheetDialog.show()
     }
 
@@ -393,12 +402,12 @@ class CommunityDetailActivity : AppCompatActivity(){
     }
 
     // 좋아요 기능 함수
-    fun toggleLike(board: BoardModel, boardId: Long, accessToken: String) {
+    fun toggleLike(board: BoardModel, boardId: Int, accessToken: String) {
         CommunityRepository.postLikeBoard(accessToken, boardId) { response ->
             if (response != null) {
                 isLiked = !isLiked
                 likeCount = if (isLiked) likeCount + 1 else likeCount - 1
-                board.like_num = likeCount
+                board.likeNum = likeCount
                 updateLikeIcon(isLiked)
                 binding.communityDetailLikeNum.text = likeCount.toString()
             } else {

@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide
 import com.example.energy.data.repository.community.ImagesModel
 import com.example.energy.databinding.ItemCommunityFeedPhotoBinding
 
-class ItemFeedPhotoAdapter (private val imageUrl: List<ImagesModel>): RecyclerView.Adapter<ItemFeedPhotoAdapter.ViewHolder>(){
+class ItemFeedPhotoAdapter (private val imageUrl: List<String>): RecyclerView.Adapter<ItemFeedPhotoAdapter.ViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemCommunityFeedPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -17,10 +17,10 @@ class ItemFeedPhotoAdapter (private val imageUrl: List<ImagesModel>): RecyclerVi
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Glide.with(holder.itemView.context)
-            .load(imageUrl[position].img_uri)
+            .load(imageUrl[position])
             .into(holder.binding.itemCommunityFeedPhoto)
 
-        Log.d("loadImage", imageUrl[position].img_uri)
+        Log.d("loadImage", imageUrl[position])
 //        val uri = imageUrl[position]
 //
 //        holder.imageView.setImageURI(uri)

@@ -11,7 +11,9 @@ import com.example.energy.data.repository.community.ImagesModel
 import com.example.energy.databinding.ItemWritingCommunityImageBinding
 
 
-class GalleryAdapter (private val imageUrl: List<ImagesModel>): RecyclerView.Adapter<GalleryAdapter.ViewHolder>() {
+class GalleryAdapter (private val imageUrl: MutableMap<String, Boolean>): RecyclerView.Adapter<GalleryAdapter.ViewHolder>() {
+
+    private val imageUris: List<String> get() = imageUrl.keys.toList()
 
     interface MyItemClickListener{
         fun onRemoveImage(position: Int)
@@ -31,14 +33,14 @@ class GalleryAdapter (private val imageUrl: List<ImagesModel>): RecyclerView.Ada
     }
 
     override fun onBindViewHolder(holder: GalleryAdapter.ViewHolder, position: Int) {
-        val currentImage = imageUrl[position]
+        val currentImage = imageUris[position]
 
         Glide.with(holder.itemView.context)
-            .load(imageUrl[position]) //이미지 위치
+            .load(imageUris[position]) //이미지 위치
             .into(holder.galleryView) //보여줄 위치
 
         // 대표 이미지 표시
-        holder.binding.representativeLabel.visibility = if (position == 0) View.VISIBLE else View.GONE
+        holder.binding.representativeLabel.visibility = if (imageUrl[currentImage] == true) View.VISIBLE else View.GONE
         //(currentImage.isRepresentative)
 
         // X 아이콘 클릭 시 해당데이터 삭제
@@ -51,8 +53,19 @@ class GalleryAdapter (private val imageUrl: List<ImagesModel>): RecyclerView.Ada
 
     @SuppressLint("NotifyDataSetChanged")
     fun removeImage(position: Int) {
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, itemCount)
+        if (position in imageUris.indices) {
+            val keyToRemove = imageUris[position]
+            imageUrl.remove(keyToRemove)
+
+            if (imageUrl.isNotEmpty()) {
+                // 새로운 대표 이미지 설정
+                val newRepresentative = imageUrl.keys.first()
+                imageUrl[newRepresentative] = true
+            }
+
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, itemCount)
+        }
     }
 
     inner class ViewHolder(val binding: ItemWritingCommunityImageBinding): RecyclerView.ViewHolder(binding.root) {

@@ -1,105 +1,112 @@
 package com.example.energy.data.repository.community
 
+import android.text.Editable
+
 // 커뮤니티 전체 가져오는 API
 data class CommunityResponse (
     val code: String,
     val message: String,
-    val result: CommunityModel?,
+    val result: CommunityModel,
 )
 data class CommunityModel (
-    var board: List<BoardModel>,
-    var next_cursor: Long?,
-    var has_next: Boolean?,
+    var boards: List<BoardModel>,
+    var nextCursor: Int,
+    var hasNext: Boolean,
 )
 
 
 // 게시글 관련 Response 데이터
 data class BoardModel(
-    var board_id: Long?,
-    var member_id: Long?,
-    var member_name: String?,
-    var title: String?,
-    var content: String?,
-    var category: String?,
-    var helpStatus: String?,
-    var is_author: Boolean? = true,
-    var created_at: String,
-    var updated_at: String,
-    var like_num: Int? = 0,
-    var comment_count: Int? = 0,
-    var images: List<ImagesModel>?,
+    var id: Int,
+    var memberId: Int,
+    var memberName: String,
+    var title: String,
+    var content: String,
+    var category: String,
+    var helpStatus: String,
+    var isAuthor: Boolean,
+    var likeNum: Int,
+    var commentCount: Int,
+    var createdAt: String,
+    var updatedAt: String,
+    var images: List<String>,
 )
 
 
-// 게시글 이미지
+// 게시글 이미지 업로드
 data class UploadImagesResponse(
-    val code: String?,
-    val message: String?,
-    val result: ImagesModel?,
+    val code: String,
+    val message: String,
+    val result: ImagesModel,
 )
 data class ImagesModel (
-    var board_img_id: String,
-    var img_uri: String,
-) {
-}
+    var images: List<String>
+)
 
 
 // 게시글 작성
 data class UploadResponse (
-    val code: String?,
-    val message: String?,
-    val result: BoardModel?,
+    val code: String,
+    val message: String,
+    val result: BoardModel
+)
+
+
+// 게시글 삭제
+data class DeleteCommunityResponse(
+    val code: String,
+    val message: String,
+    val result: Int,
 )
 
 
 // 상세 게시글 조회
 data class DetailResponse(
-    val code: String?,
-    val message: String?,
+    val code: String,
+    val message: String,
     val result: DetailModel
 )
 data class DetailModel(
     var board: BoardModel,
-    var comment: List<CommentModel>,
 )
 
 // 댓글 조회
 data class CommentListResponse(
-    val code: String?,
-    val message: String?,
-    val result: List<CommentModel>?,
+    val code: String,
+    val message: String,
+    val result: List<CommentModel>,
 )
 
 // 댓글 작성
 data class CommentResponse(
-    val code: String?,
-    val message: String?,
-    val result: CommentModel?,
+    val code: String,
+    val message: String,
+    val result: CommentModel,
 )
 data class CommentModel(
-    var comment_id: Long?,
-    var content: String?,
-    var secret: Boolean?,
-    var memberId: Long?,
-    var memberName: String?,
-    var createdAt: String?,
-    var images: List<ImagesModel>?,
-    var deleted: Boolean?,
-    var parentId: Long?,
+    var id: Int,
+    var content: String,
+    var secret: Boolean,
+    var memberId: Int,
+    var memberName: String,
+    var createdAt: String,
+    var images: List<ImagesModel>,
+    var deleted: Boolean,
+    var parentId: Int,
     var author: Boolean,
     var canViewSecret: Boolean,
-    var replies: List<CommentModel>,
+    var replies: List<String>,
 )
 
 
 // 좋아요 추가
 data class LikeResponse(
-    val code: String?,
-    val message: String?,
-    val result: LikeModel?,
+    val code: String,
+    val message: String,
+    val result: LikeModel,
 )
 data class LikeModel(
-    var member_id: Long?,
-    var board_id: Long?,
-    var like_count: Int?,
+    var memberId: Int,
+    var boardId: Int,
+    var likeCount: Int,
 )
