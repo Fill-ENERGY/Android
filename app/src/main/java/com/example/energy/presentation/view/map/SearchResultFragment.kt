@@ -44,6 +44,11 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
 
         val mapView: MapView = binding.mapView
 
+        //상단바
+        mapViewModel.getStationDetailModel.observe(viewLifecycleOwner, Observer { detail ->
+            setToolBar(detail.name!!)
+        })
+
         //충전소 정보 세팅
         setStationInfo()
 
@@ -59,8 +64,7 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
         //충전소 디테일 정보 가져오기
         mapViewModel.getStationDetailModel.observe(viewLifecycleOwner, Observer { detail ->
             stationName = detail.name!!
-            //상단바
-            setToolBar(detail.name!!)
+
             //bottomSheet 타이틀
             binding.tvMarkerBottom.text = detail.name!!
 
