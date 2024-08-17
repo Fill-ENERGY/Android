@@ -1,6 +1,7 @@
 package com.example.energy.presentation.view.list
 
 import android.os.Bundle
+import android.provider.Settings.System.putInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -23,6 +24,8 @@ class ListVPAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity
 
 
 
+
+
     override fun getItemCount(): Int {
         return tabCount
     }
@@ -40,7 +43,15 @@ class ListVPAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity
 
             }
             1 ->   ListReviewFragment()
-            2 ->   ListComplaintFragment()
+            2 ->   ListComplaintFragment().apply {
+
+                arguments = Bundle().apply {
+                    putInt("stationId", stationId)
+                    putDouble("latitude", latitude)
+                    putDouble("longitude", longitude)
+                }
+
+            }
 
             else -> throw IllegalStateException("Invalid position $position")
 

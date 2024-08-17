@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -11,8 +12,10 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat.startActivity
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
+import com.example.energy.data.repository.list.ListMapModel
 
 import com.example.energy.data.repository.list.ListRepository
 
@@ -20,11 +23,15 @@ import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.FragmentListBinding
 import com.example.energy.presentation.util.EnergyUtils.Companion.showSOSDialog
 import com.example.energy.presentation.view.base.BaseFragment
+import com.example.energy.presentation.viewmodel.MapViewModel
 
 class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inflate(it)}) {
 
     //sort 초기값 거리순으로 설정
     private var currentSortType = "DISTANCE"
+
+    // MapViewModel 주입
+    private val mapViewModel: MapViewModel by activityViewModels()
 
 
     // 구분선 초기 설정
@@ -37,7 +44,7 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
         //토큰 가져오기
         //var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
-        var accessToken ="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODE3OTA5LCJleHAiOjE3MjY0MDk5MDl9.D8cHYgTwnv-k3GdJpSexakAnn7rtZvML1cfkGm9qJoY"
+        var accessToken ="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODg3ODYzLCJleHAiOjE3MjY0Nzk4NjN9.qGR9PibGimGon0_82i_Z73nxXJzK1BDoPLWRLjC0QI4"
 
 
         //데이터 로드 함수 호출
@@ -74,6 +81,9 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
 
 
+
+
+
         //sos 기능
         binding.cvSos.setOnClickListener {
             showSOSDialog()
@@ -98,7 +108,7 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
 
                 // 리스트 어댑터 생성
-                val listAdapter = ListAdapter(ListModel) { selectedItem ->
+                val listAdapter = ListAdapter(ListModel, mapViewModel) { selectedItem ->
 
                     // 클릭된 아이템을 ListInformationActivity로 전달
                     val intent = Intent(activity, ListInformationActivity::class.java).apply {
@@ -169,4 +179,11 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
             dialog.dismiss()
         }
     }
+
+
+
+
+
+
+
 }
