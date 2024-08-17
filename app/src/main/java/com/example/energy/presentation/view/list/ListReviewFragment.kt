@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
 import com.example.energy.data.repository.map.search.SearchData
@@ -35,9 +36,8 @@ class ListReviewFragment :
         super.onViewCreated(view, savedInstanceState)
         val stringList = listOf("CHARGING_SPEED")
 
-        binding.rvReview.adapter = reviewAdapter
-        binding.rvReview.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        //리사이클러뷰
+        setRecyclerView()
 
         //추천순으로 정렬
         binding.sortReviewLike.setOnClickListener {
@@ -110,6 +110,16 @@ class ListReviewFragment :
 //        }
 
     }
+
+    private fun setRecyclerView() {
+        binding.rvReview.adapter = reviewAdapter
+        binding.rvReview.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.rvReview.apply {
+            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
+        }
+    }
+
     fun prepareFilePart(partName: String, file: File): MultipartBody.Part {
         val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
         return MultipartBody.Part.createFormData(partName, file.name, requestFile)
