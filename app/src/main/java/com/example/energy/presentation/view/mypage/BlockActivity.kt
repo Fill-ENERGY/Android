@@ -28,7 +28,8 @@ class BlockActivity : BaseActivity<ActivityBlockBinding>({ ActivityBlockBinding.
 
         //토큰 가져오기
         var sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
-        var accessToken = sharedPreferences?.getString("accessToken", "none")
+        //var accessToken = sharedPreferences?.getString("accessToken", "none")
+        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODE3OTA5LCJleHAiOjE3MjY0MDk5MDl9.D8cHYgTwnv-k3GdJpSexakAnn7rtZvML1cfkGm9qJoY"
 
         getBlockList(accessToken)
 
@@ -48,12 +49,22 @@ class BlockActivity : BaseActivity<ActivityBlockBinding>({ ActivityBlockBinding.
 //                }
 //                blockAdapter.unblockUser(accessToken!!, blockUserModel.blockId!!)
 //                blockAdapter.notifyDataSetChanged()
-                lifecycleScope.launch {
-                    blockViewModel.unBlockUser(accessToken!!, blockUserModel.blockId!!)
-                    Log.d("blockList", blockList.toString())
+                    //blockViewModel.unBlockUser(accessToken!!, blockUserModel.blockId!!)
+                BlockRepository.deleteBlockMember(accessToken!!, blockUserModel.blockId!!) {
 
-                    blockAdapter.updateUnblock(blockList)
+                   BlockRepository.getBlockMembers(accessToken!!, 0, 10){
+                       response ->
+                       if (response?.blocks != null) {
+                           blockAdapter.updateUnblock(response.blocks!!)
+                       }
+                   }
                 }
+
+                Log.d("blockList", blockList.toString())
+                    blockAdapter.notifyDataSetChanged()
+
+                    //blockAdapter.updateUnblock(blockList)
+
                 showToast("차단 해제되었습니다.")
             }
         })
@@ -72,7 +83,7 @@ class BlockActivity : BaseActivity<ActivityBlockBinding>({ ActivityBlockBinding.
 
         BlockRepository.getBlockMembers(accessToken!!, 0, 10) { response ->
             response?.blocks?.let { blocks ->
-                //blockList.addAll(blocks)
+                blockList.addAll(blocks)
                 blockViewModel.setBlockList(blocks)
                 blockViewModel.getBlockList.observe(this, Observer {
                     blockList ->

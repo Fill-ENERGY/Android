@@ -33,6 +33,7 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
         var refreshToken = sharedPreferences?.getString("refreshToken", "none")
         var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODE3OTA5LCJleHAiOjE3MjY0MDk5MDl9.D8cHYgTwnv-k3GdJpSexakAnn7rtZvML1cfkGm9qJoY"
 
+        //즐겨찾기 수 띄우기
         MapRepository.getBookmarkStation(accessToken, 35.5, 35.5) {
             response ->
             if (response != null) {

@@ -14,12 +14,12 @@ class BlockViewModel: ViewModel() {
         _blockList.value = blockList
     }
 
-    fun unBlockUser(accessToken: String, blockId: Int) {
-        viewModelScope.launch {
-            BlockRepository.deleteBlockMember(accessToken!!, blockId!!) {
-            }
-        }
-    }
+//    fun unBlockUser(accessToken: String, blockId: Int) {
+//        viewModelScope.launch {
+//            BlockRepository.deleteBlockMember(accessToken!!, blockId!!) {
+//            }
+//        }
+//    }
 
     val getBlockList: LiveData<List<BlockUserModel>>
         get() = _blockList
