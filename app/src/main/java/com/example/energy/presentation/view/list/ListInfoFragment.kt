@@ -88,6 +88,10 @@ class ListInfoFragment : BaseFragment<FragmentListInfoBinding>({ FragmentListInf
 
             }
 
+            override fun getZoomLevel(): Int {
+                return 19
+            }
+
             override fun getPosition(): LatLng {
                 return LatLng.from(stationLatitude, stationLongitude)
             }
