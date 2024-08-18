@@ -6,11 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.example.energy.R
 import com.example.energy.data.repository.list.ListRepository
-import com.example.energy.databinding.FragmentListComplaintBinding
 import com.example.energy.databinding.FragmentListInfoBinding
 import com.example.energy.presentation.view.base.BaseFragment
+import com.example.energy.presentation.viewmodel.ListViewModel
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
@@ -23,6 +24,8 @@ import com.kakao.vectormap.label.LabelTextStyle
 
 
 class ListInfoFragment : BaseFragment<FragmentListInfoBinding>({ FragmentListInfoBinding.inflate(it) }) {
+    val listViewModel by activityViewModels<ListViewModel>()
+
     //지도 이미지 관련 변수
     lateinit var myKakaoMap: KakaoMap
     lateinit var stationName: String
@@ -107,7 +110,7 @@ class ListInfoFragment : BaseFragment<FragmentListInfoBinding>({ FragmentListInf
 
         if (stationId != -1) {
 
-            var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODE3OTA5LCJleHAiOjE3MjY0MDk5MDl9.D8cHYgTwnv-k3GdJpSexakAnn7rtZvML1cfkGm9qJoY"
+            var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzOTU3MTExLCJleHAiOjE3MjY1NDkxMTF9.O7lZduRjIR1mJMI0qd2kKneG8pc8P9m7McLD06vLYZo"
 
 
             // 충전소 상세 정보 api 연결
@@ -125,6 +128,11 @@ class ListInfoFragment : BaseFragment<FragmentListInfoBinding>({ FragmentListInf
                     binding.calltext.text = stationInfo.phoneNumber
                     binding.currentusagecount.text = stationInfo.concurrentUsageCount.toString()
                     binding.airinjection.text = if (stationInfo.airInjectionAvailable == true) "Y" else "N"
+
+                    //viewModel에 데이터 저장
+                    listViewModel.setStationName(stationInfo.name!!)
+                    listViewModel.setStationId(stationInfo.id!!)
+
 
                     //지도 가져오기
                     getMap(mapView)

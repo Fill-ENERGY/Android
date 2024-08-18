@@ -28,7 +28,8 @@ import com.kakao.vectormap.label.LabelTextStyle
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ FragmentSearchResultBinding.inflate(it) }) {
+class SearchResultFragment :
+    BaseFragment<FragmentSearchResultBinding>({ FragmentSearchResultBinding.inflate(it) }) {
     val mapViewModel by activityViewModels<MapViewModel>()
     lateinit var stationName: String
     var stationId: Int = 0
@@ -53,8 +54,11 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
         setStationInfo()
 
         //지도 보여주기
-        MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) {
-                location ->  Log.d("CurrentLocation", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+        MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) { location ->
+            Log.d(
+                "CurrentLocation",
+                "Latitude: ${location.latitude}, Longitude: ${location.longitude}"
+            )
 
             getMap(mapView, location)
         }
@@ -91,11 +95,13 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
                     binding.tvOpenTime.text = detail.saturdayOpen
                     binding.tvCloseTime.text = detail.saturdayClose
                 }
+
                 DayOfWeek.SUNDAY -> {
                     binding.tvDayType.text = "(일요일)"
                     binding.tvOpenTime.text = detail.holidayOpen
                     binding.tvCloseTime.text = detail.holidayClose
                 }
+
                 else -> {
                     //평일
                     binding.tvOpenTime.text = detail.weekdayOpen
@@ -112,7 +118,7 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
             }
 
             //즐겨찾기 상태 관리
-            if(detail.favorite == true) {
+            if (detail.favorite == true) {
                 binding.ivBookmark.setImageResource(R.drawable.iv_bookmark_fill)
             } else {
                 binding.ivBookmark.setImageResource(R.drawable.iv_bookmark)
@@ -121,14 +127,16 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
             //충전소 즐겨찾기
             binding.ivBookmark.setOnClickListener {
                 //즐겨찾기 로직 추가
-                if(detail.favorite == true) {
+                if (detail.favorite == true) {
                     //즐겨찾기 해제
                     binding.ivBookmark.setImageResource(R.drawable.iv_bookmark)
                 } else {
                     //즐겨찾기 추가
-                    mapViewModel.getAccessToken.observe(viewLifecycleOwner, Observer { accessToken ->
-                        MapRepository.postBookmarkStation(accessToken, stationId)
-                    })
+                    mapViewModel.getAccessToken.observe(
+                        viewLifecycleOwner,
+                        Observer { accessToken ->
+                            MapRepository.postBookmarkStation(accessToken, stationId)
+                        })
                     binding.ivBookmark.setImageResource(R.drawable.iv_bookmark_fill)
                 }
             }
@@ -137,11 +145,10 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
 
 
         //충전소 길안내
-        binding.ivGuide.setOnClickListener {
-            mapViewModel.getCurrentLocation.observe(viewLifecycleOwner, Observer { currentLocation ->
-             searchCharging(currentLocation, stationLatitude, stationLongitude)
-            })
-        }
+        mapViewModel.getCurrentLocation.observe(viewLifecycleOwner, Observer { currentLocation ->
+            searchCharging(currentLocation, stationLatitude, stationLongitude)
+        })
+
 
         //충전소 공유
         binding.ivShare.setOnClickListener {
@@ -179,7 +186,8 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
                 var labelManager = kakaoMap.labelManager
                 if (labelManager != null) {
                     var markerStyle = LabelStyle.from(R.drawable.iv_marker).setTextStyles(
-                        LabelTextStyle.from(32, R.color.gray_scale8))
+                        LabelTextStyle.from(32, R.color.gray_scale8)
+                    )
                     var styles = labelManager.addLabelStyles(LabelStyles.from(markerStyle))
                     var layer = labelManager.layer
                     if (layer != null) {
@@ -224,7 +232,11 @@ class SearchResultFragment : BaseFragment<FragmentSearchResultBinding>({ Fragmen
         }
     }
 
-    private fun searchCharging(currentLocation: Location, endLatitude: Double, endLongitude: Double) {
+    private fun searchCharging(
+        currentLocation: Location,
+        endLatitude: Double,
+        endLongitude: Double
+    ) {
         binding.ivGuide.setOnClickListener {
             //카카오 지도로 연결
 

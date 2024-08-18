@@ -2,8 +2,10 @@ package com.example.energy.presentation.view.list
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.energy.data.repository.review.ReviewModel
 import com.example.energy.databinding.ItemReviewBinding
 
@@ -36,6 +38,16 @@ class ListReviewAdapter(private val itemList: ArrayList<ReviewModel>): RecyclerV
         fun bind(reviewModel: ReviewModel) {
             binding.tvNickname.text = reviewModel.authorName
             binding.tvStarTotal.text = reviewModel.score.toString()
+            binding.tvContent.text = reviewModel.content
+            if(reviewModel.recommendationNum != 0) {
+                binding.tvRecommendReview.text = reviewModel.recommendationNum.toString()
+            }
+            if(reviewModel.images != null) {
+//                Glide.with()
+//                    .load(reviewModel.images)
+//                    .into(binding.ivImage)
+//                binding.ivImage.visibility = View.VISIBLE
+            }
         }
     }
 

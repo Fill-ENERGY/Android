@@ -74,6 +74,7 @@
 
     <ImageView
         android:id="@+id/iv_image"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="12dp"
         app:layout_constraintStart_toStartOf="parent"

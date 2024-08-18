@@ -206,10 +206,12 @@
             android:backgroundTint="@color/gray_scale2"
             app:cardCornerRadius="5dp"
             android:elevation="0dp"
+            app:cardElevation="0dp"
             app:layout_constraintTop_toBottomOf="@id/tv_require"
             app:layout_constraintStart_toStartOf="@id/tv_require"
             android:layout_marginTop="22dp">
             <TextView
+                android:id="@+id/tv_keyword_charging_speed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="“ 충전 시간이 빨라요 “"
@@ -225,10 +227,12 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/gray_scale2"
             app:cardCornerRadius="5dp"
+            app:cardElevation="0dp"
             android:layout_marginStart="8dp"
             app:layout_constraintTop_toTopOf="@id/cv_keyword_charging_speed"
             app:layout_constraintStart_toEndOf="@id/cv_keyword_charging_speed">
             <TextView
+                android:id="@+id/tv_keyword_accessibility"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="“ 충전소 접근이 편리해요 “"
@@ -245,10 +249,12 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/gray_scale2"
             app:cardCornerRadius="5dp"
+            app:cardElevation="0dp"
             app:layout_constraintTop_toBottomOf="@id/cv_keyword_charging_speed"
             app:layout_constraintStart_toStartOf="@id/tv_require"
             android:layout_marginTop="14dp">
             <TextView
+                android:id="@+id/tv_keyword_waiting_area"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="“ 대기 장소가 편안해요 “"
@@ -264,10 +270,12 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/gray_scale2"
             app:cardCornerRadius="5dp"
+            app:cardElevation="0dp"
             android:layout_marginStart="8dp"
             app:layout_constraintTop_toTopOf="@id/cv_keyword_waiting_area"
             app:layout_constraintStart_toEndOf="@id/cv_keyword_waiting_area">
             <TextView
+                android:id="@+id/tv_keyword_charger_management"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="“ 충전기 관리가 잘 되었어요 “"
@@ -284,10 +292,12 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/gray_scale2"
             app:cardCornerRadius="5dp"
+            app:cardElevation="0dp"
             app:layout_constraintTop_toBottomOf="@id/cv_keyword_waiting_area"
             app:layout_constraintStart_toStartOf="@id/tv_require"
             android:layout_marginTop="14dp">
             <TextView
+                android:id="@+id/tv_keyword_facility_support"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="“ 시설의 도움을 받았어요 “"
@@ -303,10 +313,12 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/gray_scale2"
             app:cardCornerRadius="5dp"
+            app:cardElevation="0dp"
             android:layout_marginStart="8dp"
             app:layout_constraintTop_toTopOf="@id/cv_keyword_facility_support"
             app:layout_constraintStart_toEndOf="@id/cv_keyword_facility_support">
             <TextView
+                android:id="@+id/tv_keyword_revisit_intention"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="“ 재방문 의사가 있어요 “"
@@ -323,10 +335,12 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/gray_scale2"
             app:cardCornerRadius="5dp"
+            app:cardElevation="0dp"
             app:layout_constraintTop_toBottomOf="@id/cv_keyword_facility_support"
             app:layout_constraintStart_toStartOf="@id/tv_require"
             android:layout_marginTop="14dp">
             <TextView
+                android:id="@+id/tv_no_keyword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="선택할 키워드가 없어요"
