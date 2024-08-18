@@ -57,13 +57,21 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
     inner class ViewHolder(val binding: ItemCommunityFeedBinding): RecyclerView.ViewHolder(binding.root) {
 
         // 카테고리 String -> Int로 바꾸는 함수
-        fun fromString(category: String): Int {
+        fun CategoryfromString(category: String): Int {
             return when (category) {
                 "DAILY" -> R.drawable.tag_daily
                 "INQUIRY" -> R.drawable.tag_curious
                 "HELP" -> R.drawable.tag_help
                 "WHEELCHAIR" -> R.drawable.tag_wheelchair
                 else -> R.drawable.tag_scooter
+            }
+        }
+
+        fun StatusfromString(status: String): Int {
+            return when(status){
+                "IN_PROGRESS" -> R.drawable.icon_tag_contacting
+                "RESOLVED" -> R.drawable.icon_tag_resolved
+                else -> R.drawable.icon_tag_requesting
             }
         }
 
@@ -74,17 +82,16 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
             binding.itemCommunityPostContent.text = postInfo.content
             binding.itemCommunityPostLikeNum.text = postInfo.likeNum.toString()
             binding.itemCommunityPostCommentNum.text = postInfo.commentCount.toString()
-            binding.itemCommunityPostCategoryView.setImageResource(fromString(postInfo.category))
+            binding.itemCommunityPostCategoryView.setImageResource(CategoryfromString(postInfo.category))
+            binding.itemCommunityPostCategoryHelp.setImageResource(StatusfromString(postInfo.helpStatus))
 
             //토큰 가져오기
 //            val sharedPreferences = binding.root.context.getSharedPreferences("userToken", Context.MODE_PRIVATE)
 //            val accessToken = sharedPreferences.getString("accessToken", "none")
-            val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODg3ODYzLCJleHAiOjE3MjY0Nzk4NjN9.qGR9PibGimGon0_82i_Z73nxXJzK1BDoPLWRLjC0QI4"
+            val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzOTg1OTUxLCJleHAiOjE3MjY1Nzc5NTF9.jEn8OyBau-JQ576OLgESOD0dGcGH614WfsQUGGbtq_M"
 
-            var likeStatus: Boolean = false
-
-//            // 좋아요 아이콘 설정
-//            select(postInfo.isLiked)
+            // 좋아요 아이콘 설정
+            updateLikeIcon(postInfo.liked)
 
             // 이미지 RecyclerView 설정
             if(postInfo.images.isNotEmpty()){ //이미지 존재하면
@@ -105,14 +112,12 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
             binding.itemCommunityPostContainer.setOnClickListener {
                 val intent = Intent(binding.root.context, CommunityDetailActivity::class.java)
                 intent.putExtra("postId", postInfo.id)
-                intent.putExtra("likeStatus", likeStatus)
                 binding.root.context.startActivity(intent)
             }
             // 댓글 쓰기 클릭 시 상세 페이지로 이동
             binding.itemCommunityPostCommentTv.setOnClickListener {
                 val intent = Intent(binding.root.context, CommunityDetailActivity::class.java)
                 intent.putExtra("postId", postInfo.id)
-                intent.putExtra("likeStatus", likeStatus)
                 binding.root.context.startActivity(intent)
             }
 
@@ -125,17 +130,23 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
 
             // 좋아요 아이콘 클릭 리스너
             binding.itemCommunityPostLikeIcon.setOnClickListener {
-                likeStatus = !likeStatus
+                var likeStatus = !postInfo.liked
+                var likeCount = postInfo.likeNum
+
+                // UI를 즉시 업데이트
+                updateLikeIcon(likeStatus)
+                binding.itemCommunityPostLikeNum.text = if (likeStatus) (likeCount + 1).toString() else (likeCount - 1).toString()
+
 
                 if(likeStatus){
                     // 서버에 좋아요 상태 업데이트 요청
                     CommunityRepository.postLikeBoard(accessToken, postInfo.id) { response ->
                         if (response != null) {
                             // 좋아요 상태 업데이트 성공 시
+                            postInfo.liked = response.liked
                             postInfo.likeNum = response.likeCount
-                            likeStatus = true
-                            select(likeStatus)
-                            binding.itemCommunityPostLikeNum.text = postInfo.likeNum.toString() //업데이트..
+                            updateLikeIcon(postInfo.liked)
+                            binding.itemCommunityPostLikeNum.text = response.likeCount.toString() //업데이트..
                         } else {
                             // 좋아요 상태 업데이트 실패 시
                             Log.d("커뮤니티좋아요상태변경", "좋아요 상태 업데이트 실패")
@@ -146,18 +157,16 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
                     CommunityRepository.deleteLikeBoard(accessToken, postInfo.id) { response ->
                         if (response != null) {
                             // 좋아요 상태 업데이트 성공 시
+                            postInfo.liked = response.liked
                             postInfo.likeNum = response.likeCount
-                            likeStatus = false
-                            select(likeStatus)
-                            binding.itemCommunityPostLikeNum.text = postInfo.likeNum.toString() //업데이트..
+                            updateLikeIcon(postInfo.liked)
+                            binding.itemCommunityPostLikeNum.text = response.likeCount.toString() //업데이트..
                         } else {
                             // 좋아요 상태 업데이트 실패 시
                             Log.d("커뮤니티좋아요상태변경", "좋아요 상태 업데이트 실패")
                         }
                     }
                 }
-
-                //toggleLike(postInfo, postInfo.id, postInfo.likeNum, accessToken)
             }
 
 //            // 커뮤니티 경과 시간 bind
@@ -165,40 +174,7 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
 //            binding.itemCommunityPostUploadTime.text = timeText
         }
 
-        // 좋아요 기능 함수
-        fun toggleLike(postInfo: BoardModel, boardId: Int, likeCount: Int, accessToken: String) {
-            // 현재 좋아요 상태를 토글 (이미 좋아요를 눌렀으면 false, 아니면 true)
-            val newLikeStatus = likeCount == 0
-            val newLikeCount = if (newLikeStatus) likeCount + 1 else likeCount - 1
-
-            // 서버에 좋아요 상태 업데이트 요청
-            CommunityRepository.postLikeBoard(accessToken, boardId) { response ->
-                if (response != null) {
-                    // 좋아요 상태 업데이트 성공 시
-                    postInfo.likeNum = response.likeCount ?: newLikeCount
-                    select(newLikeStatus)
-                    binding.itemCommunityPostLikeTv.text = postInfo.likeNum.toString() //업데이트..
-                } else {
-                    // 좋아요 상태 업데이트 실패 시
-                    Log.d("커뮤니티좋아요상태변경", "좋아요 상태 업데이트 실패")
-                }
-            }
-
-            // 서버에 좋아요 삭제 업데이트 요청
-            CommunityRepository.deleteLikeBoard(accessToken, boardId) { response ->
-                if (response != null) {
-                    // 좋아요 상태 업데이트 성공 시
-                    postInfo.likeNum = response.likeCount ?: newLikeCount
-                    select(newLikeStatus)
-                    binding.itemCommunityPostLikeTv.text = postInfo.likeNum.toString() //업데이트..
-                } else {
-                    // 좋아요 상태 업데이트 실패 시
-                    Log.d("커뮤니티좋아요상태변경", "좋아요 상태 업데이트 실패")
-                }
-            }
-        }
-
-        fun select(isLike: Boolean) {
+        fun updateLikeIcon(isLike: Boolean) {
             if (isLike) { // 좋아요 눌렀을 때의 반응
                 binding.itemCommunityPostLikeIcon.setImageResource(R.drawable.icon_like)
             } else { // 누르지 않았을 때의 반응
