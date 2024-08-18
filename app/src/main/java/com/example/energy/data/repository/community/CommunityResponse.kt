@@ -24,12 +24,13 @@ data class BoardModel(
     var content: String,
     var category: String,
     var helpStatus: String,
-    var isAuthor: Boolean,
     var likeNum: Int,
     var commentCount: Int,
     var createdAt: String,
     var updatedAt: String,
     var images: List<String>,
+    var liked: Boolean,
+    var author: Boolean,
 )
 
 
@@ -64,17 +65,19 @@ data class DeleteCommunityResponse(
 data class DetailResponse(
     val code: String,
     val message: String,
-    val result: DetailModel
-)
-data class DetailModel(
-    var board: BoardModel,
+    val result: BoardModel
 )
 
 // 댓글 조회
 data class CommentListResponse(
     val code: String,
     val message: String,
-    val result: List<CommentModel>,
+    val result: CommentResult,
+)
+
+// 댓글 리스트를 감싸는 클래스
+data class CommentResult(
+    val comments: List<CommentModel>
 )
 
 // 댓글 작성
@@ -86,16 +89,13 @@ data class CommentResponse(
 data class CommentModel(
     var id: Int,
     var content: String,
-    var secret: Boolean,
     var memberId: Int,
     var memberName: String,
     var createdAt: String,
-    var images: List<ImagesModel>,
-    var deleted: Boolean,
+    var images: List<String>,
     var parentId: Int,
     var author: Boolean,
-    var canViewSecret: Boolean,
-    var replies: List<String>,
+    var replies: List<CommentModel>,
 )
 
 
@@ -109,4 +109,17 @@ data class LikeModel(
     var memberId: Int,
     var boardId: Int,
     var likeCount: Int,
+    var liked: Boolean,
+)
+
+
+// 도와줘요 상태 변경
+data class HelpStatusResponse(
+    val code: String,
+    val message: String,
+    val result: HelpStatusModel,
+)
+data class HelpStatusModel(
+    var boardId: Int,
+    var helpStatus: String,
 )
