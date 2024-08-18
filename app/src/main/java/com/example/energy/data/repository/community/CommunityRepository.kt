@@ -46,7 +46,7 @@ class CommunityRepository {
         }
 
         // 커뮤니티 상세 조회
-        fun getDetailCommunity(accessToken: String, boardId: Int, callback: (DetailModel?)-> Unit){
+        fun getDetailCommunity(accessToken: String, boardId: Int, callback: (BoardModel?)-> Unit){
             val communityService = getRetrofit().create(CommunityInterface::class.java)
             val call = communityService.getDetailCommunity(accessToken, boardId)
 
@@ -236,20 +236,20 @@ class CommunityRepository {
                 ) {
                     if(response.isSuccessful){
                         //통신 성공
-                        Log.d("전체커뮤니티api테스트", "통신 성공 ${response.code()}, ${response.body()?.result}")
-                        val commentModel = response.body()?.result
+                        Log.d("커뮤니티댓글조회api테스트", "통신 성공 ${response.code()}, ${response.body()?.result}")
+                        val commentModel = response.body()?.result!!.comments
                         callback(commentModel)
                     } else {
                         //통신 실패
                         val error = response.errorBody()?.toString()
-                        Log.e("전체커뮤니티api테스트", "통신 실패 $error")
+                        Log.e("커뮤니티댓글조회api테스트", "통신 실패 $error")
                         callback(null)
                     }
                 }
 
                 override fun onFailure(call: Call<CommentListResponse>, t: Throwable) {
                     // 통신 실패
-                    Log.w("전체커뮤니티api테스트", "통신 실패: ${t.message}")
+                    Log.w("커뮤니티댓글조회api테스트", "통신 실패: ${t.message}")
                     callback(null)
                 }
             })
@@ -279,6 +279,38 @@ class CommunityRepository {
                 override fun onFailure(call: Call<CommentResponse>, t: Throwable) {
                     // 통신 실패
                     Log.w("커뮤니티댓글작성api테스트", "통신 실패: ${t.message}")
+                    callback(null)
+                }
+            }
+            )
+        }
+
+
+
+        // 도와줘요 상태 변경
+        fun helpStatus(accessToken: String, boardId: Int, request: HelpStatusRequest, callback: (HelpStatusModel?)-> Unit){
+            val communityService = getRetrofit().create(CommunityInterface::class.java)
+            val call = communityService.helpStatus(accessToken, boardId, request)
+
+            call.enqueue(object : Callback<HelpStatusResponse> {
+                override fun onResponse(call: Call<HelpStatusResponse>, response: Response<HelpStatusResponse>
+                ) {
+                    if(response.isSuccessful){
+                        //통신 성공
+                        Log.d("도와줘요상태변경api테스트", "통신 성공 ${response.code()}, ${response.body()?.result}")
+                        val writeCommentBoardModel = response.body()?.result
+                        callback(writeCommentBoardModel)
+                    } else {
+                        //통신 실패
+                        val error = response.errorBody()?.toString()
+                        Log.e("도와줘요상태변경api테스트", "통신 실패 $error")
+                        callback(null)
+                    }
+                }
+
+                override fun onFailure(call: Call<HelpStatusResponse>, t: Throwable) {
+                    // 통신 실패
+                    Log.w("도와줘요상태변경api테스트", "통신 실패: ${t.message}")
                     callback(null)
                 }
             }

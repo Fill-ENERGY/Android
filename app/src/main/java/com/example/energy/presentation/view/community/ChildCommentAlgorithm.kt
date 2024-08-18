@@ -9,9 +9,9 @@ fun makeChildComment(dataSet : List<CommentModel>): List<CommentModel>{
 
     //같은 부모뷰를 가지는 댓글들을 해쉬함수를 통해서 묶어줌
     for (data in dataSet){
-        val parentId = data.parentId ?: -1
+        val parentId = data.parentId
 
-        if (parentId<1){ //부모 뷰
+        if (parentId > 0){ //부모 뷰
             newDataSet.add(data)
         }else{ //자식 뷰
             if (hashList.containsKey(parentId)) { // 이미 존재
@@ -27,7 +27,7 @@ fun makeChildComment(dataSet : List<CommentModel>): List<CommentModel>{
     while(i < newDataSet.size){
         // 자식 댓글 발견 -> 위치에 자식 댓글 리스트 추가
         val parentId = newDataSet[i].id
-        if (parentId != null && hashList.containsKey(parentId)) {
+        if (parentId != 0 && hashList.containsKey(parentId)) {
             val subData = hashList[parentId]!!
             newDataSet.addAll(i + 1, subData)
             i += subData.size - 1

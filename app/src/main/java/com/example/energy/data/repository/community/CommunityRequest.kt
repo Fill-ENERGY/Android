@@ -21,6 +21,12 @@ data class UploadImagesRequest(
 data class WriteCommentRequest(
     val content: String,
     val secret: Boolean,
-    val parentCommentId: Int,
+    val parentCommentId: Int? = null,
     val images: List<String>,
+)
+
+
+// 도와줘요 상태 변경 요청
+data class HelpStatusRequest(
+    val helpStatus: String,
 )

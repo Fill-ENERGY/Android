@@ -8,6 +8,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
@@ -86,4 +87,13 @@ interface CommunityInterface {
         @Path("boardId") boardId: Int,
         @Body request: WriteCommentRequest,
     ): Call<CommentResponse>
+
+
+    //도와줘요 상태 변경 api
+    @PATCH("/api/v1/boards/{boardId}/status")
+    fun helpStatus(
+        @Header("Authorization") accessToken: String,
+        @Path("boardId") boardId: Int,
+        @Body request: HelpStatusRequest
+    ): Call<HelpStatusResponse>
 }
