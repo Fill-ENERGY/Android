@@ -1,5 +1,6 @@
 package com.example.energy.presentation.view.list
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -8,46 +9,69 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import androidx.navigation.fragment.findNavController
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
+
+import com.example.energy.data.repository.list.ListRepository
+
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.FragmentListBinding
+import com.example.energy.presentation.util.EnergyUtils.Companion.showSOSDialog
 import com.example.energy.presentation.view.base.BaseFragment
 
 class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inflate(it)}) {
 
+    //sort 초기값 거리순으로 설정
+    private var currentSortType = "DISTANCE"
+
+
+    // 구분선 초기 설정
+    private var isDecorationAdded = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         super.onViewCreated(view, savedInstanceState)
         Log.d("ListFragment", "onViewCreated called")
 
-        val itemList = listOf(
-            listdata("서대문구청 전동보장구 급속충전기", "16m", "4.41(15)", "(평일) 0:00 ~ 24:00"),
-            listdata("연희동 충전소", "500m", "4.50(20)", "(평일) 8:00 ~ 22:00"),
-            listdata("서대문 보건소", "500m", "4.50(20)", "(평일) 8:00 ~ 22:00"),
-            listdata("홍은2동주민센터 전동보장구 급속충전기", "500m", "4.50(20)", "(평일) 8:00 ~ 22:00"),
-            listdata("서울문화체육회관 전동보장구 급속충전기", "500m", "4.50(20)", "(평일) 8:00 ~ 22:00"),
-            // 더미 데이터 추가
-        )
+        //토큰 가져오기
+        //var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        var accessToken ="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODE3OTA5LCJleHAiOjE3MjY0MDk5MDl9.D8cHYgTwnv-k3GdJpSexakAnn7rtZvML1cfkGm9qJoY"
 
-        val listadapter = ListAdapter(itemList) { selectedItem ->
 
-            // 클릭된 아이템을 ListInformationActivity로 전달
-            val intent = Intent(activity, ListInformationActivity::class.java).apply {
-                putExtra("location_name", selectedItem.location_name)
-                putExtra("distance", selectedItem.distance)
-                putExtra("grade", selectedItem.grade)
-                putExtra("time", selectedItem.time)
-            }
-            startActivity(intent)
+        //데이터 로드 함수 호출
+        loadData(accessToken, currentSortType)
+
+
+
+
+        // 별점순 버튼 클릭 시
+        binding.star.setOnClickListener {
+
+            // 정렬 기준 별점순으로 변경
+            currentSortType="SCORE"
+            loadData(accessToken, currentSortType)
+
+
+            // 색상 변경
+            binding.star.setTextColor(Color.parseColor("#222019"))
+            binding.meter.setTextColor(Color.parseColor("#71716E"))
 
         }
 
-        binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = listadapter
-            addItemDecoration(CustomDividerItemDecoration(context))
+
+        //거리순 버튼 클릭 시
+        binding.meter.setOnClickListener {
+
+            currentSortType="DISTANCE"
+            loadData(accessToken, currentSortType)
+
+            // 색상 변경
+            binding.meter.setTextColor(Color.parseColor("#222019"))
+            binding.star.setTextColor(Color.parseColor("#71716E"))
         }
+
 
 
         //sos 기능
@@ -56,6 +80,57 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
         }
 
 
+
+
+
+
+
+
+    }
+
+
+    private fun loadData(accessToken: String?, sortType: String) {
+        ListRepository.getListStation(accessToken!!, sortType, 0, 10, 37.5665, 126.9780)
+
+        { ListModel ->
+
+            if (ListModel != null) {
+
+
+                // 리스트 어댑터 생성
+                val listAdapter = ListAdapter(ListModel) { selectedItem ->
+
+                    // 클릭된 아이템을 ListInformationActivity로 전달
+                    val intent = Intent(activity, ListInformationActivity::class.java).apply {
+
+                        putExtra("stationId", selectedItem.id)
+                        putExtra("latitude", 37.5665)
+                        putExtra("longitude", 126.9780)
+                        //putExtra("grade", "${selectedItem.score.toString()}(${selectedItem.scoreCount})")
+                        //putExtra("time", "${selectedItem.openTime} ~ ${selectedItem.closeTime}")
+
+                    }
+                    startActivity(intent)
+                }
+
+                binding.recyclerView.apply {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = listAdapter
+
+                    // 구분선이 아직 추가되지 않은 경우에만 추가
+
+                    if (!isDecorationAdded) {
+                        addItemDecoration(CustomDividerItemDecoration(context))
+                        isDecorationAdded = true
+                    }
+
+                }
+
+
+            } else {
+                Log.e("ListFragment", "Failed to fetch data")
+            }
+        }
     }
 
 

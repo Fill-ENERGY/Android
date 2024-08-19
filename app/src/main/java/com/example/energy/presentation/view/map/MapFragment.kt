@@ -22,12 +22,9 @@ import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
-import com.kakao.vectormap.label.LabelLayer
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
-import com.kakao.vectormap.label.LabelTextStyle
-import com.kakao.vectormap.shape.MapPoints
 
 
 class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflate(it) }) {
@@ -35,23 +32,22 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
     lateinit var myKakaoMap: KakaoMap
     private var seachLatitude: Double = 0.0
     private var searchLongitude: Double = 0.0
+    var currentLatitude: Double = 0.0
+    var currentLongitude: Double = 0.0
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //토큰 가져오기
         var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
-        var accessToken = sharedPreferences?.getString("accessToken", "none")
+        //var accessToken = sharedPreferences?.getString("accessToken", "none")
+        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODg3ODYzLCJleHAiOjE3MjY0Nzk4NjN9.qGR9PibGimGon0_82i_Z73nxXJzK1BDoPLWRLjC0QI4"
+        if (accessToken != null) {
+            mapViewModel.setAccessToken(accessToken)
+        }
 
         val mapView: MapView = binding.mapView
 
-        //test
-        MapRepository.getStation(accessToken!!, 10, 37.34, 116.54) {
-                response ->
-            response.let {
-                //통신성공
-            }
-        }
 
         //현재 위치로 설정 후 마커 띄운 지도 표시
         MapRepository.getAllStation(accessToken!!) {
@@ -70,6 +66,8 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                     showToast("현재 위치를 가져옵니다")
                     MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) {
                             location ->  Log.d("CurrentLocation", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+                        currentLatitude = location.latitude
+                        currentLongitude = location.longitude
 
                         //뷰모델에 현재 위치 전달
                         mapViewModel.setCurrentLocation(location)
@@ -97,6 +95,8 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
         } else {
             MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) {
                 location ->  Log.d("CurrentLocation", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+                currentLatitude = location.latitude
+                currentLongitude = location.longitude
 
                 //뷰모델에 현재 위치 전달
                 mapViewModel.setCurrentLocation(location)
@@ -183,16 +183,31 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                 myKakaoMap.setOnLabelClickListener { kakaoMap, layer, label ->
                     //showBottomSheet()
 
-                    mapViewModel.setStationName("my town")
-                    mapViewModel.setStationLongitude(location.longitude)
-                    mapViewModel.setStationLatitude(location.latitude)
-                    mapViewModel.setStationTime("정상영업")
-                    mapViewModel.setStationCall("010")
+                    mapViewModel.getAccessToken.observe(viewLifecycleOwner, Observer { accessToken ->
+                        //마커 클릭시 해당 충전소 정보 조회
+                        MapRepository.getStation(accessToken, label.tag, currentLatitude, currentLongitude) {
+                                response ->
+                            response.let {
+                                //통신성공
+                                Log.d("맵마커클릭", response.toString())
+
+                                //충전소 정보 설정
+                                if(response != null) {
+                                    mapViewModel.setStationDetailModel(response)
+
+                                    //위도 경도 정보
+                                    mapViewModel.setStationLongitude(location.longitude)
+                                    mapViewModel.setStationLatitude(location.latitude)
+                                }
+                            }
+                        }
+                    })
+
 
                     //마커 클릭 시 충전소 이름 갱신
                     //label.changeText("my town")
                     (context as MainActivity).supportFragmentManager.beginTransaction()
-                        .replace(R.id.main_frm, SearchResultFragment())
+                        .add(R.id.main_frm, SearchResultFragment())
                         .commitAllowingStateLoss()
                 }
             }
@@ -216,6 +231,7 @@ class MapFragment : BaseFragment<FragmentMapBinding>({ FragmentMapBinding.inflat
                     val label =
                         LabelOptions.from(LatLng.from(data.latitude!!, data.longitude!!))
                             .setStyles(markerStyle);
+                    label.tag = data.id
                     label.clickable = true
                     layer.addLabel(label)
 
