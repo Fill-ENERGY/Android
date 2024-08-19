@@ -16,10 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
 import com.example.energy.data.getRetrofit
 import com.example.energy.data.repository.note.ChatInterface
+import com.example.energy.data.repository.note.ChatThread
+import com.example.energy.data.repository.note.NoteRepository
 
 //import com.example.energy.data.repository.note.NoteRepository.Companion.leaveChatRoom
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.FragmentNoteBinding
+import com.example.energy.presentation.util.EnergyUtils.Companion.showSOSDialog
 import com.example.energy.presentation.view.base.BaseFragment
 import retrofit2.Call
 import retrofit2.Callback
@@ -36,8 +39,17 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
 
 
 
+
         setToolBar()
 
+        noteAdapter = NoteAdapter(arrayListOf()) { note, position ->
+               loadChatThread()
+        }
+
+        //loadChatThread("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MDU0MTU2LCJleHAiOjE3MjY2NDYxNTZ9.L0hwfd1VFk0usLRuexrc63osiPNIpWSUpPjS8vgt_KM")
+
+
+        /*
         // 테스트 데이터
         val sampleData = arrayListOf(
             NoteItem("김규리", "user123", "그럼 조그만 기다리세요!", "2분 전 "),
@@ -46,8 +58,12 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
         )
 
 
+
+
+
+
         // NoteAdapter에 클릭 리스너 추가
-        val noteAdapter = NoteAdapter(sampleData) { note, position ->
+
             // API 호출 시작
             //leaveChatRoom(note.userId.toLong()) {
 
@@ -56,6 +72,8 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
                 //Toast.makeText(context, "채팅방을 나갔습니다.", Toast.LENGTH_SHORT).show()
             //}
         }
+
+         */
 
 
 
@@ -104,34 +122,60 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
 
 
 
+
+
+
     }
 
 
+    private fun loadChatThread() {
 
-    private fun setToolBar() {
-        binding.toolbar.inflateMenu(R.menu.toolbar_menu_chat)
-        binding.toolbar.setTitle(R.string.note)
-        binding.toolbar.setTitleTextAppearance(requireContext(), R.style.Title1)
-        binding.toolbar.setTitleTextColor(resources.getColor(R.color.gray_scale8))
-        binding.toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.appbar_search -> {
-                    showToast("search")
-                    true
-                }
+        val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MDYyMTE0LCJleHAiOjE3MjY2NTQxMTR9.PCo0w_-qmI4_giK-NeiaTkCt_8x_vp5JqAhSxHhhuIE"
 
-                R.id.appbar_sos -> {
-                    showToast("sos")
-                    showSOSDialog()
-                    true
-                }
+        NoteRepository.fetchChatThreads(accessToken, 0, 10) { response ->
 
-                else -> false
+            if (response != null) {
+                val threads = response.result.threads
+
+
+                noteAdapter.updateData(ArrayList(threads))
+
+
+            } else {
+                Toast.makeText(context, "Failed to load chat threads", Toast.LENGTH_SHORT).show()
             }
         }
+
+
     }
 
-    // API 호출을 통해 채팅방을 나가는 함수
+
+
+
+        private fun setToolBar() {
+            binding.toolbar.inflateMenu(R.menu.toolbar_menu_chat)
+            binding.toolbar.setTitle(R.string.note)
+            binding.toolbar.setTitleTextAppearance(requireContext(), R.style.Title1)
+            binding.toolbar.setTitleTextColor(resources.getColor(R.color.gray_scale8))
+            binding.toolbar.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.appbar_search -> {
+                        showToast("search")
+                        true
+                    }
+
+                    R.id.appbar_sos -> {
+                        showToast("sos")
+                        showSOSDialog()
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+        }
+
+        // API 호출을 통해 채팅방을 나가는 함수
 //    private fun leaveChatRoom(threadId: Long, onSuccess: () -> Unit) {
 //
 //        val token = "토큰값" // 토큰 값
@@ -155,42 +199,40 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
 //    }
 
 
+        //sos 기능
+        private fun showSOSDialog() {
+            val dialogBinding = DialogCustomBinding.inflate(layoutInflater)
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setView(dialogBinding.root)
 
+            val dialog = builder.create()
+            dialog.setOnShowListener {
+                val window = dialog.window
+                val layoutParams = window?.attributes
 
-    //sos 기능
-    private fun showSOSDialog() {
-        val dialogBinding = DialogCustomBinding.inflate(layoutInflater)
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setView(dialogBinding.root)
+                // 디바이스 너비의 70%로 설정
+                val width = (resources.displayMetrics.widthPixels * 0.7).toInt()
 
-        val dialog = builder.create()
-        dialog.setOnShowListener {
-            val window = dialog.window
-            val layoutParams = window?.attributes
+                //radius 적용
+                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-            // 디바이스 너비의 70%로 설정
-            val width = (resources.displayMetrics.widthPixels * 0.7).toInt()
+                layoutParams?.width = width
+                window?.attributes = layoutParams
+            }
+            dialog.show()
 
-            //radius 적용
-            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialogBinding.btnDialog.setOnClickListener {
+                var intent = Intent(Intent.ACTION_DIAL)
+                intent.data = Uri.parse("tel:112")
 
-            layoutParams?.width = width
-            window?.attributes = layoutParams
+                startActivity(intent)
+                dialog.dismiss()
+            }
+
+            dialogBinding.ivClose.setOnClickListener {
+                dialog.dismiss()
+            }
         }
-        dialog.show()
-
-        dialogBinding.btnDialog.setOnClickListener {
-            var intent = Intent(Intent.ACTION_DIAL)
-            intent.data = Uri.parse("tel:112")
-
-            startActivity(intent)
-            dialog.dismiss()
-        }
-
-        dialogBinding.ivClose.setOnClickListener {
-            dialog.dismiss()
-        }
-    }
 
 
 

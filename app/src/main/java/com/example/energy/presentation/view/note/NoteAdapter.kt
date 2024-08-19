@@ -6,22 +6,26 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.energy.data.repository.note.ChatThread
+import com.example.energy.data.repository.note.ChatThreadsResponse
+import com.example.energy.data.repository.note.ChatThreadsResult
 import com.example.energy.databinding.ChatItemBinding
 import java.util.Collections
 
-class NoteAdapter(private val noteList: ArrayList<NoteItem>,
-                  private val onSwipeClickListener: (NoteItem, Int) -> Unit) :
+class NoteAdapter(private val noteList: ArrayList<ChatThread>,
+                  private val onSwipeClickListener: (ChatThread, Int) -> Unit) :
     RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 
 
     inner class NoteViewHolder(private val binding: ChatItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(note: NoteItem) {
+        fun bind(note: ChatThread) {
+
             binding.nameTextView.text = note.name
-            binding.userIdTextView.text = note.userId
-            binding.messageTextView.text = note.message
-            binding.timeTextView.text = note.time
+            binding.userIdTextView.text = note.nickname
+            binding.messageTextView.text = note.recentMessage.toString()
+            binding.timeTextView.text = note.updatedAt
 
 
             //NoteLiveChatActivity로 전환
@@ -29,9 +33,15 @@ class NoteAdapter(private val noteList: ArrayList<NoteItem>,
                 val intent = Intent(itemView.context, NoteLiveChatActivity::class.java)
 
                 intent.putExtra("Username", note.name)
-                intent.putExtra("Id",note.userId)
+                intent.putExtra("Id",note.nickname)
                 ContextCompat.startActivity(itemView.context, intent, null)
             }
+
+
+
+
+
+
 
 
 
@@ -42,6 +52,8 @@ class NoteAdapter(private val noteList: ArrayList<NoteItem>,
                 Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
                 onSwipeClickListener(note, layoutPosition)
             }
+
+
 
 
 
@@ -78,6 +90,15 @@ class NoteAdapter(private val noteList: ArrayList<NoteItem>,
     }
 
     override fun getItemCount(): Int = noteList.size
+
+
+
+
+    fun updateData(newList: ArrayList<ChatThread>) {
+        noteList.clear()
+        noteList.addAll(newList)
+        notifyDataSetChanged()
+    }
 
 
 

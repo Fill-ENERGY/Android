@@ -1,28 +1,19 @@
 package com.example.energy.presentation.view.note
 
-import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.energy.R
 import com.example.energy.data.repository.note.MessageRequest
-import com.example.energy.data.repository.note.MessageResponse
 import com.example.energy.data.repository.note.NoteRepository
 import com.example.energy.databinding.ActivityNoteLiveChatBinding
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.Date
@@ -42,16 +33,29 @@ class NoteLiveChatActivity : AppCompatActivity() {
 
         //토큰 가져오기
         //var sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
-        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzOTg1OTUxLCJleHAiOjE3MjY1Nzc5NTF9.jEn8OyBau-JQ576OLgESOD0dGcGH614WfsQUGGbtq_M"
+        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MDYyMTE0LCJleHAiOjE3MjY2NTQxMTR9.PCo0w_-qmI4_giK-NeiaTkCt_8x_vp5JqAhSxHhhuIE"
 
         binding = ActivityNoteLiveChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Intent에서 threadId, receiverId, username 및 userId 가져오기
+        val threadId = intent.getIntExtra("threadId", -1)
+        val receiverId = intent.getIntExtra("receiverId", -1)
+        val username = intent.getStringExtra("Username") ?: "Unknown User"
+        val userId = intent.getStringExtra("Id") ?: "Unknown ID"
+
+
+
+        /*
 
 
         // username, Id 가져오기
 
         val username = intent.getStringExtra("Username") ?: "김규리"
         val userId = intent.getStringExtra("Id") ?: "rlarbfl"
+
+
+         */
 
 
         binding.usernameTextView.text = username
@@ -67,7 +71,7 @@ class NoteLiveChatActivity : AppCompatActivity() {
         //전송 버튼 클릭 시
 
         binding.sendButton.setOnClickListener {
-            sendMessage(accessToken)
+            sendMessage(accessToken, threadId, receiverId)
         }
 
 
@@ -95,7 +99,8 @@ class NoteLiveChatActivity : AppCompatActivity() {
 
 
 
-    private fun sendMessage(accessToken: String?) {
+
+    private fun sendMessage(accessToken: String?, threadId: Int, receiverId: Int) {
 
         //val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzNzk0MjY1LCJleHAiOjE3MjYzODYyNjV9.I1m8HjK_zT67iTM1rc9RvH57aoCkGjw6pSkaXACZzXA"
         val message = binding.messageInput.text.toString().trim()
@@ -105,12 +110,37 @@ class NoteLiveChatActivity : AppCompatActivity() {
             return
         }
 
+        val receiverId = intent.getIntExtra("receiverId", 2)
+
+        if (receiverId == -1) {
+            Toast.makeText(this, "수신자 Id가 유효하지 않습니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
+        val threadId = intent.getIntExtra("threadId", 5)
+        val images = emptyList<String>()
+
+        val messageRequest = if (threadId > 0 ) {
+            MessageRequest(threadId, message, images, receiverId)
+        } else {
+            MessageRequest(null, message, images, receiverId)
+        }
+
+
+        /*
+
+
+
         val messageRequest = MessageRequest(
             5,
             message,
             emptyList(),
             2
         )
+
+
+         */
 
 
 

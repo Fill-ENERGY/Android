@@ -38,6 +38,37 @@ class NoteRepository {
         }
 
 
+        fun fetchChatThreads(accessToken: String, lastId: Int, limit: Int, callback: (ChatThreadsResponse?) -> Unit)
+        {
+            val noteService = getRetrofit().create(ChatInterface::class.java)
+            val call = noteService.getChatThreads(accessToken)
+
+            call.enqueue(object : Callback<ChatThreadsResponse> {
+                override fun onResponse(call: Call<ChatThreadsResponse>, response: Response<ChatThreadsResponse>) {
+                    if (response.isSuccessful) {
+                        val chatThreads = response.body()?.result?.threads ?: emptyList()
+
+
+                        val targetThread = chatThreads.find { it.receiverId.toInt() == 1 }
+
+                        if (targetThread != null) {
+                            val threadId = targetThread.threadId
+                            val receiverId = targetThread.receiverId
+                            // 쪽지 전송 시 이 값들을 사용합니다.
+                        }
+                    } else {
+                        // 오류 처리
+                    }
+                }
+
+                override fun onFailure(call: Call<ChatThreadsResponse>, t: Throwable) {
+                    // 네트워크 오류 처리
+                    Log.e("NoteRepository", "채팅방 목록 조회 실패")
+
+                }
+            })
+        }
+
         /*
         //지도에 띄울 데이터
         fun leaveChatRoom(accessToken: String, threadId: Int, callback: (StationMapModel?)-> Unit){

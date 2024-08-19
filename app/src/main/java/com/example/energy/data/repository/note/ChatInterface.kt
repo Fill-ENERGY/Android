@@ -2,11 +2,13 @@ package com.example.energy.data.repository.note
 
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ChatInterface {
 
@@ -21,6 +23,15 @@ interface ChatInterface {
         @Body request: MessageRequest
 
     ) :Call<MessageResponse>
+
+
+    @GET("/api/v1/threads")
+    fun getChatThreads(
+
+        @Header("Authorization") accessToken: String,
+        @Query("lastId") lastId: Long = 0,
+        @Query("limit") limit: Int = 10
+    ): Call<ChatThreadsResponse>
 
 
     /*
