@@ -14,6 +14,7 @@ import com.example.energy.data.repository.map.MapRepository
 import com.example.energy.databinding.FragmentSearchResultBinding
 import com.example.energy.presentation.util.EnergyUtils
 import com.example.energy.presentation.util.MapLocation
+import com.example.energy.presentation.view.MainActivity
 import com.example.energy.presentation.view.base.BaseFragment
 import com.example.energy.presentation.viewmodel.MapViewModel
 import com.kakao.vectormap.KakaoMap
@@ -43,31 +44,31 @@ class SearchResultFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val mapView: MapView = binding.mapView
-
         //상단바
-        mapViewModel.getStationDetailModel.observe(viewLifecycleOwner, Observer { detail ->
-            setToolBar(detail.name!!)
-        })
+        setToolBar()
 
         //충전소 정보 세팅
         setStationInfo()
+    }
 
-        //지도 보여주기
-        MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) { location ->
-            Log.d(
-                "CurrentLocation",
-                "Latitude: ${location.latitude}, Longitude: ${location.longitude}"
-            )
-
-            getMap(mapView, location)
+    private fun setToolBar() {
+        binding.ivBack.setOnClickListener {
+            (context as MainActivity).supportFragmentManager.beginTransaction()
+                .replace(R.id.main_frm, MapFragment())
+                .commitAllowingStateLoss()
+        }
+        binding.ivSos.setOnClickListener {
+            EnergyUtils.showSOSDialog(requireContext())
         }
     }
 
     private fun setStationInfo() {
+        val mapView: MapView = binding.mapView
+
         //충전소 디테일 정보 가져오기
         mapViewModel.getStationDetailModel.observe(viewLifecycleOwner, Observer { detail ->
             stationName = detail.name!!
+            binding.tvToolbarTitle.text = detail.name!!
 
             //bottomSheet 타이틀
             binding.tvMarkerBottom.text = detail.name!!
@@ -141,6 +142,8 @@ class SearchResultFragment :
                 }
             }
 
+            //지도 보여주기
+            getMap(mapView)
         })
 
 
@@ -164,9 +167,13 @@ class SearchResultFragment :
             val chooserTitle = "친구에게 공유"
             startActivity(Intent.createChooser(intent, chooserTitle))
         }
+
+
+
+
     }
 
-    private fun getMap(mapView: MapView, location: Location) {
+    private fun getMap(mapView: MapView) {
         mapView.start(object : MapLifeCycleCallback() {
 
             override fun onMapDestroy() {
@@ -208,28 +215,6 @@ class SearchResultFragment :
                 return LatLng.from(stationLatitude, stationLongitude)
             }
         })
-    }
-
-    private fun setToolBar(stationName: String) {
-        binding.toolbar.inflateMenu(R.menu.toolbar_menu_search_result)
-        binding.toolbar.setTitle(stationName)
-        binding.toolbar.setTitleTextAppearance(requireContext(), R.style.Title2)
-        binding.toolbar.setTitleTextColor(resources.getColor(R.color.gray_scale8))
-        binding.toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.appbar_search -> {
-                    showToast("search")
-                    true
-                }
-
-                R.id.appbar_sos -> {
-                    EnergyUtils.showSOSDialog(requireContext())
-                    true
-                }
-
-                else -> false
-            }
-        }
     }
 
     private fun searchCharging(

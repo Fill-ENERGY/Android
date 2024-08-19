@@ -1,31 +1,54 @@
 package com.example.energy.presentation.view.list
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
+import androidx.core.net.toUri
 import com.example.energy.R
+import com.example.energy.data.repository.community.WritingCommunityImage
 import com.example.energy.data.repository.review.ReviewRepository
 import com.example.energy.databinding.ActivityListAddReviewBinding
 import com.example.energy.databinding.DialogPostCommunityCancelBinding
 import com.example.energy.databinding.DialogPostCommunitySuccessBinding
 import com.example.energy.presentation.view.base.BaseActivity
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
 class ListAddReviewActivity :
     BaseActivity<ActivityListAddReviewBinding>({ ActivityListAddReviewBinding.inflate(it) }) {
     private var score: Double = 0.0
     var keywordList = mutableSetOf<String>()
+    var imageUris: MutableList<Uri> = mutableListOf()
+
+//    var launcher = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia) { result ->
+//        if (result.resultCode == RESULT_OK) {
+//            val imagePath = result.data!!.data
+//
+//            var images : List<MultipartBody.Part> = ArrayList()
+//            val file = File(imagePath?.let { absolutelyPath(it) })
+//            val requestFile = file.asRequestBody(MediaType.parse("image/*"))
+//            val body = MultipartBody.Part.createFormData("images", file.name, requestFile)
+//
+//        }
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,10 +108,12 @@ class ListAddReviewActivity :
 
         //이미지 업로드
         binding.ivImageSelect.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK) // 갤러리 호출
+            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             intent.type = "image/*"
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true) // 멀티 선택 기능
-            //activityResult.launch(intent)
+            chooserIntent.putExtra(Intent.EXTRA_INTENT, intent)
+            chooserIntent.putExtra(Intent.EXTRA_TITLE,"사용할 앱을 선택해주세요.")
+            //launcher.launch(chooserIntent)
         }
 //이미지 업로드 테스트 보류
 //        ReviewRepository.postImages(
@@ -99,10 +124,10 @@ class ListAddReviewActivity :
             File("png"),
         )
 
-        // MultipartBody.Part 목록으로 변환합니다.
-        val imageParts = imageFiles.map { file ->
-            prepareFilePart("images", file) // "images"는 API에서의 파라미터 이름입니다.
-        }
+//        // MultipartBody.Part 목록으로 변환합니다.
+//        val imageParts = imageFiles.map { file ->
+//            prepareFilePart("images", file) // "images"는 API에서의 파라미터 이름입니다.
+//        }
 
         //뒤로 가기 버튼
         binding.ivBack.setOnClickListener {
@@ -229,8 +254,12 @@ class ListAddReviewActivity :
         dialog.show()
     }
 
-    fun prepareFilePart(partName: String, file: File): MultipartBody.Part {
-        val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
-        return MultipartBody.Part.createFormData(partName, file.name, requestFile)
+    private fun absolutelyPath(path: Uri): String {
+        var proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
+        var c= contentResolver?.query(path, proj, null, null, null)
+        var index = c?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        c?.moveToFirst()
+        var result = c?.getString(index!!)
+        return result!!
     }
-}
+    }

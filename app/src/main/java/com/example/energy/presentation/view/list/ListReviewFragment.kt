@@ -33,6 +33,9 @@ class ListReviewFragment :
         //리사이클러뷰
         setRecyclerView()
 
+        //추천순 디폴트
+        sortReview("SCORE")
+
         //평가하기 버튼 클릭
         binding.tvGoElevation.setOnClickListener {
             val intent = Intent(activity, ListAddReviewActivity::class.java).apply {
@@ -49,13 +52,17 @@ class ListReviewFragment :
         }
 
         //추천순으로 정렬
-        binding.sortReviewLike.setOnClickListener {
+        binding.sortReviewLikeTv.setOnClickListener {
             sortReview("SCORE")
+            binding.sortReviewLikeTv.setTextColor(Color.parseColor("#222019"))
+            binding.sortReviewLatestTv.setTextColor(Color.parseColor("#71716E"))
         }
 
         //최신순으로 정렬
-        binding.sortReviewLatest.setOnClickListener {
+        binding.sortReviewLatestTv.setOnClickListener {
             sortReview("RECENT")
+            binding.sortReviewLatestTv.setTextColor(Color.parseColor("#222019"))
+            binding.sortReviewLikeTv.setTextColor(Color.parseColor("#71716E"))
         }
 
         //리사이클러뷰 클릭 이벤트
@@ -79,16 +86,18 @@ class ListReviewFragment :
     }
 
     private fun sortReview(sort: String) {
-        ReviewRepository.getReviewsStation(
-            accessToken,
-            1, 0, sort, 10
-        ) { response ->
-            binding.tvReviewTotalCount.text = (response?.size ?: 0).toString()
-            if (response != null) {
-                reviewList.clear()
-                reviewList.addAll(response)
-                reviewAdapter.notifyDataSetChanged()
+        listViewModel.getStationId.observe(viewLifecycleOwner, Observer { stationId ->
+            ReviewRepository.getReviewsStation(
+                accessToken,
+                stationId, 0, sort, 10
+            ) { response ->
+                binding.tvReviewTotalCount.text = (response?.size ?: 0).toString()
+                if (response != null) {
+                    reviewList.clear()
+                    reviewList.addAll(response)
+                    reviewAdapter.notifyDataSetChanged()
+                }
             }
-        }
+        })
     }
 }
