@@ -45,7 +45,7 @@ data class ImagesModel (
 )
 
 
-// 게시글 작성
+// 게시글 작성 / 게시글 수정
 data class UploadResponse (
     val code: String,
     val message: String,
@@ -80,7 +80,7 @@ data class CommentResult(
     val comments: List<CommentModel>
 )
 
-// 댓글 작성
+// 댓글 작성 / 댓글 수정
 data class CommentResponse(
     val code: String,
     val message: String,
@@ -96,6 +96,14 @@ data class CommentModel(
     var parentId: Int,
     var author: Boolean,
     var replies: List<CommentModel>,
+)
+
+
+// 댓글 삭제
+data class DeleteCommentResponse(
+    val code: String,
+    val message: String,
+    val result: Int,
 )
 
 

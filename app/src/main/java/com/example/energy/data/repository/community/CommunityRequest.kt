@@ -3,13 +3,14 @@ package com.example.energy.data.repository.community
 import okhttp3.MultipartBody
 import retrofit2.http.Multipart
 
-// 게시글 작성 요청 데이터
+// 게시글 작성 요청 데이터 / 수정 요청 데이터
 data class PostBoardRequest(
     val title: String,
     val content: String,
     val category: String,
     val images: List<String>,
 )
+
 
 
 // 이미지 업로드 요청
@@ -23,6 +24,12 @@ data class WriteCommentRequest(
     val secret: Boolean,
     val parentCommentId: Int? = null,
     val images: List<String>,
+)
+// 댓글 수정 요청
+data class UpdateCommentRequest(
+    val content: String,
+    val images: List<String>,
+    val secret: Boolean,
 )
 
 

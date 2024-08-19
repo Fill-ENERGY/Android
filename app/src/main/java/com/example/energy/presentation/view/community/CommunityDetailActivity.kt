@@ -18,7 +18,7 @@ import com.example.energy.data.repository.community.HelpStatusRequest
 import com.example.energy.data.repository.community.PostBoardRequest
 import com.example.energy.data.repository.community.WriteCommentRequest
 import com.example.energy.databinding.ActivityCommunityDetailBinding
-import com.example.energy.databinding.DialogCommunityCommentSeeMoreBinding
+import com.example.energy.databinding.DialogCommunityCommentWriterSeeMoreBinding
 import com.example.energy.databinding.DialogCommunityUserSeeMoreBinding
 import com.example.energy.databinding.DialogCommunityWriterSeeMoreBinding
 import com.example.energy.databinding.DialogHelpStatusBinding
@@ -74,7 +74,11 @@ class CommunityDetailActivity : AppCompatActivity(){
                         }
 
                         override fun showDialog(commentModel: CommentModel) {
-                            showCommentDialog(commentModel)
+                            if(commentModel.author){ //댓글 작성자 Dialog
+                                showCommentWriterDialog(commentModel)
+                            } else{ //일반 유저 Dialog
+                                showCommentUserDialog(commentModel)
+                            }
                         }
                     }
                 } else {
@@ -171,23 +175,26 @@ class CommunityDetailActivity : AppCompatActivity(){
                 if(response.category == "HELP" && response.author){
                     binding.communityDetailChattingBtn.visibility = View.GONE
                     binding.communityDetailWriterRequestBtn.visibility = View.VISIBLE
-
-                    // 더보기 버튼
-                    binding.communityDetailSeeMore.setOnClickListener {
-                        showSeeMoreWriterDialog()
-                    }
                 }
 
                 // 도와줘요 카테고리인 경우 & 일반 사용자일 경우
                 if(response.category == "HELP" && response.author == false){
                     binding.communityDetailSeeMore.visibility = View.VISIBLE
-
-                        // 더보기 버튼
-                        binding.communityDetailSeeMore.setOnClickListener {
-                            showSeeMoreUserDialog()
-                        }
                 } else{
                     binding.communityDetailHelpCategory.visibility = View.GONE
+                }
+
+                //더보기 클릭 리스너
+                if(response.author){ //작성자인 경우
+                    // 더보기 버튼
+                    binding.communityDetailSeeMore.setOnClickListener {
+                        showSeeMoreWriterDialog()
+                    }
+                } else{
+                    // 더보기 버튼
+                    binding.communityDetailSeeMore.setOnClickListener {
+                        showSeeMoreUserDialog()
+                    }
                 }
 
                 // 잠금 버튼 클릭 시 (댓글)
@@ -427,10 +434,23 @@ class CommunityDetailActivity : AppCompatActivity(){
         val binding = DialogCommunityWriterSeeMoreBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(binding.root)
 
+        // 게시글 수정하기
         binding.dialogCommunityEdit.setOnClickListener {
             val intent = Intent(binding.root.context, CommunityWritingActivity::class.java)
             intent.putExtra("postId", postId)
             binding.root.context.startActivity(intent)
+        }
+
+        // 게시글 삭제하기
+        binding.dialogCommunityDelete.setOnClickListener {
+            CommunityRepository.deleteBoard(accessToken!!, postId) { response  ->
+                if(response != null){
+                    Log.d("게시글삭제", "게시글 삭제 성공: ${response.result}")
+                }else {
+                    // 상태 변경 실패
+                    Log.e("게시글삭제", "게시글 삭제 실패: ${response}")
+                }
+            }
         }
 
         bottomSheetDialog.show()
@@ -444,21 +464,46 @@ class CommunityDetailActivity : AppCompatActivity(){
         bottomSheetDialog.show()
     }
 
-    private fun showCommentDialog(commentModel: CommentModel){ // 댓글 더보기 Dialog
+    private fun showCommentWriterDialog(commentModel: CommentModel){ // 댓글 작성자 더보기 Dialog
         val bottomSheetDialog = BottomSheetDialog(this)
-        val binding = DialogCommunityCommentSeeMoreBinding.inflate(layoutInflater)
+        val binding = DialogCommunityCommentWriterSeeMoreBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(binding.root)
 
         // 댓글 수정 버튼
         binding.dialogCommentEdit.setOnClickListener {
-//            val intent = Intent(binding.root.context, CommentEditActivity::class.java)
-//            intent.putExtra("postId", postInfo.id)
-//            binding.root.context.startActivity(intent)
-            startActivity(Intent(this, CommentEditActivity::class.java))
+            val intent = Intent(binding.root.context, CommentEditActivity::class.java)
+            intent.putExtra("postId", postId)
+            intent.putExtra("commentId", commentModel.id)
+            binding.root.context.startActivity(intent)
         }
 
         // 댓글 삭제 버튼
         binding.dialogCommentDelete.setOnClickListener {
+            CommunityRepository.deleteComment(accessToken!!, postId, commentModel.id) { response  ->
+                if(response != null){
+                    Log.d("댓글삭제", "댓글 삭제 성공: ${response.result}")
+                }else {
+                    // 상태 변경 실패
+                    Log.e("댓글삭제", "댓글 삭제 실패: ${response}")
+                }
+            }
+        }
+
+        bottomSheetDialog.show()
+    }
+
+    private fun showCommentUserDialog(commentModel: CommentModel){ // 댓글 일반 유저 더보기 Dialog
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val binding = DialogCommunityUserSeeMoreBinding.inflate(layoutInflater)
+        bottomSheetDialog.setContentView(binding.root)
+
+        // 댓글 차단 버튼
+        binding.dialogCommunityBlock.setOnClickListener {
+
+        }
+
+        // 댓글 신고 버튼
+        binding.dialogCommunityReport.setOnClickListener {
 
         }
 

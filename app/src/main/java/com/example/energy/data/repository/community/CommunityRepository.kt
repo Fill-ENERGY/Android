@@ -106,35 +106,66 @@ class CommunityRepository {
         }
 
 
-//        // 커뮤니티 글 삭제
-//        fun deleteBoard(accessToken: String, boardId: Int, callback: (BoardModel?)-> Unit){
-//            val communityService = getRetrofit().create(CommunityInterface::class.java)
-//            val call = communityService.DeleteCommunityResponse(accessToken, request)
-//
-//            call.enqueue(object : Callback<UploadResponse> {
-//                override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>
-//                ) {
-//                    if(response.isSuccessful){
-//                        //통신 성공
-//                        Log.d("커뮤니티작성api테스트", "통신 성공 ${response.code()}, ${response.body()?.result}")
-//                        val postBoardModel = response.body()?.result
-//                        callback(postBoardModel)
-//                    } else {
-//                        //통신 실패
-//                        val error = response.errorBody()?.toString()
-//                        Log.e("커뮤니티작성api테스트", "통신 실패 $error")
-//                        callback(null)
-//                    }
-//                }
-//
-//                override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
-//                    // 통신 실패
-//                    Log.w("커뮤니티작성api테스트", "통신 실패: ${t.message}")
-//                    callback(null)
-//                }
-//            }
-//            )
-//        }
+        // 커뮤니티 글 수정
+        fun updateBoard(accessToken: String, boardId: Int, request: PostBoardRequest, callback: (BoardModel?)-> Unit){
+            val communityService = getRetrofit().create(CommunityInterface::class.java)
+            val call = communityService.updateBoard(accessToken, boardId, request)
+
+            call.enqueue(object : Callback<UploadResponse> {
+                override fun onResponse(call: Call<UploadResponse>, response: Response<UploadResponse>
+                ) {
+                    if(response.isSuccessful){
+                        //통신 성공
+                        Log.d("커뮤니티수정api테스트", "통신 성공 ${response.code()}, ${response.body()?.result}")
+                        val postBoardModel = response.body()?.result
+                        callback(postBoardModel)
+                    } else {
+                        //통신 실패
+                        val error = response.errorBody()?.toString()
+                        Log.e("커뮤니티수정api테스트", "통신 실패 $error")
+                        callback(null)
+                    }
+                }
+
+                override fun onFailure(call: Call<UploadResponse>, t: Throwable) {
+                    // 통신 실패
+                    Log.w("커뮤니티수정api테스트", "통신 실패: ${t.message}")
+                    callback(null)
+                }
+            }
+            )
+        }
+
+
+        // 커뮤니티 글 삭제
+        fun deleteBoard(accessToken: String, boardId: Int, callback: (DeleteCommunityResponse?)-> Unit){
+            val communityService = getRetrofit().create(CommunityInterface::class.java)
+            val call = communityService.deleteBoard(accessToken, boardId)
+
+            call.enqueue(object : Callback<DeleteCommunityResponse> {
+                override fun onResponse(call: Call<DeleteCommunityResponse>, response: Response<DeleteCommunityResponse>
+                ) {
+                    if(response.isSuccessful){
+                        //통신 성공
+                        Log.d("커뮤니티삭제api테스트", "통신 성공 ${response.code()}, ${response.body()?.result}")
+                        val postBoardModel = response.body()
+                        callback(postBoardModel)
+                    } else {
+                        //통신 실패
+                        val error = response.errorBody()?.toString()
+                        Log.e("커뮤니티삭제api테스트", "통신 실패 $error")
+                        callback(null)
+                    }
+                }
+
+                override fun onFailure(call: Call<DeleteCommunityResponse>, t: Throwable) {
+                    // 통신 실패
+                    Log.w("커뮤니티삭제api테스트", "통신 실패: ${t.message}")
+                    callback(null)
+                }
+            }
+            )
+        }
 
         // 이미지 업로드
         fun uploadImages(accessToken: String, request: UploadImagesRequest, callback: (ImagesModel?)-> Unit){
@@ -279,6 +310,68 @@ class CommunityRepository {
                 override fun onFailure(call: Call<CommentResponse>, t: Throwable) {
                     // 통신 실패
                     Log.w("커뮤니티댓글작성api테스트", "통신 실패: ${t.message}")
+                    callback(null)
+                }
+            }
+            )
+        }
+
+
+        // 커뮤니티 댓글 수정
+        fun updateComment(accessToken: String, boardId: Int, commentId: Int, request: UpdateCommentRequest, callback: (CommentModel?)-> Unit){
+            val communityService = getRetrofit().create(CommunityInterface::class.java)
+            val call = communityService.updateComment(accessToken, boardId, commentId, request)
+
+            call.enqueue(object : Callback<CommentResponse> {
+                override fun onResponse(call: Call<CommentResponse>, response: Response<CommentResponse>
+                ) {
+                    if(response.isSuccessful){
+                        //통신 성공
+                        Log.d("댓글수정api테스트", "통신 성공 ${response.code()}, ${response.body()?.result}")
+                        val postBoardModel = response.body()?.result
+                        callback(postBoardModel)
+                    } else {
+                        //통신 실패
+                        val error = response.errorBody()?.toString()
+                        Log.e("댓글수정api테스트", "통신 실패 $error")
+                        callback(null)
+                    }
+                }
+
+                override fun onFailure(call: Call<CommentResponse>, t: Throwable) {
+                    // 통신 실패
+                    Log.w("댓글수정api테스트", "통신 실패: ${t.message}")
+                    callback(null)
+                }
+            }
+            )
+        }
+
+
+        // 커뮤니티 댓글 삭제
+        fun deleteComment(accessToken: String, boardId: Int, commentId: Int, callback: (DeleteCommentResponse?)-> Unit){
+            val communityService = getRetrofit().create(CommunityInterface::class.java)
+            val call = communityService.deleteComment(accessToken, boardId, commentId)
+
+            call.enqueue(object : Callback<DeleteCommentResponse> {
+                override fun onResponse(call: Call<DeleteCommentResponse>, response: Response<DeleteCommentResponse>
+                ) {
+                    if(response.isSuccessful){
+                        //통신 성공
+                        Log.d("커뮤니티댓글삭제api테스트", "통신 성공 ${response.code()}, ${response.body()?.result}")
+                        val postBoardModel = response.body()
+                        callback(postBoardModel)
+                    } else {
+                        //통신 실패
+                        val error = response.errorBody()?.toString()
+                        Log.e("커뮤니티댓글삭제api테스트", "통신 실패 $error")
+                        callback(null)
+                    }
+                }
+
+                override fun onFailure(call: Call<DeleteCommentResponse>, t: Throwable) {
+                    // 통신 실패
+                    Log.w("커뮤니티댓글삭제api테스트", "통신 실패: ${t.message}")
                     callback(null)
                 }
             }

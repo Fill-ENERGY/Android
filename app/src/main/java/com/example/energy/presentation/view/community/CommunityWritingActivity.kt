@@ -52,6 +52,7 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
     private var isTitleFilled = false
     private var isContentFilled = false
     private var accessToken: String? = null
+    private var postId: Int? = null // 수정할 게시글 ID (null이면 새 게시글)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,25 +65,18 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzOTg1OTUxLCJleHAiOjE3MjY1Nzc5NTF9.jEn8OyBau-JQ576OLgESOD0dGcGH614WfsQUGGbtq_M"
 
 
-//        val postId = intent.getIntExtra("postId", -1)
-//        // 상세 게시글 조회 API 호출
-//        if(postId != -1){
-//            CommunityRepository.getDetailCommunity(accessToken?: "none", postId) { response ->
-//                if (response != null) {
-//                    binding.communityWritingTitleTv.text = response.board.title
-//                    binding.communityWritingContent.text = response.board.content
-//                }else {
-//                    // 데이터가 null인 경우 처리
-//                    Log.e("상세커뮤니티조회", "상세 게시글 데이터가 없습니다.")
-//                }
-//            }
-//        }
-
+        // Intent로 전달된 postId 확인
+        postId = intent.getIntExtra("postId", -1).takeIf { it != -1 }
 
         spinner = binding.communitySelectCategory
         titleEditText = binding.communityWritingTitleTv
         contentEditText = binding.communityWritingContent
         finishButton = binding.communityWritingFinishTv
+
+
+        // 수정 모드일 경우, 기존 데이터 로드
+        postId?.let { loadPostData(it) }
+
 
         // 제목 EditText 변화 listener
         titleEditText.addTextChangedListener(object : TextWatcher {
@@ -155,7 +149,11 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         // 등록 버튼 click listener
         finishButton.setOnClickListener {
             if (finishButton.isEnabled) {
-                savePostWithImages() // 게시글 저장
+                if (postId != null) {
+                    updatePostWithImages(postId!!) // 게시글 수정
+                } else {
+                    savePostWithImages() // 새 게시글 작성
+                }
             }
         }
 
@@ -175,6 +173,50 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
             false
         }
     }
+
+
+    // 게시글 수정 시 기존 데이터 로드 함수
+    private fun loadPostData(postId: Int) {
+        CommunityRepository.getDetailCommunity(accessToken ?: "none", postId) { response ->
+            if (response != null) {
+                // 기존 데이터 UI에 반영
+                titleEditText.setText(response.title)
+                contentEditText.setText(response.content)
+                spinner.setSelection(menuList.indexOf(response.category))
+                // 이미지 데이터 처리
+                response.images.forEach { imageUri ->
+                    addImageToList(imageUri)
+                }
+                adapter.notifyDataSetChanged()
+            } else {
+                Log.e("상세커뮤니티조회", "상세 게시글 데이터가 없습니다.")
+            }
+        }
+    }
+
+
+    // 게시글 수정 함수
+    private fun updatePostWithImages(postId: Int) {
+        val category: String = toEnglish(spinner.selectedItem.toString())
+        val imageUriList: List<String> = imageList.keys.toList()
+
+        val postBoardRequest = PostBoardRequest(
+            title = titleEditText.text.toString(),
+            content = contentEditText.text.toString(),
+            category = category,
+            images = imageUriList
+        )
+
+        CommunityRepository.updateBoard(accessToken ?: "none", postId, postBoardRequest) { response ->
+            if (response != null) {
+                Log.d("커뮤니티수정", "게시글 수정 성공: ${response.title}")
+                showSuccessDialog()
+            } else {
+                Log.e("커뮤니티수정", "게시글 수정 실패: ${response}")
+            }
+        }
+    }
+
 
     // 등록 버튼 상태 업데이트하는 함수
     private fun updateFinishButtonState() {
@@ -390,7 +432,7 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
             }
         }
 
-        showSuccessDialog()
+        //showSuccessDialog()
 
 
 

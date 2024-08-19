@@ -88,7 +88,7 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
             //토큰 가져오기
 //            val sharedPreferences = binding.root.context.getSharedPreferences("userToken", Context.MODE_PRIVATE)
 //            val accessToken = sharedPreferences.getString("accessToken", "none")
-            val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzOTg1OTUxLCJleHAiOjE3MjY1Nzc5NTF9.jEn8OyBau-JQ576OLgESOD0dGcGH614WfsQUGGbtq_M"
+            val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MDYyMTE0LCJleHAiOjE3MjY2NTQxMTR9.PCo0w_-qmI4_giK-NeiaTkCt_8x_vp5JqAhSxHhhuIE"
 
             // 좋아요 아이콘 설정
             updateLikeIcon(postInfo.liked)
