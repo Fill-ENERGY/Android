@@ -19,7 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
 import androidx.core.net.toUri
 import com.example.energy.R
-import com.example.energy.data.repository.community.WritingCommunityImage
+
 import com.example.energy.data.repository.review.ReviewRepository
 import com.example.energy.databinding.ActivityListAddReviewBinding
 import com.example.energy.databinding.DialogPostCommunityCancelBinding
