@@ -71,7 +71,7 @@
                 android:id="@+id/tv_review_total_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="15"
+                android:text="0"
                 android:layout_marginTop="18dp"
                 android:layout_marginStart="2dp"
                 app:layout_constraintTop_toBottomOf="@id/tv_review_title"
@@ -102,6 +102,28 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_review_total"
                 app:layout_constraintStart_toStartOf="@id/tv_review_total"
                 />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_keyword_charging_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="36dp"
+                android:elevation="0dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_review_total_summary"
+                app:layout_constraintStart_toEndOf="@id/tv_review_feature">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="충전 속도 152"
+                    style="@style/Body4"
+                    android:textColor="@color/gray_scale5"
+                    android:layout_marginVertical="6dp"
+                    android:layout_marginHorizontal="7dp"
+                    />
+            </androidx.cardview.widget.CardView>
 
             <View
                 android:id="@+id/divide"

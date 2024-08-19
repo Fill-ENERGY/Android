@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/iv_star"
-        android:layout_marginTop="13dp"
+        android:layout_marginTop="11dp"
         app:layout_constraintStart_toStartOf="@id/iv_profile"
         app:layout_constraintTop_toBottomOf="@id/iv_profile"
         />
@@ -59,6 +59,7 @@
         />
 
     <TextView
+        android:id="@+id/tv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="content"
@@ -71,14 +72,51 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <ImageView
+        android:id="@+id/iv_image"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_content"
+        android:layout_marginTop="11dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_keyword_charging_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/gray_scale2"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="0dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintTop_toBottomOf="@id/iv_image"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="15dp">
+        <TextView
+            android:id="@+id/tv_keyword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="“ 충전 시간이 빨라요 “"
+            style="@style/Body4"
+            android:textColor="@color/gray_scale7"
+            android:layout_marginVertical="7dp"
+            android:layout_marginHorizontal="14dp"
+            />
+    </androidx.cardview.widget.CardView>
 
     <ImageView
         android:id="@+id/iv_recommend_review"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/iv_recommend_review"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/iv_star_total"
-        app:layout_constraintTop_toBottomOf="@id/iv_star_total" />
+        app:layout_constraintTop_toBottomOf="@id/cv_keyword_charging_speed" />
 
     <TextView
         android:id="@+id/tv_recommend_review"
