@@ -22,6 +22,7 @@ import com.example.energy.data.repository.list.ListRepository
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.FragmentListBinding
 import com.example.energy.presentation.util.EnergyUtils.Companion.showSOSDialog
+import com.example.energy.presentation.util.MapLocation
 import com.example.energy.presentation.view.base.BaseFragment
 import com.example.energy.presentation.viewmodel.MapViewModel
 
@@ -49,6 +50,9 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
         //데이터 로드 함수 호출
         loadData(accessToken, currentSortType)
+        MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) {
+            location ->
+        }
 
 
 
