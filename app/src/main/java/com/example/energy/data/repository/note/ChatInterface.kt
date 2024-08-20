@@ -35,6 +35,15 @@ interface ChatInterface {
     ) :Call<ChatThreadsResponse>
 
 
+    @GET("/api/v1/threads/{threadId}/messages")
+    fun getMessages (
+        @Header("Authorization") accessToken: String,
+        @Path("threadId") threadId: Int,
+        @Query("cursor") cursor: Int?,
+        @Query("limit") limit: Int?
+    ) :Call<GetMessageResponse>
+
+
     /*
     @PATCH("api/v1/threads/{threadId}")
 

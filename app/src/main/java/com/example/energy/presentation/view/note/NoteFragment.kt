@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -23,12 +24,11 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
 
 
     private lateinit var noteAdapter: NoteAdapter
+    private var cursor: String? = null
+    private var lastId: Int? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-        // NoteAdapter 초기화
 
 
 
@@ -36,42 +36,10 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
 
 
 
-        //loadChatThread("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MDU0MTU2LCJleHAiOjE3MjY2NDYxNTZ9.L0hwfd1VFk0usLRuexrc63osiPNIpWSUpPjS8vgt_KM")
+        noteAdapter = NoteAdapter( ArrayList(), {chatThread, position -> })
 
-
-        /*
-        // 테스트 데이터
-        val sampleData = arrayListOf(
-            NoteItem("김규리", "user123", "그럼 조그만 기다리세요!", "2분 전 "),
-            NoteItem("박지민", "user456", "네 감사합니다.!", "어제")
-
-        )
-
-
-
-
-
-
-        // NoteAdapter에 클릭 리스너 추가
-
-            // API 호출 시작
-            //leaveChatRoom(note.userId.toLong()) {
-
-                // API 호출 성공 시
-                //noteAdapter.removeData(position)
-                //Toast.makeText(context, "채팅방을 나갔습니다.", Toast.LENGTH_SHORT).show()
-            //}
-        }
-
-         */
-        noteAdapter = NoteAdapter( ArrayList(), {chatThread, position ->
-
-        })
-
+        //채팅방 목록 조회 api 호출
         loadChatThread()
-
-
-
 
 
 
@@ -106,21 +74,7 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
 
 
 
-
-
-
         }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -131,15 +85,22 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
     private fun loadChatThread() {
 
         val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTMxNjc3LCJleHAiOjE3MjY3MjM2Nzd9.NT0iEfaOANA8m1Y5E8p0-4ZwuUYBZdMQkHhYVj5X7jA"
-        val cursor =""
 
-        NoteRepository.getChatThreads(accessToken, cursor,0, 10) { response ->
 
+
+        NoteRepository.getChatThreads(accessToken, cursor, lastId, 10) { response ->
             if (response != null) {
 
-                noteAdapter.updateData(response) // 데이터를 어댑터에 전달하여 업데이트
+                Log.d("NoteFragment", "API Response: $response")
+
+                //데이터를 어댑터에 전달
+                noteAdapter.updateData(response.result?.threads)
+
+                //cursor, lastId 데이터 값으로 대입
+                cursor = response.result?.cursor
+                lastId = response.result?.lastId
             } else {
-                Toast.makeText(context, "채팅방 목록 실패", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "채팅방 목록 불러오기 실패", Toast.LENGTH_SHORT).show()
             }
         }
     }

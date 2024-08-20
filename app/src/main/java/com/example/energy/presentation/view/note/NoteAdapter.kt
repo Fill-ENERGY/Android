@@ -1,13 +1,18 @@
 package com.example.energy.presentation.view.note
 
 import android.content.Intent
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.energy.data.repository.note.ChatThread
 import com.example.energy.databinding.ChatItemBinding
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.Collections
 
 class NoteAdapter(private val noteList: ArrayList<ChatThread>,
@@ -18,12 +23,33 @@ class NoteAdapter(private val noteList: ArrayList<ChatThread>,
     inner class NoteViewHolder(private val binding: ChatItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        @RequiresApi(Build.VERSION_CODES.O)
         fun bind(note: ChatThread) {
 
             binding.nameTextView.text = note.name
             binding.userIdTextView.text = note.nickname
-            binding.messageTextView.text = note.recentMessage.toString()
-            binding.timeTextView.text = note.updatedAt
+            binding.messageTextView.text = note.recentMessage?.content
+
+            // 날짜 문자열을 LocalDateTime으로 변환
+
+            val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+            val updatedDateTime = LocalDateTime.parse(note.updatedAt, formatter)
+
+            // 현재 시각
+            val now = LocalDateTime.now()
+
+            val minutesAgo = ChronoUnit.MINUTES.between(updatedDateTime, now)
+
+            // "몇 분 전" 형식으로 변환
+            val timeText = when {
+                minutesAgo < 1 -> "방금 전"
+                minutesAgo < 60 -> "${minutesAgo}분 전"
+                minutesAgo < 1440 -> "${minutesAgo / 60}시간 전"
+                else -> "${minutesAgo / 1440}일 전"
+            }
+
+            //최종 변환 텍스트 바인딩
+            binding.timeTextView.text = timeText
 
 
             //NoteLiveChatActivity로 전환
@@ -32,6 +58,9 @@ class NoteAdapter(private val noteList: ArrayList<ChatThread>,
 
                 intent.putExtra("Username", note.name)
                 intent.putExtra("Id",note.nickname)
+                intent.putExtra("threadId", note.threadId)
+                intent.putExtra("receiverId", note.receiverId)
+                intent.putExtra("cursor", note.recentMessage?.messageId)
                 ContextCompat.startActivity(itemView.context, intent, null)
             }
 
@@ -79,6 +108,7 @@ class NoteAdapter(private val noteList: ArrayList<ChatThread>,
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         holder.bind(noteList[position])
 

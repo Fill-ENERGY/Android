@@ -1,6 +1,7 @@
 package com.example.energy.presentation.view.note
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -8,12 +9,15 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.example.energy.R
+import com.example.energy.data.repository.note.GetDetailMessage
 import com.example.energy.data.repository.note.MessageRequest
 import com.example.energy.data.repository.note.NoteRepository
 import com.example.energy.databinding.ActivityNoteLiveChatBinding
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.Date
@@ -28,6 +32,7 @@ class NoteLiveChatActivity : AppCompatActivity() {
     private var lastTimeTextView: TextView? = null
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -43,6 +48,10 @@ class NoteLiveChatActivity : AppCompatActivity() {
         val receiverId = intent.getIntExtra("receiverId", -1)
         val username = intent.getStringExtra("Username") ?: "Unknown User"
         val userId = intent.getStringExtra("Id") ?: "Unknown ID"
+        val cursor = intent.getIntExtra("cursor", 0)
+
+        GetMessages(threadId, cursor)
+
 
 
 
@@ -98,11 +107,65 @@ class NoteLiveChatActivity : AppCompatActivity() {
 
 
 
+    // 쪽지 목록 조회
 
+
+
+    private fun GetMessages(threadId: Int, cursor: Int)
+    {
+
+        val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTMxNjc3LCJleHAiOjE3MjY3MjM2Nzd9.NT0iEfaOANA8m1Y5E8p0-4ZwuUYBZdMQkHhYVj5X7jA"
+
+        NoteRepository.getMessages(accessToken, threadId, cursor , 10) { response ->
+            if (response.result?.messages != null) {
+                // 메시지 리스트를 displayChatMessages 함수로 전달하여 UI에 표시
+                displayChatMessages(response.result.messages)
+
+
+
+
+            } else {
+                Toast.makeText(this, "쪽지 목록을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
+            }
+
+
+        }
+
+    }
+
+    // 메시지를 UI에 표시하는 함수
+    private fun displayChatMessages(messages: List<GetDetailMessage>) {
+        messages.forEach { message ->
+            val dateFormat = formatDate(message.createdAt ?: "")
+            val timeFormat = formatTime(message.createdAt ?: "")
+
+            // TextView 생성 및 메시지 내용 설정
+            val textView = TextView(this).apply {
+                text = "${message.content} - $dateFormat $timeFormat"
+                textSize = 16f
+                setPadding(16, 16, 16, 16)
+            }
+
+            // TextView를 LinearLayout에 추가
+            binding.chatContainer.addView(textView)
+        }
+
+        // 모든 메시지를 추가한 후 스크롤을 맨 아래로 이동
+        binding.chatScrollView.post {
+            binding.chatScrollView.fullScroll(View.FOCUS_DOWN)
+        }
+    }
+
+
+
+
+
+
+    // 메시지 전송 api
 
     private fun sendMessage(accessToken: String?, threadId: Int, receiverId: Int) {
 
-        //val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzNzk0MjY1LCJleHAiOjE3MjYzODYyNjV9.I1m8HjK_zT67iTM1rc9RvH57aoCkGjw6pSkaXACZzXA"
+        //val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTMxNjc3LCJleHAiOjE3MjY3MjM2Nzd9.NT0iEfaOANA8m1Y5E8p0-4ZwuUYBZdMQkHhYVj5X7jA"
         val message = binding.messageInput.text.toString().trim()
 
         if (message.isEmpty()) {
@@ -110,7 +173,7 @@ class NoteLiveChatActivity : AppCompatActivity() {
             return
         }
 
-        val receiverId = intent.getIntExtra("receiverId", 2)
+        //val receiverId = intent.getIntExtra("receiverId", 2)
 
         if (receiverId == -1) {
             Toast.makeText(this, "수신자 Id가 유효하지 않습니다.", Toast.LENGTH_SHORT).show()
@@ -118,7 +181,7 @@ class NoteLiveChatActivity : AppCompatActivity() {
         }
 
 
-        val threadId = intent.getIntExtra("threadId", 5)
+        //val threadId = intent.getIntExtra("threadId", 5)
         val images = emptyList<String>()
 
         val messageRequest = if (threadId > 0 ) {
