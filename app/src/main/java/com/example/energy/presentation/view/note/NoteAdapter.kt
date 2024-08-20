@@ -7,8 +7,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.energy.data.repository.note.ChatThread
-import com.example.energy.data.repository.note.ChatThreadsResponse
-import com.example.energy.data.repository.note.ChatThreadsResult
 import com.example.energy.databinding.ChatItemBinding
 import java.util.Collections
 
@@ -94,10 +92,12 @@ class NoteAdapter(private val noteList: ArrayList<ChatThread>,
 
 
 
-    fun updateData(newList: ArrayList<ChatThread>) {
+    fun updateData(newList: List<ChatThread>?) {
         noteList.clear()
-        noteList.addAll(newList)
-        //notifyDataSetChanged()
+        if (newList != null) {
+            noteList.addAll(newList)
+        }
+        notifyDataSetChanged()
     }
 
 

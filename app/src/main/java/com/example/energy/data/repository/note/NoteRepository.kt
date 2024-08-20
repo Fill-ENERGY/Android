@@ -38,7 +38,7 @@ class NoteRepository {
         }
 
 
-        fun getChatThreads(accessToken: String, cursor: String, lastId: Int, limit: Int, callback: (ChatThreadsResponse?) -> Unit)
+        fun getChatThreads(accessToken: String, cursor: String, lastId: Int, limit: Int, callback: (List<ChatThread>?) -> Unit)
         {
             val noteService = getRetrofit().create(ChatInterface::class.java)
             val call = noteService.getChatThreads(accessToken, cursor, lastId, limit)
@@ -47,14 +47,16 @@ class NoteRepository {
 
                 override fun onResponse(call: Call<ChatThreadsResponse>, response: Response<ChatThreadsResponse>) {
                     if (response.isSuccessful) {
-                        val chatThreadsResponse = response.body()
+
+                        val chatThreadsResponse = response.body()?.result?.threads ?: emptyList()
                         callback(chatThreadsResponse)
 
 
 
                     } else {
-                        // 서버 응답은 성공적이었지만 code가 2xx가 아닌 경우 처리
-                        Log.e("NoteRepository", "응답 실패: ${response.code()} - ${response.message()}")
+                        // 서버 응답이 2xx가 아닌 경우
+                        val errorBody = response.errorBody()?.string()
+                        Log.e("NoteRepository", "응답 실패: ${response.code()} - ${response.message()} \n에러 내용: $errorBody")
                         callback(null)
                     }
                 }

@@ -136,8 +136,8 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
         NoteRepository.getChatThreads(accessToken, cursor,0, 10) { response ->
 
             if (response != null) {
-                val threads = response.result.threads
-                noteAdapter.updateData(ArrayList(threads)) // 데이터를 어댑터에 전달하여 업데이트
+
+                noteAdapter.updateData(response) // 데이터를 어댑터에 전달하여 업데이트
             } else {
                 Toast.makeText(context, "채팅방 목록 실패", Toast.LENGTH_SHORT).show()
             }

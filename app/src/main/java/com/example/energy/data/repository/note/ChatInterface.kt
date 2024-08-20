@@ -29,9 +29,9 @@ interface ChatInterface {
     fun getChatThreads(
 
         @Header("Authorization") accessToken: String,
-        @Query("cursor") cursor: String,
-        @Query("lastId") lastId: Int,
-        @Query("limit") limit: Int
+        @Query("cursor") cursor: String?,
+        @Query("lastId") lastId: Int?,
+        @Query("limit") limit: Int?
     ) :Call<ChatThreadsResponse>
 
 

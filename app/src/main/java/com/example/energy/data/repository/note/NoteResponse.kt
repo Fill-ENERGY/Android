@@ -37,7 +37,7 @@ data class ChatThread(
     val receiverId: Int,
     val name: String,
     val nickname: String,
-    val profileImg: String,
+    val profileImg: String?,
     val recentMessage: RecentMessage,
     val unreadMessageCount: Int,
     val updatedAt: String
