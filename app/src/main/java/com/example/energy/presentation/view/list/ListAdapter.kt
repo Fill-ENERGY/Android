@@ -7,20 +7,18 @@ import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat.startActivity
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.example.energy.data.repository.list.StationDetailModel
+import com.example.energy.data.repository.list.ListMapModels
 import com.example.energy.data.repository.map.ListMapModel
 import com.example.energy.databinding.ListItemBinding
 import com.example.energy.presentation.viewmodel.MapViewModel
 
 
-class ListAdapter(private val itemList: List<ListMapModel>,
+class ListAdapter(private val itemList: List<ListMapModels>,
                   private val mapViewModel: MapViewModel,
-                  private val onItemClick: (ListMapModel) -> Unit
+                  private val onItemClick: (ListMapModels) -> Unit
     ) : RecyclerView.Adapter<ListAdapter.ListViewHolder>() {
 
 
@@ -41,7 +39,7 @@ class ListAdapter(private val itemList: List<ListMapModel>,
 
 
 
-        fun bind(data: ListMapModel,  onItemClick: (ListMapModel) -> Unit) {
+        fun bind(data: ListMapModels, onItemClick: (ListMapModels) -> Unit) {
 
             //거리, 평점, 시간 출력
             binding.locationName.text = data.name
@@ -51,6 +49,21 @@ class ListAdapter(private val itemList: List<ListMapModel>,
 
 
             itemView.setOnClickListener { onItemClick(data) } // 클릭 리스너 설정
+
+
+
+            // 전화 버튼 클릭 시 다이얼로 연결
+
+            binding.callButton.setOnClickListener {
+
+                var phoneNumber = data.institutionPhone
+
+                var intent = Intent(Intent.ACTION_DIAL)
+                intent.data = Uri.parse("tel:$phoneNumber")
+
+                itemView.context.startActivity(intent)
+
+            }
 
 
             binding.naviButton.setOnClickListener {
