@@ -217,38 +217,38 @@ class ReviewRepository {
             )
         }
 
-        fun getMyReviews(
-            accessToken: String,
-            callback: (List<ReviewModel>?) -> Unit
-        ) {
-            val reviewService = getRetrofit().create(ReviewInterface::class.java)
-            val call = reviewService.getMyReviews(accessToken)
-
-            call.enqueue(object : retrofit2.Callback<AllReviewResponse> {
-                override fun onResponse(
-                    call: Call<AllReviewResponse>, response: Response<AllReviewResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        //통신 성공
-                        Log.d("getMyReviews", "통신 성공 ${response.body()?.result}")
-                        val reviewModel = response.body()?.result
-                        callback(reviewModel)
-                    } else {
-                        //통신 실패
-                        val error = response.errorBody()?.toString()
-                        Log.e("getMyReviews", "통신 실패 $error")
-                        callback(null)
-                    }
-                }
-
-                override fun onFailure(call: Call<AllReviewResponse>, t: Throwable) {
-                    // 통신 실패
-                    Log.w("getMyReviews", "통신 실패: ${t.message}")
-                    callback(null)
-                }
-            }
-            )
-        }
+//        fun getMyReviews(
+//            accessToken: String,
+//            callback: (List<ReviewModel>?) -> Unit
+//        ) {
+//            val reviewService = getRetrofit().create(ReviewInterface::class.java)
+//            val call = reviewService.getMyReviews(accessToken)
+//
+//            call.enqueue(object : retrofit2.Callback<AllReviewResponse> {
+//                override fun onResponse(
+//                    call: Call<AllReviewResponse>, response: Response<AllReviewResponse>
+//                ) {
+//                    if (response.isSuccessful) {
+//                        //통신 성공
+//                        Log.d("getMyReviews", "통신 성공 ${response.body()?.result}")
+//                        val reviewModel = response.body()?.result
+//                        callback(reviewModel)
+//                    } else {
+//                        //통신 실패
+//                        val error = response.errorBody()?.toString()
+//                        Log.e("getMyReviews", "통신 실패 $error")
+//                        callback(null)
+//                    }
+//                }
+//
+//                override fun onFailure(call: Call<AllReviewResponse>, t: Throwable) {
+//                    // 통신 실패
+//                    Log.w("getMyReviews", "통신 실패: ${t.message}")
+//                    callback(null)
+//                }
+//            }
+//            )
+//        }
 
         fun getReviewsStation(
             accessToken: String,
@@ -269,7 +269,7 @@ class ReviewRepository {
                     if (response.isSuccessful) {
                         //통신 성공
                         Log.d("getReviewsStation", "통신 성공 ${response.body()?.result}")
-                        val reviewModel = response.body()?.result
+                        val reviewModel = response.body()?.result?.reviews
                         callback(reviewModel)
                     } else {
                         //통신 실패

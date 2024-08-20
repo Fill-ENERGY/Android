@@ -197,7 +197,7 @@ class ListAddReviewActivity :
                 score,
                 keywordList.toList(),
                 stationId,
-                imageStrings,
+                null,
             )
             showSuccessDialog()
         }

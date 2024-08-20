@@ -91,6 +91,7 @@ class ListReviewFragment :
                 accessToken,
                 stationId, 0, sort, 10
             ) { response ->
+                Log.d("테스틍", stationId.toString())
                 binding.tvReviewTotalCount.text = (response?.size ?: 0).toString()
                 if (response != null) {
                     reviewList.clear()
