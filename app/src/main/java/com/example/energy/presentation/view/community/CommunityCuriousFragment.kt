@@ -12,6 +12,7 @@ import com.example.energy.presentation.view.base.BaseFragment
 class CommunityCuriousFragment : BaseFragment<FragmentCommunityCuriousBinding>({ FragmentCommunityCuriousBinding.inflate(it)}) {
 
     private lateinit var postCommunityAdapter: PostCommunityRVAdapter
+    private var accessToken : String? = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -19,10 +20,17 @@ class CommunityCuriousFragment : BaseFragment<FragmentCommunityCuriousBinding>({
         //토큰 가져오기
 //        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
 //        var accessToken = sharedPreferences?.getString("accessToken", "none")
-        val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODg3ODYzLCJleHAiOjE3MjY0Nzk4NjN9.qGR9PibGimGon0_82i_Z73nxXJzK1BDoPLWRLjC0QI4"
+        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRqZ3VzaWRAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY4NjQwLCJleHAiOjE3MjY3NjA2NDB9.fUaTieyCFhodHH1YTWJTNVTmDFZuvW6RjJ2t_tVzs_M"
+    }
 
-        //test
-        CommunityRepository.getListCommunity(accessToken, "INQUIRY", 0, 10, "") {
+    override fun onResume() {
+        super.onResume()
+        // API를 다시 호출하여 데이터를 갱신
+        refreshData()
+    }
+
+    private fun refreshData() { // 게시글 조회
+        CommunityRepository.getListCommunity(accessToken!!, "INQUIRY", 0, 10, "") {
                 response ->
             response.let {
                 //통신성공
@@ -36,20 +44,5 @@ class CommunityCuriousFragment : BaseFragment<FragmentCommunityCuriousBinding>({
                 }
             }
         }
-
-//        // community_post에 데이터 리스트 생성
-//        communityDB = CommunityPostDatabase.getInstance(requireContext())!!
-//
-//        // 백그라운드 스레드에서 데이터베이스 접근
-//        lifecycleScope.launch {
-//            withContext(Dispatchers.IO) {
-//                val allPosts = communityDB.communityPostDao().getAllPosts()
-//                postInfo.addAll(allPosts.filter { it.categoryString == "궁금해요" })
-//            }
-//            // RecyclerView 초기화 및 데이터 연결 (메인 스레드)
-//            postCommunityAdapter = PostCommunityRVAdapter(postInfo)
-//            binding.curiousCommunityPostRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-//            binding.curiousCommunityPostRv.adapter = postCommunityAdapter
-//        }
     }
 }

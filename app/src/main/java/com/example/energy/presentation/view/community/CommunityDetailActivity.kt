@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +27,7 @@ import com.example.energy.databinding.DialogCommunityCommentWriterSeeMoreBinding
 import com.example.energy.databinding.DialogCommunityUserSeeMoreBinding
 import com.example.energy.databinding.DialogCommunityWriterSeeMoreBinding
 import com.example.energy.databinding.DialogHelpStatusBinding
+import com.example.energy.databinding.DialogLoadingBinding
 import com.example.energy.databinding.DialogPostCommunitySuccessBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -43,6 +45,7 @@ class CommunityDetailActivity : AppCompatActivity(){
     private var postId: Int = 0
     private var selectedComment: CommentModel? = null // 선택된 댓글 객체를 추적
     private var writerId: Int? = null
+    private var loadingDialog: Dialog? = null
 
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,6 +126,7 @@ class CommunityDetailActivity : AppCompatActivity(){
 
     override fun onResume() {
         super.onResume()
+        showLoading() //데이터 로딩 페이지
         // API를 다시 호출하여 데이터를 갱신
         refreshData()
     }
@@ -134,6 +138,7 @@ class CommunityDetailActivity : AppCompatActivity(){
             response.let {
                 Log.d("게시글댓글정보", "${response}")
                 //통신성공
+                hideLoading()
                 if (response != null) {
                     // 댓글 RecyclerView 연결
                     commentAdapter = ItemCommentAdapter(response, writerId)
@@ -167,6 +172,7 @@ class CommunityDetailActivity : AppCompatActivity(){
         CommunityRepository.getDetailCommunity(accessToken!!, postId) { response ->
             if (response != null) {
                 //통신성공
+                hideLoading()
                 var isLiked = response.liked
                 var likeCount = response.likeNum
                 writerStatus = response.helpStatus
@@ -564,5 +570,24 @@ class CommunityDetailActivity : AppCompatActivity(){
         } else { // 누르지 않았을 때의 반응
             binding.communityDetailLikeIcon.setImageResource(R.drawable.icon_unlike)
         }
+    }
+
+    private fun showLoading() { //데이터 로딩 페이지 함수
+        if (loadingDialog == null) {
+            loadingDialog = Dialog(this, R.style.LoadingDialog)
+            val binding = DialogLoadingBinding.inflate(layoutInflater) // 로딩 레이아웃 바인딩
+            loadingDialog?.setContentView(binding.root)
+            loadingDialog?.window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            ) // 다이얼로그 크기를 전체 화면으로 설정
+            loadingDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            loadingDialog?.setCanceledOnTouchOutside(false) // 바깥 영역 터치해도 닫힘 X
+        }
+        loadingDialog?.show()
+    }
+
+    private fun hideLoading() { //로딩 페이지 숨기는 함수
+        loadingDialog?.dismiss()
     }
 }
