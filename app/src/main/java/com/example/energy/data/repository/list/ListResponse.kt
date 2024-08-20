@@ -1,16 +1,26 @@
 package com.example.energy.data.repository.list
 
-
+import com.example.energy.data.repository.map.ListMapModel
 
 
 //충전소 전체 가져오는 API
 data class ListResponse (
     val code: String,
     val message: String,
-    val result: List<ListMapModel>
+    val result: Result
+
 )
 
-data class ListMapModel (
+data class Result (
+
+    val stations: List<ListMapModel>,
+    val lastId: Int,
+    val hasNext: Boolean
+
+)
+
+data class ListMapModel(
+
     var id: Int?,
     var name: String?,
     var distance: String?,
@@ -18,8 +28,10 @@ data class ListMapModel (
     var scoreCount: Int?,
     var latitude: Double?,
     var longitude: Double?,
-    var openTime: String?,
-    var closeTime: String?
+    val dayOfWeek: String,
+    val openTime: String,
+    var closeTime: String?,
+    var institutionPhone: String?
 )
 
 

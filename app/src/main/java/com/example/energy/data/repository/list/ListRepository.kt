@@ -18,9 +18,9 @@ class ListRepository {
 
 
         //리스트 데이터
-        fun getListStation(accessToken: String, sort: String, lastId: Int, offset: Int?, currentLatitude: Double, currentLongitude: Double, callback: (List<ListMapModel>?)-> Unit){
-            val mapService = getRetrofit().create(ListInterface::class.java)
-            val call = mapService.getListStation(accessToken, sort, lastId, offset, currentLatitude, currentLongitude)
+        fun getListStation(accessToken: String, sort: String, lastId: Int, offset: Int?, latitude: Double, longitude: Double, callback: (Result?)-> Unit){
+            val listService = getRetrofit().create(ListInterface::class.java)
+            val call = listService.getListStation(accessToken, sort, lastId, offset, latitude, longitude)
 
             call.enqueue(object : Callback<ListResponse> {
                 override fun onResponse(call: Call<ListResponse>, response: Response<ListResponse>
@@ -28,8 +28,8 @@ class ListRepository {
                     if(response.isSuccessful){
                         //통신 성공
                         Log.d("리스트api테스트", "통신 성공 ${response.code()}, ${response.body()?.result}")
-                        val listMapModel = response.body()?.result
-                        callback(listMapModel)
+                        val result = response.body()?.result
+                        callback(result)
                     } else {
                         //통신 실패
                         val error = response.errorBody()?.toString()
@@ -47,7 +47,9 @@ class ListRepository {
             )
         }
 
-
+        private fun callback(result: List<ListMapModel>?): List<ListMapModel>? {
+            return result
+        }
 
 
         //충전소 개별 조회
