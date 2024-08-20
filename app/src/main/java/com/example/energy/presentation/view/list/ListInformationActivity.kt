@@ -52,7 +52,7 @@ class ListInformationActivity : AppCompatActivity() {
 
         if (stationId != -1) {
 
-            var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTMxNjc3LCJleHAiOjE3MjY3MjM2Nzd9.NT0iEfaOANA8m1Y5E8p0-4ZwuUYBZdMQkHhYVj5X7jA"
+            var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY0NTU2LCJleHAiOjE3MjY3NTY1NTZ9.xRtumUjlAyuRhf7Ldu_7kH52XBFzqdaP6nTy0OjfvuQ"
 
 
             //상세 정보 api 호출

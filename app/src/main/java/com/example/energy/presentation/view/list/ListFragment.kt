@@ -48,7 +48,7 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
         //토큰 가져오기
         //var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
-        var accessToken ="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTMxNjc3LCJleHAiOjE3MjY3MjM2Nzd9.NT0iEfaOANA8m1Y5E8p0-4ZwuUYBZdMQkHhYVj5X7jA"
+        var accessToken ="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY0NTU2LCJleHAiOjE3MjY3NTY1NTZ9.xRtumUjlAyuRhf7Ldu_7kH52XBFzqdaP6nTy0OjfvuQ"
 
 
         //데이터 로드 함수 호출
@@ -112,7 +112,9 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
 
     private fun loadData(accessToken: String?, sortType: String) {
-        ListRepository.getListStation(accessToken!!, sortType, 0, 10, currentLatitude, currentLongitude)
+
+
+        ListRepository.getListStation(accessToken!!, sortType, 0, 100, currentLatitude, currentLongitude)
 
         { result ->
 
@@ -135,6 +137,8 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
                     }
                     startActivity(intent)
+
+
                 }
 
                 binding.recyclerView.apply {
