@@ -38,6 +38,9 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
     // 구분선 초기 설정
     private var isDecorationAdded = false
 
+
+
+    //현재 위치 초기값 설정
     var currentLatitude: Double = 0.0
     var currentLongitude: Double = 0.0
 
@@ -54,12 +57,18 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
         //데이터 로드 함수 호출
         loadData(accessToken, currentSortType)
+
+
+        //현재 위치 가져오기
         MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) {
             location -> Log.d("CurrentLocation", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
             currentLatitude = location.latitude
             currentLongitude = location.longitude
 
             mapViewModel.setCurrentLocation(location)
+
+            //주소창 텍스트를 현재 주소 기준으로 설정
+            binding.tvCurrentLocation.text = MapLocation.getGeoCoder(location.latitude, location.longitude, requireContext())
 
         }
 
@@ -96,13 +105,10 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
 
 
-
         //sos 기능
         binding.cvSos.setOnClickListener {
             showSOSDialog()
         }
-
-
 
 
 
@@ -115,7 +121,7 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
     private fun loadData(accessToken: String?, sortType: String) {
 
 
-        ListRepository.getListStation(accessToken!!, sortType, 0, 100, currentLatitude, currentLongitude)
+        ListRepository.getListStation(accessToken!!, sortType, 0, 50, currentLatitude, currentLongitude)
 
         { result ->
 
