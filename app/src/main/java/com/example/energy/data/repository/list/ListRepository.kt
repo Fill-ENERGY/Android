@@ -18,19 +18,20 @@ class ListRepository {
 
 
         //리스트 데이터
-        fun getListStation(accessToken: String, sort: String, lastId: Int, offset: Int?, currentLatitude: Double, currentLongitude: Double, callback: (List<ListMapModel>?)-> Unit){
-            val mapService = getRetrofit().create(ListInterface::class.java)
-            val call = mapService.getListStation(accessToken, sort, lastId, offset, currentLatitude, currentLongitude)
+        fun getListStation(accessToken: String, sort: String, lastId: Int, offset: Int?, latitude: Double, longitude: Double, callback: (List<ListMapModels>?)-> Unit){
+            val listService = getRetrofit().create(ListInterface::class.java)
+            val call = listService.getListStation(accessToken, sort, lastId, offset, latitude, longitude)
 
-            call.enqueue(object : Callback<ListResponse> {
-                override fun onResponse(call: Call<ListResponse>, response: Response<ListResponse>
+            call.enqueue(object : Callback<ListResponses> {
+                override fun onResponse(call: Call<ListResponses>, response: Response<ListResponses>
                 ) {
                     if(response.isSuccessful){
                         //통신 성공
                         Log.d("리스트api테스트", "통신 성공 ${response.code()}, ${response.body()?.result}")
-                        val listMapModel = response.body()?.result
-                        callback(listMapModel)
-                    } else {
+                        val result = response.body()?.result
+                        callback(result?.stations)
+                    }
+                    else {
                         //통신 실패
                         val error = response.errorBody()?.toString()
                         Log.e("리스트api테스트", "통신 실패 ${response.code()}, $error")
@@ -38,7 +39,7 @@ class ListRepository {
                     }
                 }
 
-                override fun onFailure(call: Call<ListResponse>, t: Throwable) {
+                override fun onFailure(call: Call<ListResponses>, t: Throwable) {
                     // 통신 실패
                     Log.w("리스트api테스트", "통신 실패: ${t.message}")
                     callback(null)

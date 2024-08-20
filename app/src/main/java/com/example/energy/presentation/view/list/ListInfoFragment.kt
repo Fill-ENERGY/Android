@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.example.energy.R
 import com.example.energy.data.repository.list.ListRepository
+import com.example.energy.databinding.FragmentListComplaintBinding
 import com.example.energy.databinding.FragmentListInfoBinding
 import com.example.energy.presentation.view.base.BaseFragment
 import com.example.energy.presentation.viewmodel.ListViewModel
@@ -35,6 +36,7 @@ class ListInfoFragment : BaseFragment<FragmentListInfoBinding>({ FragmentListInf
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         // 전달된 데이터를 받아오기
         val stationId = arguments?.getInt("stationId") ?: -1
@@ -110,7 +112,7 @@ class ListInfoFragment : BaseFragment<FragmentListInfoBinding>({ FragmentListInf
 
         if (stationId != -1) {
 
-            var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzOTU3MTExLCJleHAiOjE3MjY1NDkxMTF9.O7lZduRjIR1mJMI0qd2kKneG8pc8P9m7McLD06vLYZo"
+            var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY0NTU2LCJleHAiOjE3MjY3NTY1NTZ9.xRtumUjlAyuRhf7Ldu_7kH52XBFzqdaP6nTy0OjfvuQ"
 
 
             // 충전소 상세 정보 api 연결
@@ -143,4 +145,6 @@ class ListInfoFragment : BaseFragment<FragmentListInfoBinding>({ FragmentListInf
             }
         }
     }
+
+
 }
