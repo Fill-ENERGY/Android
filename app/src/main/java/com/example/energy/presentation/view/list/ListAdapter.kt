@@ -26,10 +26,6 @@ class ListAdapter(private val itemList: List<ListMapModels>,
 
 
 
-
-
-
-
     // ViewHolder 정의
     class ListViewHolder(private val binding: ListItemBinding,
                          private val mapViewModel: MapViewModel)
@@ -44,7 +40,10 @@ class ListAdapter(private val itemList: List<ListMapModels>,
             //거리, 평점, 시간 출력
             binding.locationName.text = data.name
             binding.distance.text = data.distance
-            binding.grade.text = "${data.score.toString()}(${data.scoreCount})"
+
+            //score를 소수점 두 번째까지 출력
+            val formattedscore = String.format("%.2f", data.score)
+            binding.grade.text = "$formattedscore(${data.scoreCount})"
             binding.time.text = "${data.openTime} ~ ${data.closeTime}"
 
 
@@ -70,13 +69,14 @@ class ListAdapter(private val itemList: List<ListMapModels>,
 
                 Log.d("ListAdapter", "naviButton 클릭됨")
 
-                // Fragment의 ViewLifecycleOwner를 올바르게 가져옵니다.
+                // Fragment의 ViewLifecycleOwner 가져오기
                 val fragment = (binding.root.context as? androidx.fragment.app.Fragment)
                 val viewLifecycleOwner = fragment?.viewLifecycleOwner
 
                 if (viewLifecycleOwner != null) {
                     mapViewModel.getCurrentLocation.observe(viewLifecycleOwner, Observer { currentLocation ->
                         Log.d("ListAdapter", "현재 위치: $currentLocation")
+
                         // 목적지의 위도와 경도를 사용해서 길안내
                         data.latitude?.let { it1 ->
                             data.longitude?.let { it2 ->
