@@ -66,11 +66,11 @@ class ListAddReviewActivity :
                 val requestFile = file?.asRequestBody("image/*".toMediaTypeOrNull())
                 val data = file.let {
                     //이미지 업로드 테스트 보류
-        ReviewRepository.postImages(
-            accessToken, it
-        ) {
-
-        }
+//        ReviewRepository.postImages(
+//            accessToken, it
+//        ) {
+//
+//        }
 
                 }
                 val body = requestFile?.let {
@@ -100,7 +100,7 @@ class ListAddReviewActivity :
         //토큰 가져오기
         var sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
 //        var accessToken = sharedPreferences?.getString("accessToken", "none")
-        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1aHl1bjEwMjAxQG5hdmVyLmNvbSIsImlhdCI6MTcyNDA3NjMzMywiZXhwIjoxNzI2NjY4MzMzfQ.Y6_h-Mo9zbThpJGFsW0IMbOunsxtiL-8khw0Z-3kez0"
+        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1aHl1bjEwMjAxQG5hdmVyLmNvbSIsImlhdCI6MTcyNDE2NzIwMiwiZXhwIjoxNzI0MTcwODAyfQ.K6g9U2E1OXZ0r_GcTffJRn2-O40aue1XNQ4UQ6_iWFs"
 
         //충전소 이름 설정
         binding.tvStationName.text = stationName
