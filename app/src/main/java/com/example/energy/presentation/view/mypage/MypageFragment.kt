@@ -14,6 +14,7 @@ import com.example.energy.R
 import com.example.energy.data.repository.auth.AuthRepository
 import com.example.energy.data.repository.block.BlockRepository
 import com.example.energy.data.repository.map.MapRepository
+import com.example.energy.data.repository.profile.ProfileRepository
 import com.example.energy.databinding.FragmentMypageBinding
 import com.example.energy.presentation.util.EnergyUtils
 import com.example.energy.presentation.view.MainActivity
@@ -31,7 +32,35 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
         var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
         //var accessToken = sharedPreferences?.getString("accessToken", "none")
         var refreshToken = sharedPreferences?.getString("refreshToken", "none")
-        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODE3OTA5LCJleHAiOjE3MjY0MDk5MDl9.D8cHYgTwnv-k3GdJpSexakAnn7rtZvML1cfkGm9qJoY"
+        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1aHl1bjEwMjAxQG5hdmVyLmNvbSIsImlhdCI6MTcyNDE2NDQwMiwiZXhwIjoxNzI2NzU2NDAyfQ.kaEcVTJAFwCDSkzr8Af7z63OwYq2PmrXzIpHLkrHMdo"
+
+        //프로필 테스트
+        ProfileRepository.getMyProfile(accessToken) {
+            myProfile ->
+            if(myProfile != null) {
+                // 로그인이 된 상태라면
+                // 로그인 버튼 비활성화
+                binding.btnNeedLogin.visibility = View.GONE
+                // 프로필 정보 버튼 활성화
+                binding.tvNickname.visibility = View.VISIBLE
+                binding.tvProfileEdit.visibility = View.VISIBLE
+                binding.ivProfileViewMore.visibility = View.VISIBLE
+                // 로그아웃 버튼 활성화
+                binding.divide3.visibility = View.VISIBLE
+                binding.btnLogout.visibility = View.VISIBLE
+
+                //내 정보 설정
+                binding.tvNickname.text = myProfile.name
+            } else {
+                //로그아웃 된 상태라면
+                // 로그인 버튼 활성화
+                binding.btnNeedLogin.visibility = View.VISIBLE
+                // 프로필 정보 버튼 비활성화
+                binding.tvNickname.visibility = View.GONE
+                binding.tvProfileEdit.visibility = View.GONE
+                binding.ivProfileViewMore.visibility = View.GONE
+            }
+        }
 
         //즐겨찾기 수 띄우기
         MapRepository.getBookmarkStation(accessToken, 35.5, 35.5) {
@@ -61,29 +90,6 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
                     activity?.finishAffinity()
                     startActivity(Intent(activity, LoginActivity::class.java))
                 }
-            }
-        }
-
-        UserApiClient.instance.accessTokenInfo{ token, error ->
-            if (error != null) {
-                //로그아웃 된 상태라면
-                // 로그인 버튼 활성화
-                binding.btnNeedLogin.visibility = View.VISIBLE
-                // 프로필 정보 버튼 비활성화
-                binding.tvNickname.visibility = View.GONE
-                binding.tvProfileEdit.visibility = View.GONE
-                binding.ivProfileViewMore.visibility = View.GONE
-            } else if (token != null) {
-                // 로그인이 된 상태라면
-                // 로그인 버튼 비활성화
-                binding.btnNeedLogin.visibility = View.GONE
-                // 프로필 정보 버튼 활성화
-                binding.tvNickname.visibility = View.VISIBLE
-                binding.tvProfileEdit.visibility = View.VISIBLE
-                binding.ivProfileViewMore.visibility = View.VISIBLE
-                // 로그아웃 버튼 활성화
-                binding.divide3.visibility = View.VISIBLE
-                binding.btnLogout.visibility = View.VISIBLE
             }
         }
 

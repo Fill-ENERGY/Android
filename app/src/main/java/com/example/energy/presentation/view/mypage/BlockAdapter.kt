@@ -56,7 +56,7 @@ class BlockAdapter(private val itemList: MutableList<BlockUserModel>): RecyclerV
         val diffCallback = BlockedUsersDiffCallback(itemList, blockUsers)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
-        itemList = blockUsers
+        //itemList = blockUsers
         diffResult.dispatchUpdatesTo(this)
         }
 
