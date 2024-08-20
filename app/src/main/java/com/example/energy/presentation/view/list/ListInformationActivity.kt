@@ -61,7 +61,9 @@ class ListInformationActivity : AppCompatActivity() {
                 if (stationInfo != null) {
                     binding.LocationName.text = stationInfo.name
                     binding.Distance.text = stationInfo.distance
-                    binding.Grade.text = "${stationInfo.score}(${stationInfo.scoreCount})"
+
+                    val formattedscore = String.format("%.2f", stationInfo.score)
+                    binding.Grade.text = "$formattedscore(${stationInfo.scoreCount})"
 
 
                 } else {
