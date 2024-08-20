@@ -9,10 +9,9 @@ import retrofit2.http.POST
 
 interface AuthInterface {
     //카카오 로그인
-    @POST("/api/v1/members/social/loginorsignup/kakao")
+    @POST("/api/v1/members/social/oauth/kakao")
     fun kakaoLogin(
         @Header("Authorization") accessToken: String,
-        @Body authKakaoBody: AuthKakaoBody,
     ): Call<AuthResponse>
 
     //일반 회원가입
