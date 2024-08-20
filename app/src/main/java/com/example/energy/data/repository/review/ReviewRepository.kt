@@ -185,7 +185,8 @@ class ReviewRepository {
 
         fun postImages(
             accessToken: String,
-            imgUrls: List<MultipartBody.Part>?
+            imgUrls: List<MultipartBody.Part>?,
+            callback: (ImageModel?) -> Unit
         ) {
             val reviewService = getRetrofit().create(ReviewInterface::class.java)
             val call = reviewService.postImages(accessToken, imgUrls)
@@ -197,17 +198,20 @@ class ReviewRepository {
                     if (response.isSuccessful) {
                         //통신 성공
                         Log.d("postImages", "통신 성공 ${response.body()?.code}")
-
+                        val imageModel = response.body()?.result
+                        callback(imageModel)
                     } else {
                         //통신 실패
                         val error = response.errorBody()?.toString()
                         Log.e("postImages", "통신 실패 $error")
+                        callback(null)
                     }
                 }
 
                 override fun onFailure(call: Call<UploadImageResponse>, t: Throwable) {
                     // 통신 실패
                     Log.w("postImages", "통신 실패: ${t.message}")
+                    callback(null)
                 }
             }
             )

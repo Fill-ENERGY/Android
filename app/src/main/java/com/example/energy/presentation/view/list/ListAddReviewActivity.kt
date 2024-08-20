@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,9 +16,11 @@ import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import com.example.energy.R
 
 import com.example.energy.data.repository.review.ReviewRepository
@@ -25,30 +28,69 @@ import com.example.energy.databinding.ActivityListAddReviewBinding
 import com.example.energy.databinding.DialogPostCommunityCancelBinding
 import com.example.energy.databinding.DialogPostCommunitySuccessBinding
 import com.example.energy.presentation.view.base.BaseActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 
 class ListAddReviewActivity :
     BaseActivity<ActivityListAddReviewBinding>({ ActivityListAddReviewBinding.inflate(it) }) {
     private var score: Double = 0.0
     var keywordList = mutableSetOf<String>()
-    var imageUris: MutableList<Uri> = mutableListOf()
+    var imageUris: List<Uri>? = null
+    var imageStrings: List<String>? = null
 
-//    var launcher = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia) { result ->
+    private val pickMultipleMedia = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(10)) { uris ->
 //        if (result.resultCode == RESULT_OK) {
 //            val imagePath = result.data!!.data
 //
-//            var images : List<MultipartBody.Part> = ArrayList()
+//
 //            val file = File(imagePath?.let { absolutelyPath(it) })
 //            val requestFile = file.asRequestBody(MediaType.parse("image/*"))
 //            val body = MultipartBody.Part.createFormData("images", file.name, requestFile)
 //
 //        }
-//    }
+        lifecycleScope.launch {
+            if(uris.isNotEmpty()) {
+                var images : List<MultipartBody.Part> = ArrayList()
+                val file : File? = uris?.let { getFileFromUri(it) }
+                val requestFile = file?.asRequestBody("image/*".toMediaTypeOrNull())
+                val data = file.let {
+                    //이미지 업로드 테스트 보류
+//        ReviewRepository.postImages(
+//            accessToken, it
+//        ) {
+//
+//        }
+
+                }
+                val body = requestFile?.let {
+                    MultipartBody.Part.createFormData("images", file?.name,
+                        it
+                    )
+                }
+
+//            imageUris = uris
+//            val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+//            for (uri in uris) {
+//                this.contentResolver.takePersistableUriPermission(uri, flag)
+//            }
+                Log.d("PhotoPicker테스트", "Number of items selected: ${uris.size}")
+            } else {
+                Log.d("PhotoPicker테스트", "No media selected")
+            }
+        }
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +100,7 @@ class ListAddReviewActivity :
         //토큰 가져오기
         var sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
 //        var accessToken = sharedPreferences?.getString("accessToken", "none")
-        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzOTU3MTExLCJleHAiOjE3MjY1NDkxMTF9.O7lZduRjIR1mJMI0qd2kKneG8pc8P9m7McLD06vLYZo"
+        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1aHl1bjEwMjAxQG5hdmVyLmNvbSIsImlhdCI6MTcyNDE2NzIwMiwiZXhwIjoxNzI0MTcwODAyfQ.K6g9U2E1OXZ0r_GcTffJRn2-O40aue1XNQ4UQ6_iWFs"
 
         //충전소 이름 설정
         binding.tvStationName.text = stationName
@@ -108,17 +150,15 @@ class ListAddReviewActivity :
 
         //이미지 업로드
         binding.ivImageSelect.setOnClickListener {
-            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            intent.type = "image/*"
-            chooserIntent.putExtra(Intent.EXTRA_INTENT, intent)
-            chooserIntent.putExtra(Intent.EXTRA_TITLE,"사용할 앱을 선택해주세요.")
-            //launcher.launch(chooserIntent)
+//            val chooserIntent = Intent(Intent.ACTION_CHOOSER)
+//            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+//            intent.type = "image/*"
+//            chooserIntent.putExtra(Intent.EXTRA_INTENT, intent)
+//            chooserIntent.putExtra(Intent.EXTRA_TITLE,"사용할 앱을 선택해주세요.")
+            pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            //imageStrings = convertUriListToStringList(imageUris!!)
+            //Log.d("이미지 변환 테스트", imageStrings.toString())
         }
-//이미지 업로드 테스트 보류
-//        ReviewRepository.postImages(
-//            accessToken, imageParts
-//        )
 
         val imageFiles = listOf(
             File("png"),
@@ -157,11 +197,51 @@ class ListAddReviewActivity :
                 score,
                 keywordList.toList(),
                 stationId,
-                null,
+                imageStrings,
             )
             showSuccessDialog()
         }
 
+    }
+
+    //
+    private suspend fun getFileFromUri(uris: List<Uri>): File? = withContext(Dispatchers.IO) {
+        try {
+            for (uri in uris) {
+                val inputStream: InputStream? = contentResolver.openInputStream(uri)
+                inputStream?.let {
+                    val file = createTempImageFile()
+                    val outputStream = FileOutputStream(file)
+                    copyInputStreamToFile(inputStream, outputStream)
+                    return@withContext file
+                }
+            }
+            return@withContext null
+        } catch (e: IOException) {
+            return@withContext null
+        }
+    }
+
+    private fun createTempImageFile(): File {
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "temp_image",
+            ".jpg",
+            storageDir
+        )
+    }
+
+    private fun copyInputStreamToFile(inputStream: InputStream, outputStream: FileOutputStream) {
+        val buffer = ByteArray(1024)
+        var length: Int
+        while (inputStream.read(buffer).also { length = it } > 0) {
+            outputStream.write(buffer, 0, length)
+        }
+    }
+
+    //uri -> String으로 변환
+    fun convertUriListToStringList(uriList: List<Uri>): List<String> {
+        return uriList.map { it.toString() }
     }
 
     //키워드

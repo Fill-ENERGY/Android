@@ -48,6 +48,7 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
         //토큰 가져오기
         //var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+
         var accessToken ="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY0NTU2LCJleHAiOjE3MjY3NTY1NTZ9.xRtumUjlAyuRhf7Ldu_7kH52XBFzqdaP6nTy0OjfvuQ"
 
 
