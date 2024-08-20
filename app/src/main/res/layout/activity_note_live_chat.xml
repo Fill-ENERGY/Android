@@ -75,6 +75,26 @@
 
     </LinearLayout>
 
+
+    <ScrollView
+        android:id="@+id/chat_scroll_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/profileLinearLayout"
+        app:layout_constraintBottom_toTopOf="@id/community_detail_chatting_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="8dp">
+
+        <LinearLayout
+            android:id="@+id/chat_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp" />
+
+    </ScrollView>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/community_detail_chatting_view"
         android:layout_width="match_parent"
@@ -119,6 +139,7 @@
                 android:inputType="textMultiLine"
                 android:maxLines="4"
                 android:minLines="1"
+                android:maxHeight="10dp"
                 android:scrollbars="vertical"
                 android:overScrollMode="always" />
 
@@ -133,6 +154,9 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="4dp"/>
         </FrameLayout>
+
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

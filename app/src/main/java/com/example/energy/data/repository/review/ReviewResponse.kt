@@ -61,8 +61,9 @@ data class ReviewModel(
     var keywords: List<KeywordModel>?,
     var images: List<String>?,
     var score: Double,
-    var member: ProfileModel,
-    var username: String?,
+    var authorId: Int?,
+    var authorName: String?,
+    val username: String?,
     var recommended: Boolean,
 )
 
