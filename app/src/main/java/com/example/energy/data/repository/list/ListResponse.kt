@@ -4,7 +4,7 @@ import com.example.energy.data.repository.map.ListMapModel
 
 
 //충전소 전체 가져오는 API
-data class ListResponse (
+data class ListResponses (
     val code: String,
     val message: String,
     val result: Result
@@ -13,13 +13,13 @@ data class ListResponse (
 
 data class Result (
 
-    val stations: List<ListMapModel>,
-    val lastId: Int,
-    val hasNext: Boolean
+    val stations: List<ListMapModels>?,
+    val lastId: Int?,
+    val hasNext: Boolean?
 
 )
 
-data class ListMapModel(
+data class ListMapModels(
 
     var id: Int?,
     var name: String?,

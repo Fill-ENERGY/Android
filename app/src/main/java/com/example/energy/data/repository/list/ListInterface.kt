@@ -22,7 +22,7 @@ interface ListInterface {
         @Query("offset") offset: Int?,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
-    ): Call<ListResponse>
+    ): Call<ListResponses>
 
 
 

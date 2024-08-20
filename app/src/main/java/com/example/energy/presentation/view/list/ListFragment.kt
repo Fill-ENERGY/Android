@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
-import com.example.energy.data.repository.list.ListMapModel
+
 
 import com.example.energy.data.repository.list.ListRepository
 
@@ -122,7 +122,7 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
 
                 // 리스트 어댑터 생성
-                val listAdapter = ListAdapter(result.stations, mapViewModel) { selectedItem ->
+                val listAdapter = ListAdapter(result, mapViewModel) { selectedItem ->
 
                     // 클릭된 아이템을 ListInformationActivity로 전달
                     val intent = Intent(activity, ListInformationActivity::class.java).apply {
