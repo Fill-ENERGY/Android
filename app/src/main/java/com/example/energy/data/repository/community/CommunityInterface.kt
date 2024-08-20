@@ -10,6 +10,7 @@ import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -43,12 +44,21 @@ interface CommunityInterface {
     ): Call<UploadResponse>
 
 
-//    //게시글 삭제 api
-//    @DELETE("/api/v1/boards/{boardId}")
-//    fun deleteBoard(
-//        @Header("Authorization") accessToken: String,
-//        @Path("boardId") boardId: Int,
-//    )
+    //게시글 수정 api
+    @PUT("/api/v1/boards/{boardId}")
+    fun updateBoard(
+        @Header("Authorization") accessToken: String,
+        @Path("boardId") boardId: Int,
+        @Body request: PostBoardRequest,
+    ): Call<UploadResponse>
+
+
+    //게시글 삭제 api
+    @DELETE("/api/v1/boards/{boardId}")
+    fun deleteBoard(
+        @Header("Authorization") accessToken: String,
+        @Path("boardId") boardId: Int,
+    ): Call<DeleteCommunityResponse>
 
 
     //이미지 업로드 api
@@ -73,7 +83,7 @@ interface CommunityInterface {
         @Path("boardId") boardId: Int,
     ): Call<LikeResponse>
 
-    //커뮤니티 댓글 조회 api
+    //댓글 조회 api
     @GET("/api/v1/boards/{boardId}/comments")
     fun getListComment(
         @Header("Authorization") accessToken: String,
@@ -87,6 +97,23 @@ interface CommunityInterface {
         @Path("boardId") boardId: Int,
         @Body request: WriteCommentRequest,
     ): Call<CommentResponse>
+
+    //댓글 수정 api
+    @PUT("/api/v1/boards/{boardId}/comments/{commentId}")
+    fun updateComment(
+        @Header("Authorization") accessToken: String,
+        @Path("boardId") boardId: Int,
+        @Path("commentId") commentId: Int,
+        @Body request: UpdateCommentRequest,
+    ): Call<CommentResponse>
+
+    //댓글 삭제 api
+    @DELETE("/api/v1/boards/{boardId}/comments/{commentId}")
+    fun deleteComment(
+        @Header("Authorization") accessToken: String,
+        @Path("boardId") boardId: Int,
+        @Path("commentId") commentId: Int,
+    ): Call<DeleteCommentResponse>
 
 
     //도와줘요 상태 변경 api
