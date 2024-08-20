@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -11,24 +12,34 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat.startActivity
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
+
 
 import com.example.energy.data.repository.list.ListRepository
 
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.FragmentListBinding
 import com.example.energy.presentation.util.EnergyUtils.Companion.showSOSDialog
+import com.example.energy.presentation.util.MapLocation
 import com.example.energy.presentation.view.base.BaseFragment
+import com.example.energy.presentation.viewmodel.MapViewModel
 
 class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inflate(it)}) {
 
     //sort 초기값 거리순으로 설정
     private var currentSortType = "DISTANCE"
 
+    // MapViewModel 주입
+    private val mapViewModel: MapViewModel by activityViewModels()
+
 
     // 구분선 초기 설정
     private var isDecorationAdded = false
+
+    var currentLatitude: Double = 0.0
+    var currentLongitude: Double = 0.0
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -37,11 +48,19 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
         //토큰 가져오기
         //var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
-        var accessToken ="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODE3OTA5LCJleHAiOjE3MjY0MDk5MDl9.D8cHYgTwnv-k3GdJpSexakAnn7rtZvML1cfkGm9qJoY"
+        var accessToken ="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTMxNjc3LCJleHAiOjE3MjY3MjM2Nzd9.NT0iEfaOANA8m1Y5E8p0-4ZwuUYBZdMQkHhYVj5X7jA"
 
 
         //데이터 로드 함수 호출
         loadData(accessToken, currentSortType)
+        MapLocation.getCurrentLocation(requireContext(), this, requireActivity()) {
+            location -> Log.d("CurrentLocation", "Latitude: ${location.latitude}, Longitude: ${location.longitude}")
+            currentLatitude = location.latitude
+            currentLongitude = location.longitude
+
+            mapViewModel.setCurrentLocation(location)
+
+        }
 
 
 
@@ -74,6 +93,9 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
 
 
+
+
+
         //sos 기능
         binding.cvSos.setOnClickListener {
             showSOSDialog()
@@ -90,22 +112,24 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
 
     private fun loadData(accessToken: String?, sortType: String) {
-        ListRepository.getListStation(accessToken!!, sortType, 0, 10, 37.5665, 126.9780)
+        ListRepository.getListStation(accessToken!!, sortType, 0, 10, currentLatitude, currentLongitude)
 
-        { ListModel ->
+        { result ->
 
-            if (ListModel != null) {
+            if (result != null) {
+
+                Log.d("ListFragment", "데이터를 성공적으로 가져왔습니다: $result")
 
 
                 // 리스트 어댑터 생성
-                val listAdapter = ListAdapter(ListModel) { selectedItem ->
+                val listAdapter = ListAdapter(result, mapViewModel) { selectedItem ->
 
                     // 클릭된 아이템을 ListInformationActivity로 전달
                     val intent = Intent(activity, ListInformationActivity::class.java).apply {
 
                         putExtra("stationId", selectedItem.id)
-                        putExtra("latitude", 37.5665)
-                        putExtra("longitude", 126.9780)
+                        putExtra("latitude", currentLatitude)
+                        putExtra("longitude", currentLongitude)
                         //putExtra("grade", "${selectedItem.score.toString()}(${selectedItem.scoreCount})")
                         //putExtra("time", "${selectedItem.openTime} ~ ${selectedItem.closeTime}")
 
@@ -169,4 +193,11 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
             dialog.dismiss()
         }
     }
+
+
+
+
+
+
+
 }
