@@ -1,13 +1,14 @@
 package com.example.energy.presentation.view.community
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.os.persistableBundleOf
 import androidx.recyclerview.widget.RecyclerView
@@ -16,11 +17,10 @@ import com.example.energy.data.repository.community.CommentModel
 import com.example.energy.databinding.ActivityCommunityDetailBinding
 import com.example.energy.databinding.ItemCommentBinding
 
-class ItemCommentAdapter(private var itemList: List<CommentModel>) : RecyclerView.Adapter<ItemCommentAdapter.ItemCommentViewHolder>() {
+class ItemCommentAdapter(private var itemList: List<CommentModel>, private var boardWriterInfo: Int? = null) : RecyclerView.Adapter<ItemCommentAdapter.ItemCommentViewHolder>() {
 
     private lateinit var binding: ItemCommentBinding
     private lateinit var subBinding: ActivityCommunityDetailBinding
-//    var itemSet = makeChildComment(itemList) //자식 정렬 알고리즘 호출
     var onItemClickListener: OnItemClickListener? = null
 
     interface OnItemClickListener {
@@ -69,22 +69,24 @@ class ItemCommentAdapter(private var itemList: List<CommentModel>) : RecyclerVie
             binding.commentUserName.text = comment.memberName
 
 
-//            val data = itemList[absoluteAdapterPosition]
-//            Log.d("대댓글", "${data.replies[position]}")
-//            val repliesData = data.replies[position]
-//            val dataParent = repliesData.parentId
-//
-//
-//            // 부모 댓글인지 대댓글인지 확인
-//            if (data.replies[absoluteAdapterPosition].parentId != 0) { // 대댓글
-//                val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT
-//                    ,ViewGroup.LayoutParams.WRAP_CONTENT)
-//                layoutParams.setMargins(100,0,0,0)
-//                binding.itemComment.layoutParams = layoutParams
-//            }
-//
-//            binding.commentText.text = data.content
-//            binding.commentUserName.text = data.memberName
+            // 게시글 작성자와 댓글 작성자가 동일한 경우ㅎ
+            if (boardWriterInfo == comment.memberId) {
+                // 일반 유저 시점
+                binding.commentWriter.visibility = View.VISIBLE
+
+                // 작성자가 유저 본인일 때
+                if (comment.author) {
+                    binding.commentUserName.setTextColor(ContextCompat.getColor(binding.root.context, R.color.main_orange))
+                    binding.commentWriter.setTextColor(ContextCompat.getColor(binding.root.context, R.color.main_orange))
+                } else {
+                    binding.commentUserName.setTextColor(ContextCompat.getColor(binding.root.context, R.color.gray_scale8))
+                    binding.commentWriter.setTextColor(ContextCompat.getColor(binding.root.context, R.color.gray_scale8))
+                }
+            } else {
+                binding.commentWriter.visibility = View.GONE
+                binding.commentUserName.setTextColor(ContextCompat.getColor(binding.root.context, R.color.gray_scale8))
+                binding.commentWriter.setTextColor(ContextCompat.getColor(binding.root.context, R.color.gray_scale8))
+            }
 
 
             // 답글(대댓글) 작성 버튼

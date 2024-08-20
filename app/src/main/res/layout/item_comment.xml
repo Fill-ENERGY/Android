@@ -34,18 +34,6 @@
             app:layout_constraintStart_toEndOf="@id/comment_user_image"
             app:layout_constraintTop_toTopOf="@id/comment_user_image"
             app:layout_constraintBottom_toBottomOf="@id/comment_user_image"/>
-        <TextView
-            android:id="@+id/deleted_comment_user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="(알 수 없는 사용자)"
-            style="@style/Body1"
-            android:textColor="@color/gray_scale5"
-            android:layout_marginStart="6dp"
-            android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@id/comment_user_image"
-            app:layout_constraintTop_toTopOf="@id/comment_user_image"
-            app:layout_constraintBottom_toBottomOf="@id/comment_user_image"/>
 
         <TextView
             android:id="@+id/comment_writer"

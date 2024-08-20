@@ -103,7 +103,7 @@ interface CommunityInterface {
     fun updateComment(
         @Header("Authorization") accessToken: String,
         @Path("boardId") boardId: Int,
-        @Path("commentId ") commentId: Int,
+        @Path("commentId") commentId: Int,
         @Body request: UpdateCommentRequest,
     ): Call<CommentResponse>
 
@@ -112,7 +112,7 @@ interface CommunityInterface {
     fun deleteComment(
         @Header("Authorization") accessToken: String,
         @Path("boardId") boardId: Int,
-        @Path("commentId ") commentId: Int,
+        @Path("commentId") commentId: Int,
     ): Call<DeleteCommentResponse>
 
 

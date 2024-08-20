@@ -25,24 +25,7 @@ class CommunityWholeFragment : BaseFragment<FragmentCommunityWholeBinding>({ Fra
         //토큰 가져오기
 //        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
 //        var accessToken = sharedPreferences?.getString("accessToken", "none")
-        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MDYyMTE0LCJleHAiOjE3MjY2NTQxMTR9.PCo0w_-qmI4_giK-NeiaTkCt_8x_vp5JqAhSxHhhuIE"
-
-//        // 게시글 조회 test
-//        CommunityRepository.getListCommunity(accessToken!!, "", 0, 10, "LATEST") {
-//                response ->
-//            response.let {
-//                Log.d("게시글정보", "${response}")
-//                //통신성공
-//                if (response != null && response.boards != null) {
-//                    // RecyclerView 초기화 및 데이터 연결 (메인 스레드)
-//                    postCommunityAdapter = PostCommunityRVAdapter(response.boards)
-//                    binding.wholeCommunityPostRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-//                    binding.wholeCommunityPostRv.adapter = postCommunityAdapter
-//                } else {
-//                    Log.e("전체커뮤니티api테스트", "응답 결과가 null이거나 board가 없습니다. ${response}")
-//                }
-//            }
-//        }
+        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRqZ3VzaWRAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY4NjQwLCJleHAiOjE3MjY3NjA2NDB9.fUaTieyCFhodHH1YTWJTNVTmDFZuvW6RjJ2t_tVzs_M"
     }
 
     override fun onResume() {

@@ -88,7 +88,7 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
             //토큰 가져오기
 //            val sharedPreferences = binding.root.context.getSharedPreferences("userToken", Context.MODE_PRIVATE)
 //            val accessToken = sharedPreferences.getString("accessToken", "none")
-            val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MDYyMTE0LCJleHAiOjE3MjY2NTQxMTR9.PCo0w_-qmI4_giK-NeiaTkCt_8x_vp5JqAhSxHhhuIE"
+            val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRqZ3VzaWRAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY4NjQwLCJleHAiOjE3MjY3NjA2NDB9.fUaTieyCFhodHH1YTWJTNVTmDFZuvW6RjJ2t_tVzs_M"
 
             // 좋아요 아이콘 설정
             updateLikeIcon(postInfo.liked)
@@ -112,12 +112,14 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
             binding.itemCommunityPostContainer.setOnClickListener {
                 val intent = Intent(binding.root.context, CommunityDetailActivity::class.java)
                 intent.putExtra("postId", postInfo.id)
+                intent.putExtra("memberId", postInfo.memberId)
                 binding.root.context.startActivity(intent)
             }
             // 댓글 쓰기 클릭 시 상세 페이지로 이동
             binding.itemCommunityPostCommentTv.setOnClickListener {
                 val intent = Intent(binding.root.context, CommunityDetailActivity::class.java)
                 intent.putExtra("postId", postInfo.id)
+                intent.putExtra("memberId", postInfo.memberId)
                 binding.root.context.startActivity(intent)
             }
 

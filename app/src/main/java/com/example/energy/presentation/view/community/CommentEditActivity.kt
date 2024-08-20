@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.energy.R
+import com.example.energy.data.repository.community.CommentModel
 import com.example.energy.data.repository.community.CommunityRepository
 import com.example.energy.data.repository.community.PostBoardRequest
 import com.example.energy.data.repository.community.UpdateCommentRequest
@@ -24,7 +25,7 @@ class CommentEditActivity : AppCompatActivity(){
         binding = ActivityCommunityCommentEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzOTg1OTUxLCJleHAiOjE3MjY1Nzc5NTF9.jEn8OyBau-JQ576OLgESOD0dGcGH614WfsQUGGbtq_M"
+        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRqZ3VzaWRAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY4NjQwLCJleHAiOjE3MjY3NjA2NDB9.fUaTieyCFhodHH1YTWJTNVTmDFZuvW6RjJ2t_tVzs_M"
 
         // 인텐트로부터 전달받은 commentId 가져옴. 기본값은 -1로 설정하여 예외처리
         postId = intent.getIntExtra("postId", -1)
@@ -66,7 +67,7 @@ class CommentEditActivity : AppCompatActivity(){
     private fun loadCommentData(commentId: Int) {
         CommunityRepository.getListComment(accessToken!!, postId) { response ->
             if (response != null) {
-                val commentModel = response.find { it.id == commentId }
+                val commentModel = findCommentById(response, commentId)
 
                 if (commentModel != null) {
                     // 기존 데이터 UI에 반영
@@ -77,22 +78,38 @@ class CommentEditActivity : AppCompatActivity(){
 //                        addImageToList(imageUri)
 //                    }
                 } else {
-                    Log.e("상세댓글조회", "해당 댓글을 찾을 수 없습니다. commentId: $commentId")
+                    Log.e("상세댓글조회", "해당 댓글을 찾을 수 없습니다. commentId: $commentModel")
                 }
             } else {
                 Log.e("상세댓글조회", "해당 댓글 데이터가 없습니다.")
             }
         }
     }
+    private fun findCommentById(comments: List<CommentModel>, commentId: Int): CommentModel? {
+        for (comment in comments) {
+            if (comment.id == commentId) {
+                return comment
+            }
+
+            // 자식 댓글들을 재귀적으로 검색
+            val foundInReplies = findCommentById(comment.replies!!, commentId)
+            if (foundInReplies != null) {
+                return foundInReplies
+            }
+        }
+        return null
+    }
 
     // 게시글 수정 함수
     private fun updateComment(postId: Int, commentId: Int) {
 
         val updateCommentRequest = UpdateCommentRequest(
-            content = binding.commentEditText.toString(),
-            images = imageList!!,
+            content = binding.commentEditText.text.toString(),
+            images = emptyList(),
             secret = isSecret,
         )
+
+        Log.d("수정댓글정보", "${postId}, ${commentId}, ${isSecret}")
 
         CommunityRepository.updateComment(accessToken!!, postId, commentId, updateCommentRequest) { response ->
             if (response != null) {

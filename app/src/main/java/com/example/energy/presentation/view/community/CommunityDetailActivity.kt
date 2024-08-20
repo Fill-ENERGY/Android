@@ -1,8 +1,11 @@
 package com.example.energy.presentation.view.community
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -18,10 +21,12 @@ import com.example.energy.data.repository.community.HelpStatusRequest
 import com.example.energy.data.repository.community.PostBoardRequest
 import com.example.energy.data.repository.community.WriteCommentRequest
 import com.example.energy.databinding.ActivityCommunityDetailBinding
+import com.example.energy.databinding.DialogCommunityBlockBinding
 import com.example.energy.databinding.DialogCommunityCommentWriterSeeMoreBinding
 import com.example.energy.databinding.DialogCommunityUserSeeMoreBinding
 import com.example.energy.databinding.DialogCommunityWriterSeeMoreBinding
 import com.example.energy.databinding.DialogHelpStatusBinding
+import com.example.energy.databinding.DialogPostCommunitySuccessBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class CommunityDetailActivity : AppCompatActivity(){
@@ -36,6 +41,8 @@ class CommunityDetailActivity : AppCompatActivity(){
     private var likeCount: Int = 0 // 좋아요 개수를 저장하는 변수
     private var isSecret: Boolean = false  // 좋아요 상태를 저장하는 변수
     private var postId: Int = 0
+    private var selectedComment: CommentModel? = null // 선택된 댓글 객체를 추적
+    private var writerId: Int? = null
 
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,12 +53,81 @@ class CommunityDetailActivity : AppCompatActivity(){
         //토큰 가져오기
 //        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
 //        var accessToken = sharedPreferences?.getString("accessToken", "none")
-        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzOTg1OTUxLCJleHAiOjE3MjY1Nzc5NTF9.jEn8OyBau-JQ576OLgESOD0dGcGH614WfsQUGGbtq_M"
+        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRqZ3VzaWRAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY4NjQwLCJleHAiOjE3MjY3NjA2NDB9.fUaTieyCFhodHH1YTWJTNVTmDFZuvW6RjJ2t_tVzs_M"
 
         // 인텐트로부터 전달받은 postId(board_id) 가져옴. 기본값은 -1로 설정하여 예외처리
         postId = intent.getIntExtra("postId", -1)
+        writerId = intent.getIntExtra("memberId", -1)
         Log.d("게시글아이디", "${postId}")
 
+        // 댓글 전송 버튼
+        binding.sendButton.setOnClickListener {
+            val commentText = binding.messageInput.text.toString()
+            if(commentText.isNotBlank()){
+
+                Log.d("댓글!!!", "${selectedComment}")
+                Log.d("댓글잠금상태", "${isSecret}")
+                Log.d("댓글내용", "${commentText}")
+
+                if(selectedComment?.parentId != 0){
+                    parentCommentId = selectedComment?.parentId
+                } else{
+                    parentCommentId = selectedComment?.id
+                }
+
+                Log.d("부모댓글아이디", "${parentCommentId}")
+
+                // 댓글 작성 요청 데이터
+                val writeCommentRequest = WriteCommentRequest(
+                    content = commentText,
+                    secret = isSecret,
+                    parentCommentId = parentCommentId,
+                    images = emptyList(),
+                )
+
+                // 댓글 API 호출
+                CommunityRepository.writeCommentBoard(accessToken!!, postId, writeCommentRequest) { response  ->
+                    if (response != null) {
+                        // 성공적으로 댓글 작성됨
+                        Log.d("댓글업로드", "댓글 작성 성공: ${response.content}")
+
+                        // 댓글 목록에 추가하고 RecyclerView 업데이트
+                        commentAdapter.notifyDataSetChanged()
+
+                        // 댓글 입력 필드 초기화
+                        binding.messageInput.text.clear()
+                        selectedComment = null  // 대댓글 작성이 끝났으므로 selectedComment 초기화
+                        refreshData() //데이터 재로딩
+                    } else {
+                        // 댓글 작성 실패
+                        Log.e("댓글업로드", "댓글 작성 실패: ${response}")
+                    }
+                }
+            }
+        }
+
+        // 키보드 외부 화면 클릭 시 키보드 숨기기
+        binding.communityDetail.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                hideKeyboard()
+                selectedComment = null
+            }
+            false
+        }
+
+        // 뒤로가기 버튼
+        binding.communityDetailBackIcon.setOnClickListener {
+            finish() //현재 Activity 종료
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // API를 다시 호출하여 데이터를 갱신
+        refreshData()
+    }
+
+    private fun refreshData() {
         // 커뮤니티 댓글 조회 api
         CommunityRepository.getListComment(accessToken!!, postId) {
                 response ->
@@ -60,7 +136,7 @@ class CommunityDetailActivity : AppCompatActivity(){
                 //통신성공
                 if (response != null) {
                     // 댓글 RecyclerView 연결
-                    commentAdapter = ItemCommentAdapter(response)
+                    commentAdapter = ItemCommentAdapter(response, writerId)
                     binding.communityDetailCommentView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
                     binding.communityDetailCommentView.adapter = commentAdapter
 
@@ -69,7 +145,7 @@ class CommunityDetailActivity : AppCompatActivity(){
                         override fun addSubComment(commentModel: CommentModel) {
                             // 대댓글 추가 로직 구현
                             // 부모 댓글 ID를 설정하여 자식 댓글을 작성할 준비
-                            parentCommentId = commentModel.id
+                            selectedComment = commentModel
                             binding.messageInput.requestFocus()  // 입력창에 포커스
                         }
 
@@ -86,7 +162,6 @@ class CommunityDetailActivity : AppCompatActivity(){
                 }
             }
         }
-
 
         // 상세 게시글 조회 API 호출
         CommunityRepository.getDetailCommunity(accessToken!!, postId) { response ->
@@ -179,7 +254,7 @@ class CommunityDetailActivity : AppCompatActivity(){
 
                 // 도와줘요 카테고리인 경우 & 일반 사용자일 경우
                 if(response.category == "HELP" && response.author == false){
-                    binding.communityDetailSeeMore.visibility = View.VISIBLE
+                    binding.communityDetailHelpCategory.visibility = View.VISIBLE
                 } else{
                     binding.communityDetailHelpCategory.visibility = View.GONE
                 }
@@ -219,56 +294,6 @@ class CommunityDetailActivity : AppCompatActivity(){
                 Log.e("상세커뮤니티조회", "상세 게시글 데이터가 없습니다. response: $response")
             }
         }
-
-        // 댓글 전송 버튼
-        binding.sendButton.setOnClickListener {
-            val commentText = binding.messageInput.text.toString()
-            if(commentText.isNotBlank()){
-
-                Log.d("댓글잠금상태", "${isSecret}")
-                Log.d("댓글내용", "${commentText}")
-                Log.d("댓글아이디", "${parentCommentId}")
-
-                // 댓글 작성 요청 데이터
-                val writeCommentRequest = WriteCommentRequest(
-                    content = commentText,
-                    secret = isSecret,
-                    parentCommentId = parentCommentId,
-                    images = emptyList(),
-                )
-
-                // 댓글 API 호출
-                CommunityRepository.writeCommentBoard(accessToken!!, postId, writeCommentRequest) { response  ->
-                    if (response != null) {
-                        // 성공적으로 댓글 작성됨
-                        Log.d("댓글업로드", "댓글 작성 성공: ${response.content}")
-
-                        // 댓글 목록에 추가하고 RecyclerView 업데이트
-                        commentAdapter.notifyDataSetChanged()
-
-                        // 댓글 입력 필드 초기화
-                        binding.messageInput.text.clear()
-                        parentCommentId = 0  // 대댓글 작성이 끝났으므로 parentCommentId 초기화
-                    } else {
-                        // 댓글 작성 실패
-                        Log.e("댓글업로드", "댓글 작성 실패: ${response}")
-                    }
-                }
-            }
-        }
-
-        // 키보드 외부 화면 클릭 시 키보드 숨기기
-        binding.communityDetail.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                hideKeyboard()
-            }
-            false
-        }
-
-        // 뒤로가기 버튼
-        binding.communityDetailBackIcon.setOnClickListener {
-            finish() //현재 Activity 종료
-        }
     }
 
     fun toKorean(category: String): String{
@@ -280,26 +305,6 @@ class CommunityDetailActivity : AppCompatActivity(){
             else -> "스쿠터"
         }
     }
-
-//    // 댓글 추가 기능
-//    private fun addCommentToDatabase(comment: Comment) {
-//        Thread {
-//            communityDB.commentDao().insertComment(comment)
-//            runOnUiThread {
-//                updateCommentsList(comment)
-//            }
-//        }.start()
-//    }
-
-//    // Comment 업데이트 함수
-//    private fun updateCommentsList(newComment: Comment) {
-////        val fragmentManager: FragmentManager = supportFragmentManager
-////        val communityWholeFragment = fragmentManager.findFragmentByTag("CommunityWholeFragment") as CommunityWholeFragment?
-////        communityWholeFragment?.updatePostList(newComment)
-//        dataList.add(newComment)
-//        commentAdapter.itemSet = makeChildComment(dataList)
-//        commentAdapter.notifyDataSetChanged()
-//    }
 
     // 키보드 내리는 함수
     private fun hideKeyboard() {
@@ -376,6 +381,7 @@ class CommunityDetailActivity : AppCompatActivity(){
                 if(response != null){
                     status = response.helpStatus
                     Log.d("상태변경", "상태 변경 성공: ${response.helpStatus}")
+                    refreshData()
                 }else {
                     // 상태 변경 실패
                     Log.e("상태변경", "상태 변경 실패: ${response}")
@@ -396,6 +402,7 @@ class CommunityDetailActivity : AppCompatActivity(){
                 if(response != null){
                     status = response.helpStatus
                     Log.d("상태변경", "상태 변경 성공: ${response.helpStatus}")
+                    refreshData()
                 }else {
                     // 상태 변경 실패
                     Log.e("상태변경", "상태 변경 실패: ${response}")
@@ -416,6 +423,7 @@ class CommunityDetailActivity : AppCompatActivity(){
                 if(response != null){
                     status = response.helpStatus
                     Log.d("상태변경", "상태 변경 성공: ${response.helpStatus}")
+                    refreshData()
                 }else {
                     // 상태 변경 실패
                     Log.e("상태변경", "상태 변경 실패: ${response}")
@@ -439,6 +447,7 @@ class CommunityDetailActivity : AppCompatActivity(){
             val intent = Intent(binding.root.context, CommunityWritingActivity::class.java)
             intent.putExtra("postId", postId)
             binding.root.context.startActivity(intent)
+            bottomSheetDialog.dismiss() //Dialog 닫기
         }
 
         // 게시글 삭제하기
@@ -451,6 +460,7 @@ class CommunityDetailActivity : AppCompatActivity(){
                     Log.e("게시글삭제", "게시글 삭제 실패: ${response}")
                 }
             }
+            bottomSheetDialog.dismiss() //Dialog 닫기
         }
 
         bottomSheetDialog.show()
@@ -460,6 +470,17 @@ class CommunityDetailActivity : AppCompatActivity(){
         val bottomSheetDialog = BottomSheetDialog(this)
         val binding = DialogCommunityUserSeeMoreBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(binding.root)
+
+        // 게시글 차단 버튼
+        binding.dialogCommunityBlock.setOnClickListener {
+            bottomSheetDialog.dismiss() //Dialog 닫기
+            showBlockDialog()
+        }
+
+        // 게시글 신고 버튼
+        binding.dialogCommunityReport.setOnClickListener {
+            bottomSheetDialog.dismiss() //Dialog 닫기
+        }
 
         bottomSheetDialog.show()
     }
@@ -475,6 +496,8 @@ class CommunityDetailActivity : AppCompatActivity(){
             intent.putExtra("postId", postId)
             intent.putExtra("commentId", commentModel.id)
             binding.root.context.startActivity(intent)
+
+            bottomSheetDialog.dismiss() //Dialog 닫기
         }
 
         // 댓글 삭제 버튼
@@ -482,11 +505,13 @@ class CommunityDetailActivity : AppCompatActivity(){
             CommunityRepository.deleteComment(accessToken!!, postId, commentModel.id) { response  ->
                 if(response != null){
                     Log.d("댓글삭제", "댓글 삭제 성공: ${response.result}")
+                    refreshData() //데이터 재로딩
                 }else {
                     // 상태 변경 실패
                     Log.e("댓글삭제", "댓글 삭제 실패: ${response}")
                 }
             }
+            bottomSheetDialog.dismiss() //Dialog 닫기
         }
 
         bottomSheetDialog.show()
@@ -499,15 +524,38 @@ class CommunityDetailActivity : AppCompatActivity(){
 
         // 댓글 차단 버튼
         binding.dialogCommunityBlock.setOnClickListener {
-
+            bottomSheetDialog.dismiss() //Dialog 닫기
+            showBlockDialog()
         }
 
         // 댓글 신고 버튼
         binding.dialogCommunityReport.setOnClickListener {
-
+            bottomSheetDialog.dismiss() //Dialog 닫기
         }
 
         bottomSheetDialog.show()
+    }
+
+
+    private fun showBlockDialog() { // 차단 Dialog
+        val dialog = Dialog(this, R.style.CustomDialog)
+        val binding = DialogCommunityBlockBinding.inflate(layoutInflater)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 기존 다이어그램 배경 투명으로 적용(커스텀한 배경이 보이게 하기 위함)
+        dialog.setContentView(binding.root)
+        dialog.setCanceledOnTouchOutside(false) // 바깥 영역 터치해도 닫힘 X
+
+        binding.dialogCommunityBlockYes.setOnClickListener {
+            // '예' 버튼 클릭 시 수행할 작업
+            dialog.dismiss() // 다이얼로그 닫기
+        }
+
+        binding.dialogCommunityBlockNo.setOnClickListener {
+            // '아니오' 버튼 클릭 시 수행할 작업
+            dialog.dismiss() // 다이얼로그 닫기
+        }
+
+        // 다이얼로그 표시
+        dialog.show()
     }
 
     fun updateLikeIcon(isLike: Boolean) { //좋아요 UI 업데이트 함수

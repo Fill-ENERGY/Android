@@ -62,7 +62,7 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         //토큰 가져오기
 //        val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
 //        accessToken = sharedPreferences?.getString("accessToken", "none")
-        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzOTg1OTUxLCJleHAiOjE3MjY1Nzc5NTF9.jEn8OyBau-JQ576OLgESOD0dGcGH614WfsQUGGbtq_M"
+        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRqZ3VzaWRAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY4NjQwLCJleHAiOjE3MjY3NjA2NDB9.fUaTieyCFhodHH1YTWJTNVTmDFZuvW6RjJ2t_tVzs_M"
 
 
         // Intent로 전달된 postId 확인
@@ -182,7 +182,7 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
                 // 기존 데이터 UI에 반영
                 titleEditText.setText(response.title)
                 contentEditText.setText(response.content)
-                spinner.setSelection(menuList.indexOf(response.category))
+                spinner.setSelection(menuList.indexOf(toKorean(response.category)))
                 // 이미지 데이터 처리
                 response.images.forEach { imageUri ->
                     addImageToList(imageUri)
@@ -338,6 +338,15 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
             "도와줘요" -> "HELP"
             "휠체어" -> "WHEELCHAIR"
             else -> "SCOOTER"
+        }
+    }
+    fun toKorean(category: String): String{
+        return when(category){
+            "DAILY" -> "일상"
+            "INQUIRY" -> "궁금해요"
+            "HELP" -> "도와줘요"
+            "WHEELCHAIR" -> "휠체어"
+            else -> "스쿠터"
         }
     }
 
