@@ -37,7 +37,7 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
 
         //토큰 가져오기
         //var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
-        var accessToken ="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODE3OTA5LCJleHAiOjE3MjY0MDk5MDl9.D8cHYgTwnv-k3GdJpSexakAnn7rtZvML1cfkGm9qJoY"
+        var accessToken ="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1aHl1bjEwMjAxQG5hdmVyLmNvbSIsImlhdCI6MTcyNDA3NjMzMywiZXhwIjoxNzI2NjY4MzMzfQ.Y6_h-Mo9zbThpJGFsW0IMbOunsxtiL-8khw0Z-3kez0"
 
 
         //데이터 로드 함수 호출

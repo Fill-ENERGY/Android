@@ -23,7 +23,7 @@ class ListReviewFragment :
     val listViewModel by activityViewModels<ListViewModel>()
 
     var accessToken =
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODg3ODYzLCJleHAiOjE3MjY0Nzk4NjN9.qGR9PibGimGon0_82i_Z73nxXJzK1BDoPLWRLjC0QI4"
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1aHl1bjEwMjAxQG5hdmVyLmNvbSIsImlhdCI6MTcyNDA3NjMzMywiZXhwIjoxNzI2NjY4MzMzfQ.Y6_h-Mo9zbThpJGFsW0IMbOunsxtiL-8khw0Z-3kez0"
     private val reviewList = ArrayList<ReviewModel>()
     private val reviewAdapter = ListReviewAdapter(reviewList)
 
