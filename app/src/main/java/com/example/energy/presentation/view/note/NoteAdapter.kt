@@ -97,7 +97,7 @@ class NoteAdapter(private val noteList: ArrayList<ChatThread>,
     fun updateData(newList: ArrayList<ChatThread>) {
         noteList.clear()
         noteList.addAll(newList)
-        notifyDataSetChanged()
+        //notifyDataSetChanged()
     }
 
 

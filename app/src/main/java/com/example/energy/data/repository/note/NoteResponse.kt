@@ -27,24 +27,24 @@ data class ChatThreadsResponse (
 
 data class ChatThreadsResult(
     val threads: List<ChatThread>,
-    val cursor: String,
-    val lastId: Long,
+    val cursor: String?,
+    val lastId: Int?,
     val hasNext: Boolean
 )
 
 data class ChatThread(
-    val threadId: Long,
-    val receiverId: Long,
+    val threadId: Int,
+    val receiverId: Int,
     val name: String,
     val nickname: String,
-    val profileImg: String?,
+    val profileImg: String,
     val recentMessage: RecentMessage,
     val unreadMessageCount: Int,
     val updatedAt: String
 )
 
 data class RecentMessage(
-    val messageId: Long,
+    val messageId: Int,
     val content: String,
-    val createdAt: String
+    val createdAt: String?
 )

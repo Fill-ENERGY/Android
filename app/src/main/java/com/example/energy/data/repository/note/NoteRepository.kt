@@ -38,33 +38,31 @@ class NoteRepository {
         }
 
 
-        fun fetchChatThreads(accessToken: String, lastId: Int, limit: Int, callback: (ChatThreadsResponse?) -> Unit)
+        fun getChatThreads(accessToken: String, cursor: String, lastId: Int, limit: Int, callback: (ChatThreadsResponse?) -> Unit)
         {
             val noteService = getRetrofit().create(ChatInterface::class.java)
-            val call = noteService.getChatThreads(accessToken)
+            val call = noteService.getChatThreads(accessToken, cursor, lastId, limit)
 
             call.enqueue(object : Callback<ChatThreadsResponse> {
+
                 override fun onResponse(call: Call<ChatThreadsResponse>, response: Response<ChatThreadsResponse>) {
                     if (response.isSuccessful) {
-                        val chatThreads = response.body()?.result?.threads ?: emptyList()
+                        val chatThreadsResponse = response.body()
+                        callback(chatThreadsResponse)
 
 
-                        val targetThread = chatThreads.find { it.receiverId.toInt() == 1 }
 
-                        if (targetThread != null) {
-                            val threadId = targetThread.threadId
-                            val receiverId = targetThread.receiverId
-                            // 쪽지 전송 시 이 값들을 사용합니다.
-                        }
                     } else {
-                        // 오류 처리
+                        // 서버 응답은 성공적이었지만 code가 2xx가 아닌 경우 처리
+                        Log.e("NoteRepository", "응답 실패: ${response.code()} - ${response.message()}")
+                        callback(null)
                     }
                 }
 
                 override fun onFailure(call: Call<ChatThreadsResponse>, t: Throwable) {
                     // 네트워크 오류 처리
-                    Log.e("NoteRepository", "채팅방 목록 조회 실패")
-
+                    Log.e("NoteRepository", "채팅방 목록 조회 실패", t)
+                    callback(null)
                 }
             })
         }

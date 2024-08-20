@@ -1,5 +1,6 @@
 package com.example.energy.presentation.view.note
 
+//import com.example.energy.data.repository.note.NoteRepository.Companion.leaveChatRoom
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -8,25 +9,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
-import com.example.energy.data.getRetrofit
-import com.example.energy.data.repository.note.ChatInterface
-import com.example.energy.data.repository.note.ChatThread
 import com.example.energy.data.repository.note.NoteRepository
-
-//import com.example.energy.data.repository.note.NoteRepository.Companion.leaveChatRoom
 import com.example.energy.databinding.DialogCustomBinding
 import com.example.energy.databinding.FragmentNoteBinding
-import com.example.energy.presentation.util.EnergyUtils.Companion.showSOSDialog
 import com.example.energy.presentation.view.base.BaseFragment
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inflate(it)}) {
@@ -38,13 +28,13 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
         super.onViewCreated(view, savedInstanceState)
 
 
+        // NoteAdapter 초기화
+
 
 
         setToolBar()
 
-        noteAdapter = NoteAdapter(arrayListOf()) { note, position ->
-               loadChatThread()
-        }
+
 
         //loadChatThread("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MDU0MTU2LCJleHAiOjE3MjY2NDYxNTZ9.L0hwfd1VFk0usLRuexrc63osiPNIpWSUpPjS8vgt_KM")
 
@@ -74,6 +64,13 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
         }
 
          */
+        noteAdapter = NoteAdapter( ArrayList(), {chatThread, position ->
+
+        })
+
+        loadChatThread()
+
+
 
 
 
@@ -125,28 +122,26 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
 
 
 
+
+
+
     }
 
 
     private fun loadChatThread() {
 
-        val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MDYyMTE0LCJleHAiOjE3MjY2NTQxMTR9.PCo0w_-qmI4_giK-NeiaTkCt_8x_vp5JqAhSxHhhuIE"
+        val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTMxNjc3LCJleHAiOjE3MjY3MjM2Nzd9.NT0iEfaOANA8m1Y5E8p0-4ZwuUYBZdMQkHhYVj5X7jA"
+        val cursor =""
 
-        NoteRepository.fetchChatThreads(accessToken, 0, 10) { response ->
+        NoteRepository.getChatThreads(accessToken, cursor,0, 10) { response ->
 
             if (response != null) {
                 val threads = response.result.threads
-
-
-                noteAdapter.updateData(ArrayList(threads))
-
-
+                noteAdapter.updateData(ArrayList(threads)) // 데이터를 어댑터에 전달하여 업데이트
             } else {
-                Toast.makeText(context, "Failed to load chat threads", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "채팅방 목록 실패", Toast.LENGTH_SHORT).show()
             }
         }
-
-
     }
 
 
