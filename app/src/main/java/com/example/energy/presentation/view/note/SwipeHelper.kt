@@ -106,6 +106,17 @@ class SwipeHelper:ItemTouchHelper.Callback() {
                 actionState,
                 isCurrentlyActive
             )
+        } else {
+            // 스와이프가 아닌 경우, 뷰를 원래 상태로 복원
+            getDefaultUIUtil().onDraw(
+                c,
+                recyclerView,
+                getView(viewHolder),
+                0f,
+                dY,
+                actionState,
+                isCurrentlyActive
+            )
         }
     }
 
