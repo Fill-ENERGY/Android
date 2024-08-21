@@ -50,9 +50,8 @@ class ListFragment : BaseFragment<FragmentListBinding>({ FragmentListBinding.inf
         Log.d("ListFragment", "onViewCreated called")
 
         //토큰 가져오기
-        //var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
-
-        var accessToken ="Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY0NTU2LCJleHAiOjE3MjY3NTY1NTZ9.xRtumUjlAyuRhf7Ldu_7kH52XBFzqdaP6nTy0OjfvuQ"
+        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        var accessToken = sharedPreferences?.getString("accessToken", "none")
 
 
         //데이터 로드 함수 호출

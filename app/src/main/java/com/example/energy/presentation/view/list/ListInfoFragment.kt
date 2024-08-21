@@ -1,5 +1,6 @@
 package com.example.energy.presentation.view.list
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -37,6 +38,10 @@ class ListInfoFragment : BaseFragment<FragmentListInfoBinding>({ FragmentListInf
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //토큰 가져오기
+        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        var accessToken = sharedPreferences?.getString("accessToken", "none")
+
 
         // 전달된 데이터를 받아오기
         val stationId = arguments?.getInt("stationId") ?: -1
@@ -47,7 +52,9 @@ class ListInfoFragment : BaseFragment<FragmentListInfoBinding>({ FragmentListInf
 
         mapView = binding.mapView
 
-        loadStationDetail(stationId, latitude, longitude)
+        if (accessToken != null) {
+            loadStationDetail(accessToken, stationId, latitude, longitude)
+        }
 
     }
 
@@ -104,15 +111,13 @@ class ListInfoFragment : BaseFragment<FragmentListInfoBinding>({ FragmentListInf
     }
 
 
-    private fun loadStationDetail(stationId: Int, latitude: Double, longitude: Double) {
+    private fun loadStationDetail(accessToken: String, stationId: Int, latitude: Double, longitude: Double) {
         //카카오 맵뷰
         val mapView: MapView = binding.mapView
 
         // API 호출 코드 작성
 
         if (stationId != -1) {
-
-            var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY0NTU2LCJleHAiOjE3MjY3NTY1NTZ9.xRtumUjlAyuRhf7Ldu_7kH52XBFzqdaP6nTy0OjfvuQ"
 
 
             // 충전소 상세 정보 api 연결

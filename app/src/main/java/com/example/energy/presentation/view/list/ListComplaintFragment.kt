@@ -2,6 +2,7 @@ package com.example.energy.presentation.view.list
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Bundle
 import android.util.Log
@@ -16,6 +17,9 @@ class ListComplaintFragment : BaseFragment<FragmentListComplaintBinding>({ Fragm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //토큰 가져오기
+        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        var accessToken = sharedPreferences?.getString("accessToken", "none")
 
         // 전달된 데이터를 받아오기
         val stationId = arguments?.getInt("stationId") ?: -1
@@ -27,7 +31,9 @@ class ListComplaintFragment : BaseFragment<FragmentListComplaintBinding>({ Fragm
 
 
 
-        loadStationDetail(stationId, latitude, longitude)
+        if (accessToken != null) {
+            loadStationDetail(accessToken, stationId, latitude, longitude)
+        }
 
         //관리기관 정보 복사
         copyToClipboard()
@@ -64,13 +70,10 @@ class ListComplaintFragment : BaseFragment<FragmentListComplaintBinding>({ Fragm
 
 
 
-    private fun loadStationDetail(stationId: Int, latitude: Double, longitude: Double) {
+    private fun loadStationDetail(accessToken: String, stationId: Int, latitude: Double, longitude: Double) {
         // API 호출 코드 작성
 
         if (stationId != -1) {
-
-            var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Imtpaml3aTFAbmF2ZXIuY29tIiwiaWF0IjoxNzIzODE3OTA5LCJleHAiOjE3MjY0MDk5MDl9.D8cHYgTwnv-k3GdJpSexakAnn7rtZvML1cfkGm9qJoY"
-
 
             // 충전소 상세 정보 api 연결
             ListRepository.getStation(accessToken, stationId, latitude, longitude) { stationInfo ->
