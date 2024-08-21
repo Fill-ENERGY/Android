@@ -106,10 +106,12 @@ class NoteAdapter(
             // 스와이프-> 스와이프 영역 클릭 시, 채팅 목록 삭제
             binding.ExitButton.setOnClickListener {
 
-                note.threadId?.let { threadId -> leaveChatRoom(threadId) }
-                removeData(this.layoutPosition)
-                Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
-                onSwipeClickListener(note, layoutPosition)
+                if (getClamped()) {  // 스와이프 상태에서만 버튼 클릭이 유효
+                    note.threadId?.let { threadId -> leaveChatRoom(threadId) }
+                    removeData(this.layoutPosition)
+                    Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
+                    onSwipeClickListener(note, layoutPosition)
+                }
             }
 
 
