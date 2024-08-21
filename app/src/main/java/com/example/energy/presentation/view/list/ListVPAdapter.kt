@@ -1,5 +1,7 @@
 package com.example.energy.presentation.view.list
 
+import android.os.Bundle
+import android.provider.Settings.System.putInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -15,6 +17,15 @@ class ListVPAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity
     private val tabCount =3
 
 
+
+    private var stationId: Int = -1
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
+
+
+
+
+
     override fun getItemCount(): Int {
         return tabCount
     }
@@ -22,9 +33,25 @@ class ListVPAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity
 
     override fun createFragment(position: Int): Fragment {
         return when(position) {
-            0 ->   ListInfoFragment()
+            0 ->   ListInfoFragment().apply {
+
+                arguments = Bundle().apply {
+                    putInt("stationId", stationId)
+                    putDouble("latitude", latitude)
+                    putDouble("longitude", longitude)
+                }
+
+            }
             1 ->   ListReviewFragment()
-            2 ->   ListComplaintFragment()
+            2 ->   ListComplaintFragment().apply {
+
+                arguments = Bundle().apply {
+                    putInt("stationId", stationId)
+                    putDouble("latitude", latitude)
+                    putDouble("longitude", longitude)
+                }
+
+            }
 
             else -> throw IllegalStateException("Invalid position $position")
 
@@ -36,6 +63,16 @@ class ListVPAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity
 
 
     }
+
+
+        // 데이터를 업데이트하는 메서드
+        fun updateData(stationId: Int, latitude: Double, longitude: Double) {
+            this.stationId = stationId
+            this.latitude = latitude
+            this.longitude = longitude
+
+            notifyDataSetChanged()
+        }
 
 
 }

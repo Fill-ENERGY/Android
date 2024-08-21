@@ -1,144 +1,119 @@
 package com.example.energy.presentation.view.community
 
+import android.annotation.SuppressLint
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Message
-import android.text.InputType
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Room
 import com.example.energy.R
-import com.example.energy.data.CommunityPostDatabase
-import com.example.energy.data.repository.community.Comment
-import com.example.energy.data.repository.community.CommunityPost
+import com.example.energy.data.repository.community.BoardModel
+import com.example.energy.data.repository.community.CommentModel
+import com.example.energy.data.repository.community.CommunityRepository
+import com.example.energy.data.repository.community.HelpStatusRequest
+import com.example.energy.data.repository.community.PostBoardRequest
+import com.example.energy.data.repository.community.WriteCommentRequest
 import com.example.energy.databinding.ActivityCommunityDetailBinding
-import com.example.energy.databinding.DialogCommunityCommentSeeMoreBinding
+import com.example.energy.databinding.DialogCommunityBlockBinding
+import com.example.energy.databinding.DialogCommunityCommentWriterSeeMoreBinding
 import com.example.energy.databinding.DialogCommunityUserSeeMoreBinding
 import com.example.energy.databinding.DialogCommunityWriterSeeMoreBinding
 import com.example.energy.databinding.DialogHelpStatusBinding
+import com.example.energy.databinding.DialogLoadingBinding
+import com.example.energy.databinding.DialogPostCommunitySuccessBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 class CommunityDetailActivity : AppCompatActivity(){
     private lateinit var binding: ActivityCommunityDetailBinding
-    private lateinit var communityDB: CommunityPostDatabase
-    private lateinit var dataList: ArrayList<Comment>
     private lateinit var commentAdapter: ItemCommentAdapter
-    private var parentCommentId: Int = -1 // 자식 댓글의 부모 댓글 ID
+    private var parentCommentId: Int? = null // 자식 댓글의 부모 댓글 ID
     private var writerStatus: String = "" //기본 값
+    private var imageList: List<String>? = null
     private var status : String = ""
+    private var accessToken: String? = null
+    private var likeStatus: Boolean = false  // 좋아요 상태를 저장하는 변수
+    private var likeCount: Int = 0 // 좋아요 개수를 저장하는 변수
+    private var isSecret: Boolean = false  // 좋아요 상태를 저장하는 변수
+    private var postId: Int = 0
+    private var selectedComment: CommentModel? = null // 선택된 댓글 객체를 추적
+    private var writerId: Int? = null
+    private var loadingDialog: Dialog? = null
 
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCommunityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Initialize comment dataList
-        dataList = ArrayList()
-        dataList.add(Comment(1, "김한주", "제가 도와드릴 수 있습니다", parentCommentId, "10분 전"))
-        dataList.add(Comment(2, "김규리", "혹시 쪽지로 연락 가능하신가요? 도움 주시면 정말 감사할 것 같습니다...", 0, "10분 전"))
+        //토큰 가져오기
+//        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+//        var accessToken = sharedPreferences?.getString("accessToken", "none")
+        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRqZ3VzaWRAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY4NjQwLCJleHAiOjE3MjY3NjA2NDB9.fUaTieyCFhodHH1YTWJTNVTmDFZuvW6RjJ2t_tVzs_M"
 
-        // 댓글 RecyclerView 연결
-        commentAdapter = ItemCommentAdapter(this, dataList)
-        binding.communityDetailCommentView.adapter = commentAdapter
-        binding.communityDetailCommentView.layoutManager = LinearLayoutManager(this)
+        // 인텐트로부터 전달받은 postId(board_id) 가져옴. 기본값은 -1로 설정하여 예외처리
+        postId = intent.getIntExtra("postId", -1)
+        writerId = intent.getIntExtra("memberId", -1)
+        Log.d("게시글아이디", "${postId}")
 
-        // Adapter에 리스너 설정
-        commentAdapter.onItemClickListener = object : ItemCommentAdapter.OnItemClickListener {
-            override fun addSubComment(comment: Comment) {
-                // 대댓글 추가 로직 구현
-                // 부모 댓글 ID를 설정하여 자식 댓글을 작성할 준비
-                parentCommentId = comment.commentId
-            }
+        // 댓글 전송 버튼
+        binding.sendButton.setOnClickListener {
+            val commentText = binding.messageInput.text.toString()
+            if(commentText.isNotBlank()){
 
-            override fun showDialog(comment: Comment) {
-                showCommentDialog(comment)
-            }
-        }
+                Log.d("댓글!!!", "${selectedComment}")
+                Log.d("댓글잠금상태", "${isSecret}")
+                Log.d("댓글내용", "${commentText}")
 
-        // 인텐트로부터 전달받은 postId 가져옴. 기본값은 -1로 설정하여 예외처리
-        val postId = intent.getIntExtra("postId", -1)
+                if(selectedComment?.parentId != 0){
+                    parentCommentId = selectedComment?.parentId
+                } else{
+                    parentCommentId = selectedComment?.id
+                }
 
-        // 전달받은 데이터 수신
-        if (postId != -1) {
-            Thread {
-                communityDB = CommunityPostDatabase.getInstance(this@CommunityDetailActivity)!!
-                val postInfo = communityDB.communityPostDao().getPostById(postId)
-                runOnUiThread {
-                    // CommunityPost 객체의 데이터를 UI 요소에 반영
-                    binding.communityDetailUserProfile.setImageResource(postInfo.userProfile!!)
-                    binding.communityDetailUserName.text = postInfo.userName
-                    binding.communityDetailTitle.text = postInfo.title
-                    binding.communityDetailContent.text = postInfo.content
-                    binding.communityDetailLikeNum.text = postInfo.likes
-                    binding.communityDetailCommentNum.text = postInfo.comments
-                    binding.communityDetailCategoryTitle.text = postInfo.categoryString
-                    if (postInfo.isLiked) { // true일 때
-                        binding.communityDetailLikeIcon.setImageResource(R.drawable.icon_like)
-                    } else { // false일 때
-                        binding.communityDetailLikeIcon.setImageResource(R.drawable.icon_unlike)
-                    }
-                    Log.d("imageUrl2", postInfo.imageUrl.toString())
+                Log.d("부모댓글아이디", "${parentCommentId}")
 
-                    // 이미지 RecyclerView 설정
-                    if(postInfo.imageUrl.isEmpty()){
-                        // 이미지가 없는 경우 RecyclerView 숨기기
-                        binding.communityDetailImage.visibility = View.GONE
-                    } else{
-                        binding.communityDetailImage.visibility = View.VISIBLE
-                        // RecyclerView의 LayoutManager 및 Adapter 설정
-                        val layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
-                        binding.communityDetailImage.layoutManager = layoutManager
+                // 댓글 작성 요청 데이터
+                val writeCommentRequest = WriteCommentRequest(
+                    content = commentText,
+                    secret = isSecret,
+                    parentCommentId = parentCommentId,
+                    images = emptyList(),
+                )
 
-                        val imageAdapter = ItemFeedPhotoAdapter(postInfo.imageUrl)
-                        Log.d("imageUrl", postInfo.imageUrl.toString())
-                        binding.communityDetailImage.adapter = imageAdapter
-                    }
+                // 댓글 API 호출
+                CommunityRepository.writeCommentBoard(accessToken!!, postId, writeCommentRequest) { response  ->
+                    if (response != null) {
+                        // 성공적으로 댓글 작성됨
+                        Log.d("댓글업로드", "댓글 작성 성공: ${response.content}")
 
-                    // 도와줘요 카테고리 & (작성자일 경우 추가 해야됨)
-                    if(postInfo.categoryString == "도와줘요"){
-                        binding.communityDetailChattingBtn.visibility = View.GONE
-                        binding.communityDetailWriterRequestBtn.visibility = View.VISIBLE
+                        // 댓글 목록에 추가하고 RecyclerView 업데이트
+                        commentAdapter.notifyDataSetChanged()
 
-                        // 더보기 버튼
-                        binding.communityDetailSeeMore.setOnClickListener {
-                            showSeeMoreWriterDialog()
-                        }
-                    }
-
-                    // 도와줘요 카테고리인 경우 & (일반 사용자일 경우 추가 해야됨)
-                    if(postInfo.categoryString == "도와줘요"){
-                        binding.communityDetailHelpCategory.visibility = View.VISIBLE
-
-//                        // 더보기 버튼
-//                        binding.communityDetailSeeMore.setOnClickListener {
-//                            showSeeMoreUserDialog()
-//                        }
-                    } else{
-                        binding.communityDetailHelpCategory.visibility = View.GONE
+                        // 댓글 입력 필드 초기화
+                        binding.messageInput.text.clear()
+                        selectedComment = null  // 대댓글 작성이 끝났으므로 selectedComment 초기화
+                        refreshData() //데이터 재로딩
+                    } else {
+                        // 댓글 작성 실패
+                        Log.e("댓글업로드", "댓글 작성 실패: ${response}")
                     }
                 }
-            }.start()
+            }
         }
 
         // 키보드 외부 화면 클릭 시 키보드 숨기기
         binding.communityDetail.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 hideKeyboard()
+                selectedComment = null
             }
             false
         }
@@ -147,91 +122,194 @@ class CommunityDetailActivity : AppCompatActivity(){
         binding.communityDetailBackIcon.setOnClickListener {
             finish() //현재 Activity 종료
         }
+    }
 
-        // 작성자의 요청 상태 결정 Dialog
-        binding.communityDetailWriterRequestBtn.setOnClickListener {
-            showHelpStatusDialog(object : HelpStatusCallback {
-                override fun onStatusSelected(status: String) {
-                    writerStatus = status
-                    Log.d("writerStatus", writerStatus)
-                    when (writerStatus) {
-                        "해결 완료" -> {
-                            binding.communityDetailWriterRequestBtn.setImageResource(R.drawable.button_resolved)
-                            binding.communityDetailHelpCategory.setImageResource(R.drawable.icon_tag_resolved)
-                        }
-                        "연락 중" -> {
-                            binding.communityDetailWriterRequestBtn.setImageResource(R.drawable.button_contacting)
-                            binding.communityDetailHelpCategory.setImageResource(R.drawable.icon_tag_contacting)
-                        }
-                        else -> {
-                            binding.communityDetailWriterRequestBtn.setImageResource(R.drawable.button_requesting)
-                            binding.communityDetailHelpCategory.setImageResource(R.drawable.icon_tag_requesting)
-                        }
-                    }
-                }
-            })
-        }
+    override fun onResume() {
+        super.onResume()
+        showLoading() //데이터 로딩 페이지
+        // API를 다시 호출하여 데이터를 갱신
+        refreshData()
+    }
 
-        // 댓글 전송 버튼
-        binding.sendButton.setOnClickListener {
-            val commentText = binding.messageInput.text.toString()
-            if (commentText.isNotBlank()) {
-                val newComment = Comment(
-                    commentId = dataList.size + 1, // 임시 ID, 실제로는 DB에서 생성된 ID 사용
-                    userInfo = "사용자 정보", // 실제 사용자 정보로 변경
-                    body = commentText,
-                    parentCommentId = parentCommentId, // 자식 댓글의 부모 ID
-                    createTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()),
-                )
-                // 자식 댓글인 경우 부모 댓글에 추가
-                if (parentCommentId != -1) {
-                    val parentComment = dataList.find { it.commentId == parentCommentId }
-                    parentComment?.let {
-                        dataList.add(newComment)
-                        commentAdapter.itemSet = makeChildComment(dataList)
-                        commentAdapter.notifyDataSetChanged()
-                        parentCommentId = -1 // 부모 ID 초기화
+    private fun refreshData() {
+        // 커뮤니티 댓글 조회 api
+        CommunityRepository.getListComment(accessToken!!, postId) {
+                response ->
+            response.let {
+                Log.d("게시글댓글정보", "${response}")
+                //통신성공
+                hideLoading()
+                if (response != null) {
+                    // 댓글 RecyclerView 연결
+                    commentAdapter = ItemCommentAdapter(response, writerId)
+                    binding.communityDetailCommentView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                    binding.communityDetailCommentView.adapter = commentAdapter
+
+                    // 댓글 Adapter에 리스너 설정
+                    commentAdapter.onItemClickListener = object : ItemCommentAdapter.OnItemClickListener {
+                        override fun addSubComment(commentModel: CommentModel) {
+                            // 대댓글 추가 로직 구현
+                            // 부모 댓글 ID를 설정하여 자식 댓글을 작성할 준비
+                            selectedComment = commentModel
+                            binding.messageInput.requestFocus()  // 입력창에 포커스
+                        }
+
+                        override fun showDialog(commentModel: CommentModel) {
+                            if(commentModel.author){ //댓글 작성자 Dialog
+                                showCommentWriterDialog(commentModel)
+                            } else{ //일반 유저 Dialog
+                                showCommentUserDialog(commentModel)
+                            }
+                        }
                     }
                 } else {
-                    // 부모 댓글일 경우 데이터 리스트에 추가
-                    dataList.add(newComment)
-                    commentAdapter.itemSet = makeChildComment(dataList)
-                    commentAdapter.notifyDataSetChanged()
+                    Log.e("커뮤니티댓글조회api테스트", "응답 결과가 null이거나 comment가 없습니다.")
+                }
+            }
+        }
+
+        // 상세 게시글 조회 API 호출
+        CommunityRepository.getDetailCommunity(accessToken!!, postId) { response ->
+            if (response != null) {
+                //통신성공
+                hideLoading()
+                var isLiked = response.liked
+                var likeCount = response.likeNum
+                writerStatus = response.helpStatus
+
+                //binding.communityDetailUserProfile.setImageResource(postInfo.userProfile!!)
+                binding.communityDetailUserName.text = response.memberName
+                binding.communityDetailTitle.text = response.title
+                binding.communityDetailContent.text = response.content
+                binding.communityDetailCommentNum.text = response.commentCount.toString()
+                binding.communityDetailCategoryTitle.text = toKorean(response.category)
+                updateLikeIcon(isLiked)
+                binding.communityDetailLikeNum.text = response.likeNum.toString()
+                when (writerStatus) {
+                    "RESOLVED" -> {
+                        binding.communityDetailWriterRequestBtn.setImageResource(R.drawable.button_resolved)
+                        binding.communityDetailHelpCategory.setImageResource(R.drawable.icon_tag_resolved)
+                    }
+                    "IN_PROGRESS" -> {
+                        binding.communityDetailWriterRequestBtn.setImageResource(R.drawable.button_contacting)
+                        binding.communityDetailHelpCategory.setImageResource(R.drawable.icon_tag_contacting)
+                    }
+                    else -> {
+                        binding.communityDetailWriterRequestBtn.setImageResource(R.drawable.button_requesting)
+                        binding.communityDetailHelpCategory.setImageResource(R.drawable.icon_tag_requesting)
+                    }
                 }
 
-                // 데이터베이스에 저장
-//                CoroutineScope(Dispatchers.IO).launch {
-//                    communityDB.commentDao().insertComment(newComment)
-//                    runOnUiThread {
-//                        updateCommentsList(newComment)
-//                    }
-//                }
-                addCommentToDatabase(newComment)
+                // 좋아요 아이콘 클릭 시
+                binding.communityDetailLikeIcon.setOnClickListener {
+                    isLiked = !isLiked
 
-                binding.messageInput.text.clear()
+                    if(isLiked){
+                        // 서버에 좋아요 상태 업데이트 요청
+                        CommunityRepository.postLikeBoard(accessToken!!, response.id) { response ->
+                            if (response != null) {
+                                // 좋아요 상태 업데이트 성공 시
+                                isLiked = response.liked
+                                likeCount = response.likeCount
+                                updateLikeIcon(isLiked)
+                                binding.communityDetailLikeNum.text = likeCount.toString() //업데이트..
+                            } else {
+                                // 좋아요 상태 업데이트 실패 시
+                                Log.d("커뮤니티좋아요상태변경", "좋아요 상태 업데이트 실패")
+                            }
+                        }
+                    } else{
+                        // 서버에 좋아요 삭제 업데이트 요청
+                        CommunityRepository.deleteLikeBoard(accessToken!!, response.id) { response ->
+                            if (response != null) {
+                                // 좋아요 상태 업데이트 성공 시
+                                isLiked = response.liked
+                                likeCount = response.likeCount
+                                updateLikeIcon(isLiked)
+                                binding.communityDetailLikeNum.text = likeCount.toString() //업데이트..
+                            } else {
+                                // 좋아요 상태 업데이트 실패 시
+                                Log.d("커뮤니티좋아요상태변경", "좋아요 상태 업데이트 실패")
+                            }
+                        }
+                    }
+                }
 
+                Log.d("커뮤니티이미지리스트2", response.images.toString())
+
+                // 이미지 RecyclerView 설정
+                if(response.images.isEmpty()){
+                    // 이미지가 없는 경우 RecyclerView 숨기기
+                    binding.communityDetailImage.visibility = View.GONE
+                } else{
+                    binding.communityDetailImage.visibility = View.VISIBLE
+                    // RecyclerView의 LayoutManager 및 Adapter 설정
+                    val layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+                    binding.communityDetailImage.layoutManager = layoutManager
+
+                    val imageAdapter = ItemFeedPhotoAdapter(response.images)
+                    Log.d("커뮤니티이미지리스트2", response.images.toString())
+                    binding.communityDetailImage.adapter = imageAdapter
+                }
+
+                // 도와줘요 카테고리 & 작성자일 경우
+                if(response.category == "HELP" && response.author){
+                    binding.communityDetailChattingBtn.visibility = View.GONE
+                    binding.communityDetailWriterRequestBtn.visibility = View.VISIBLE
+                }
+
+                // 도와줘요 카테고리인 경우 & 일반 사용자일 경우
+                if(response.category == "HELP" && response.author == false){
+                    binding.communityDetailHelpCategory.visibility = View.VISIBLE
+                } else{
+                    binding.communityDetailHelpCategory.visibility = View.GONE
+                }
+
+                //더보기 클릭 리스너
+                if(response.author){ //작성자인 경우
+                    // 더보기 버튼
+                    binding.communityDetailSeeMore.setOnClickListener {
+                        showSeeMoreWriterDialog()
+                    }
+                } else{
+                    // 더보기 버튼
+                    binding.communityDetailSeeMore.setOnClickListener {
+                        showSeeMoreUserDialog()
+                    }
+                }
+
+                // 잠금 버튼 클릭 시 (댓글)
+                binding.unlockButton.setOnClickListener {
+                    isSecret = !isSecret
+                    if(isSecret){
+                        binding.unlockButton.setImageResource(R.drawable.icon_lock)
+                    } else{
+                        binding.unlockButton.setImageResource(R.drawable.icon_unlock)
+                    }
+                }
+
+
+                // 작성자의 요청 상태 결정 Dialog
+                binding.communityDetailWriterRequestBtn.setOnClickListener {
+                    writerStatus = showHelpStatusDialog(writerStatus)
+                }
+
+
+            } else {
+                // 데이터가 null인 경우 처리
+                Log.e("상세커뮤니티조회", "상세 게시글 데이터가 없습니다. response: $response")
             }
         }
     }
 
-    // 댓글 추가 기능
-    private fun addCommentToDatabase(comment: Comment) {
-        Thread {
-            communityDB.commentDao().insertComment(comment)
-            runOnUiThread {
-                updateCommentsList(comment)
-            }
-        }.start()
-    }
-
-    // Comment 업데이트 함수
-    private fun updateCommentsList(newComment: Comment) {
-//        val fragmentManager: FragmentManager = supportFragmentManager
-//        val communityWholeFragment = fragmentManager.findFragmentByTag("CommunityWholeFragment") as CommunityWholeFragment?
-//        communityWholeFragment?.updatePostList(newComment)
-        dataList.add(newComment)
-        commentAdapter.itemSet = makeChildComment(dataList)
-        commentAdapter.notifyDataSetChanged()
+    fun toKorean(category: String): String{
+        return when(category){
+            "DAILY" -> "일상"
+            "INQUIRY" -> "궁금해요"
+            "HELP" -> "도와줘요"
+            "WHEELCHAIR" -> "휠체어"
+            else -> "스쿠터"
+        }
     }
 
     // 키보드 내리는 함수
@@ -246,70 +324,150 @@ class CommunityDetailActivity : AppCompatActivity(){
         }
     }
 
-    interface HelpStatusCallback { //콜백 함수
-        fun onStatusSelected(status: String)
-    }
-
-    private fun showHelpStatusDialog(callback: HelpStatusCallback) { // 도와줘요 요청 상태 Dialog
+    private fun showHelpStatusDialog(writerStatus: String): String { // 도와줘요 요청 상태 Dialog
         val bottomSheetDialog = BottomSheetDialog(this)
         val binding = DialogHelpStatusBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(binding.root)
+        var status: String = writerStatus
+        Log.d("현재상태", "${status}")
+
+        // 초기 상태에 따라 버튼 색상 설정
+        when (writerStatus) {
+            "REQUESTED" -> {
+                binding.dialogHelpRequest.setBackgroundResource(R.drawable.select_help_status)
+                binding.dialogHelpRequest.setTextColor(getColor(R.color.white))
+
+                binding.dialogHelpContacting.setBackgroundResource(R.drawable.unselect_help_status)
+                binding.dialogHelpContacting.setTextColor(getColor(R.color.gray_scale6))
+
+                binding.dialogHelpResolved.setBackgroundResource(R.drawable.unselect_help_status)
+                binding.dialogHelpResolved.setTextColor(getColor(R.color.gray_scale6))
+            }
+            "IN_PROGRESS" -> {
+                binding.dialogHelpRequest.setBackgroundResource(R.drawable.unselect_help_status)
+                binding.dialogHelpRequest.setTextColor(getColor(R.color.gray_scale6))
+
+                binding.dialogHelpContacting.setBackgroundResource(R.drawable.select_help_status)
+                binding.dialogHelpContacting.setTextColor(getColor(R.color.white))
+
+                binding.dialogHelpResolved.setBackgroundResource(R.drawable.unselect_help_status)
+                binding.dialogHelpResolved.setTextColor(getColor(R.color.gray_scale6))
+            }
+            "RESOLVED" -> {
+                binding.dialogHelpRequest.setBackgroundResource(R.drawable.unselect_help_status)
+                binding.dialogHelpRequest.setTextColor(getColor(R.color.gray_scale6))
+
+                binding.dialogHelpContacting.setBackgroundResource(R.drawable.unselect_help_status)
+                binding.dialogHelpContacting.setTextColor(getColor(R.color.gray_scale6))
+
+                binding.dialogHelpResolved.setBackgroundResource(R.drawable.select_help_status)
+                binding.dialogHelpResolved.setTextColor(getColor(R.color.white))
+            }
+            else -> {
+                // 기본 상태
+                binding.dialogHelpRequest.setBackgroundResource(R.drawable.unselect_help_status)
+                binding.dialogHelpRequest.setTextColor(getColor(R.color.gray_scale6))
+
+                binding.dialogHelpContacting.setBackgroundResource(R.drawable.unselect_help_status)
+                binding.dialogHelpContacting.setTextColor(getColor(R.color.gray_scale6))
+
+                binding.dialogHelpResolved.setBackgroundResource(R.drawable.unselect_help_status)
+                binding.dialogHelpResolved.setTextColor(getColor(R.color.gray_scale6))
+            }
+        }
 
         //요청 중
         binding.dialogHelpRequest.setOnClickListener {
-            binding.dialogHelpRequest.setBackgroundResource((R.drawable.select_help_status))
-            binding.dialogHelpRequest.setTextColor(getColor(R.color.white))
+            // 상태 변경 요청 데이터
+            val helpStatusRequest = HelpStatusRequest(
+                helpStatus = "REQUESTED"
+            )
 
-            binding.dialogHelpContacting.setBackgroundResource((R.drawable.unselect_help_status))
-            binding.dialogHelpContacting.setTextColor(getColor(R.color.gray_scale6))
-
-            binding.dialogHelpResolved.setBackgroundResource((R.drawable.unselect_help_status))
-            binding.dialogHelpResolved.setTextColor(getColor(R.color.gray_scale6))
-
-            callback.onStatusSelected("요청 중")
+            CommunityRepository.helpStatus(accessToken!!, postId, helpStatusRequest) { response  ->
+                if(response != null){
+                    status = response.helpStatus
+                    Log.d("상태변경", "상태 변경 성공: ${response.helpStatus}")
+                    refreshData()
+                }else {
+                    // 상태 변경 실패
+                    Log.e("상태변경", "상태 변경 실패: ${response}")
+                }
+            }
 
             bottomSheetDialog.dismiss()
         }
 
         //연락 중
         binding.dialogHelpContacting.setOnClickListener {
-            binding.dialogHelpContacting.setBackgroundResource((R.drawable.select_help_status))
-            binding.dialogHelpContacting.setTextColor(getColor(R.color.white))
+            // 상태 변경 요청 데이터
+            val helpStatusRequest = HelpStatusRequest(
+                helpStatus = "IN_PROGRESS"
+            )
 
-            binding.dialogHelpRequest.setBackgroundResource((R.drawable.unselect_help_status))
-            binding.dialogHelpRequest.setTextColor(getColor(R.color.gray_scale6))
-
-            binding.dialogHelpResolved.setBackgroundResource((R.drawable.unselect_help_status))
-            binding.dialogHelpResolved.setTextColor(getColor(R.color.gray_scale6))
-
-            callback.onStatusSelected("연락 중")
+            CommunityRepository.helpStatus(accessToken!!, postId, helpStatusRequest) { response  ->
+                if(response != null){
+                    status = response.helpStatus
+                    Log.d("상태변경", "상태 변경 성공: ${response.helpStatus}")
+                    refreshData()
+                }else {
+                    // 상태 변경 실패
+                    Log.e("상태변경", "상태 변경 실패: ${response}")
+                }
+            }
 
             bottomSheetDialog.dismiss()
         }
 
         //해결 완료
         binding.dialogHelpResolved.setOnClickListener {
-            binding.dialogHelpResolved.setBackgroundResource((R.drawable.select_help_status))
-            binding.dialogHelpResolved.setTextColor(getColor(R.color.white))
+            // 상태 변경 요청 데이터
+            val helpStatusRequest = HelpStatusRequest(
+                helpStatus = "RESOLVED"
+            )
 
-            binding.dialogHelpRequest.setBackgroundResource((R.drawable.unselect_help_status))
-            binding.dialogHelpRequest.setTextColor(getColor(R.color.gray_scale6))
-
-            binding.dialogHelpContacting.setBackgroundResource((R.drawable.unselect_help_status))
-            binding.dialogHelpContacting.setTextColor(getColor(R.color.gray_scale6))
-
-            callback.onStatusSelected("해결 완료")
+            CommunityRepository.helpStatus(accessToken!!, postId, helpStatusRequest) { response  ->
+                if(response != null){
+                    status = response.helpStatus
+                    Log.d("상태변경", "상태 변경 성공: ${response.helpStatus}")
+                    refreshData()
+                }else {
+                    // 상태 변경 실패
+                    Log.e("상태변경", "상태 변경 실패: ${response}")
+                }
+            }
 
             bottomSheetDialog.dismiss()
         }
 
         bottomSheetDialog.show()
+        return status
     }
 
     private fun showSeeMoreWriterDialog() { // 작성자 더보기 Dialog
         val bottomSheetDialog = BottomSheetDialog(this)
         val binding = DialogCommunityWriterSeeMoreBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(binding.root)
+
+        // 게시글 수정하기
+        binding.dialogCommunityEdit.setOnClickListener {
+            val intent = Intent(binding.root.context, CommunityWritingActivity::class.java)
+            intent.putExtra("postId", postId)
+            binding.root.context.startActivity(intent)
+            bottomSheetDialog.dismiss() //Dialog 닫기
+        }
+
+        // 게시글 삭제하기
+        binding.dialogCommunityDelete.setOnClickListener {
+            CommunityRepository.deleteBoard(accessToken!!, postId) { response  ->
+                if(response != null){
+                    Log.d("게시글삭제", "게시글 삭제 성공: ${response.result}")
+                }else {
+                    // 상태 변경 실패
+                    Log.e("게시글삭제", "게시글 삭제 실패: ${response}")
+                }
+            }
+            bottomSheetDialog.dismiss() //Dialog 닫기
+        }
 
         bottomSheetDialog.show()
     }
@@ -319,27 +477,117 @@ class CommunityDetailActivity : AppCompatActivity(){
         val binding = DialogCommunityUserSeeMoreBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(binding.root)
 
+        // 게시글 차단 버튼
+        binding.dialogCommunityBlock.setOnClickListener {
+            bottomSheetDialog.dismiss() //Dialog 닫기
+            showBlockDialog()
+        }
+
+        // 게시글 신고 버튼
+        binding.dialogCommunityReport.setOnClickListener {
+            bottomSheetDialog.dismiss() //Dialog 닫기
+        }
+
         bottomSheetDialog.show()
     }
 
-    private fun showCommentDialog(comment: Comment){ // 댓글 더보기 Dialog
+    private fun showCommentWriterDialog(commentModel: CommentModel){ // 댓글 작성자 더보기 Dialog
         val bottomSheetDialog = BottomSheetDialog(this)
-        val binding = DialogCommunityCommentSeeMoreBinding.inflate(layoutInflater)
+        val binding = DialogCommunityCommentWriterSeeMoreBinding.inflate(layoutInflater)
         bottomSheetDialog.setContentView(binding.root)
 
         // 댓글 수정 버튼
         binding.dialogCommentEdit.setOnClickListener {
-//            val intent = Intent(binding.root.context, CommentEditActivity::class.java)
-//            intent.putExtra("postId", postInfo.id)
-//            binding.root.context.startActivity(intent)
-            startActivity(Intent(this, CommentEditActivity::class.java))
+            val intent = Intent(binding.root.context, CommentEditActivity::class.java)
+            intent.putExtra("postId", postId)
+            intent.putExtra("commentId", commentModel.id)
+            binding.root.context.startActivity(intent)
+
+            bottomSheetDialog.dismiss() //Dialog 닫기
         }
 
         // 댓글 삭제 버튼
         binding.dialogCommentDelete.setOnClickListener {
-
+            CommunityRepository.deleteComment(accessToken!!, postId, commentModel.id) { response  ->
+                if(response != null){
+                    Log.d("댓글삭제", "댓글 삭제 성공: ${response.result}")
+                    refreshData() //데이터 재로딩
+                }else {
+                    // 상태 변경 실패
+                    Log.e("댓글삭제", "댓글 삭제 실패: ${response}")
+                }
+            }
+            bottomSheetDialog.dismiss() //Dialog 닫기
         }
 
         bottomSheetDialog.show()
+    }
+
+    private fun showCommentUserDialog(commentModel: CommentModel){ // 댓글 일반 유저 더보기 Dialog
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val binding = DialogCommunityUserSeeMoreBinding.inflate(layoutInflater)
+        bottomSheetDialog.setContentView(binding.root)
+
+        // 댓글 차단 버튼
+        binding.dialogCommunityBlock.setOnClickListener {
+            bottomSheetDialog.dismiss() //Dialog 닫기
+            showBlockDialog()
+        }
+
+        // 댓글 신고 버튼
+        binding.dialogCommunityReport.setOnClickListener {
+            bottomSheetDialog.dismiss() //Dialog 닫기
+        }
+
+        bottomSheetDialog.show()
+    }
+
+
+    private fun showBlockDialog() { // 차단 Dialog
+        val dialog = Dialog(this, R.style.CustomDialog)
+        val binding = DialogCommunityBlockBinding.inflate(layoutInflater)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 기존 다이어그램 배경 투명으로 적용(커스텀한 배경이 보이게 하기 위함)
+        dialog.setContentView(binding.root)
+        dialog.setCanceledOnTouchOutside(false) // 바깥 영역 터치해도 닫힘 X
+
+        binding.dialogCommunityBlockYes.setOnClickListener {
+            // '예' 버튼 클릭 시 수행할 작업
+            dialog.dismiss() // 다이얼로그 닫기
+        }
+
+        binding.dialogCommunityBlockNo.setOnClickListener {
+            // '아니오' 버튼 클릭 시 수행할 작업
+            dialog.dismiss() // 다이얼로그 닫기
+        }
+
+        // 다이얼로그 표시
+        dialog.show()
+    }
+
+    fun updateLikeIcon(isLike: Boolean) { //좋아요 UI 업데이트 함수
+        if (isLike) { // 좋아요 눌렀을 때의 반응
+            binding.communityDetailLikeIcon.setImageResource(R.drawable.icon_like)
+        } else { // 누르지 않았을 때의 반응
+            binding.communityDetailLikeIcon.setImageResource(R.drawable.icon_unlike)
+        }
+    }
+
+    private fun showLoading() { //데이터 로딩 페이지 함수
+        if (loadingDialog == null) {
+            loadingDialog = Dialog(this, R.style.LoadingDialog)
+            val binding = DialogLoadingBinding.inflate(layoutInflater) // 로딩 레이아웃 바인딩
+            loadingDialog?.setContentView(binding.root)
+            loadingDialog?.window?.setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            ) // 다이얼로그 크기를 전체 화면으로 설정
+            loadingDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            loadingDialog?.setCanceledOnTouchOutside(false) // 바깥 영역 터치해도 닫힘 X
+        }
+        loadingDialog?.show()
+    }
+
+    private fun hideLoading() { //로딩 페이지 숨기는 함수
+        loadingDialog?.dismiss()
     }
 }

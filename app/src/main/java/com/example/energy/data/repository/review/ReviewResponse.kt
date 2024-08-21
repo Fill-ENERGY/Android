@@ -38,7 +38,13 @@ data class UploadImageResponse(
 data class AllReviewResponse(
     val code: String,
     val message: String,
-    val result: List<ReviewModel>?
+    val result: AllReviewResult,
+)
+
+data class AllReviewResult(
+    val reviews: List<ReviewModel>?,
+    val hasNext: Boolean,
+    val lastId: Int?,
 )
 
 //평가의 키워드 가져오는 API
@@ -61,8 +67,9 @@ data class ReviewModel(
     var keywords: List<KeywordModel>?,
     var images: List<String>?,
     var score: Double,
-    var member: ProfileModel,
-    var username: String?,
+    var authorId: Int?,
+    var authorName: String?,
+    val username: String?,
     var recommended: Boolean,
 )
 

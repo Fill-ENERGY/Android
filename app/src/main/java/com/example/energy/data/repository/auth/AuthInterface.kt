@@ -9,7 +9,7 @@ import retrofit2.http.POST
 
 interface AuthInterface {
     //카카오 로그인
-    @POST("/")
+    @POST("/api/v1/members/social/oauth/kakao")
     fun kakaoLogin(
         @Header("Authorization") accessToken: String,
     ): Call<AuthResponse>
@@ -25,12 +25,6 @@ interface AuthInterface {
     fun logout(
         @Header("Authorization") accessToken: String,
     ): Call<BaseResponse>
-
-    //일반 로그인
-    @POST("/api/v1/members/login")
-    fun customLogin(
-        @Body authLoginBody : AuthLoginBody
-    ): Call<AuthResponse>
 
     //토큰 재발급
     @GET("/api/v1/members/reissue")

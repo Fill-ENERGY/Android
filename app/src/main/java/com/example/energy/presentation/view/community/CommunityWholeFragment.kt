@@ -1,54 +1,54 @@
 package com.example.energy.presentation.view.community
 
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Room
-import com.example.energy.R
-import com.example.energy.data.CommunityPostDatabase
-import com.example.energy.data.repository.community.CommunityPost
+import com.example.energy.data.repository.community.BoardModel
+import com.example.energy.data.repository.community.CommunityRepository
 import com.example.energy.databinding.FragmentCommunityWholeBinding
 import com.example.energy.presentation.view.base.BaseFragment
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CommunityWholeFragment : BaseFragment<FragmentCommunityWholeBinding>({ FragmentCommunityWholeBinding.inflate(it)}) {
 
-    var postInfo = ArrayList<CommunityPost>() //커뮤니티 데이터 리스트
     val categoriesList = "도와줘요" //임시 카테고리 리스트
     val imageUrlsList: List<Uri> = emptyList() // 임시 이미지 리스트
-    private lateinit var communityDB: CommunityPostDatabase
     private lateinit var postCommunityAdapter: PostCommunityRVAdapter
+    private val postList = mutableListOf<BoardModel>()
+    private var accessToken : String? = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // community_post에 데이터 리스트 생성
-        communityDB = CommunityPostDatabase.getInstance(requireContext())!!
-
-        // 백그라운드 스레드에서 데이터베이스 접근
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                postInfo.addAll(communityDB.communityPostDao().getAllPosts())
-            }
-            // RecyclerView 초기화 및 데이터 연결 (메인 스레드)
-            postCommunityAdapter = PostCommunityRVAdapter(postInfo)
-            binding.wholeCommunityPostRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            binding.wholeCommunityPostRv.adapter = postCommunityAdapter
-        }
+        //토큰 가져오기
+//        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+//        var accessToken = sharedPreferences?.getString("accessToken", "none")
+        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRqZ3VzaWRAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY4NjQwLCJleHAiOjE3MjY3NjA2NDB9.fUaTieyCFhodHH1YTWJTNVTmDFZuvW6RjJ2t_tVzs_M"
     }
 
-    // 게시글 리스트 업데이트 메서드
-    fun updatePostList(newPost: CommunityPost) {
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                postInfo.add(newPost)
+    override fun onResume() {
+        super.onResume()
+        // API를 다시 호출하여 데이터를 갱신
+        refreshData()
+    }
+
+    private fun refreshData() { // 게시글 조회
+        CommunityRepository.getListCommunity(accessToken!!, "", 0, 10, "LATEST") {
+                response ->
+            response?.let {
+                Log.d("게시글정보", "${response}")
+                //통신성공
+                if (response != null && response.boards != null) {
+                    // RecyclerView 초기화 및 데이터 연결 (메인 스레드)
+                    postCommunityAdapter = PostCommunityRVAdapter(response.boards)
+                    binding.wholeCommunityPostRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    binding.wholeCommunityPostRv.adapter = postCommunityAdapter
+                } else {
+                    Log.e("전체커뮤니티api테스트", "응답 결과가 null이거나 board가 없습니다. ${response}")
+                }
             }
-            postCommunityAdapter.notifyItemInserted(postInfo.size + 1)
-            binding.wholeCommunityPostRv.scrollToPosition(postInfo.size + 1)
         }
     }
 }

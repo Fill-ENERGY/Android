@@ -4,10 +4,10 @@ import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -20,28 +20,30 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
-import com.example.energy.data.repository.community.WritingCommunityImage
 import com.example.energy.databinding.ActivityCommunityWritingBinding
-import com.example.energy.data.CommunityPostDatabase
-import com.example.energy.data.repository.community.CommunityPost
+import com.example.energy.data.repository.community.CommunityRepository
+import com.example.energy.data.repository.community.ImagesModel
+import com.example.energy.data.repository.community.PostBoardRequest
+import com.example.energy.data.repository.community.UploadImagesRequest
 import com.example.energy.databinding.DialogPostCommunityCancelBinding
 import com.example.energy.databinding.DialogPostCommunitySuccessBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import retrofit2.http.Multipart
+import java.io.File
 
 class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClickListener {
     private lateinit var binding: ActivityCommunityWritingBinding
-    private lateinit var communityDB: CommunityPostDatabase
-    var imageList = ArrayList<WritingCommunityImage>() // 선택한 이미지 데이터 리스트
-    var postInfo = ArrayList<CommunityPost>()
+    var imageModel = mutableListOf<Multipart>()
+    var imageList = mutableMapOf<String, Boolean>() // 선택한 이미지 데이터 리스트
     val adapter = GalleryAdapter(imageList) // Recycler View Adapter
     val initText = "카테고리를 선택해 주세요"
     private val menuList = listOf("카테고리를 선택해 주세요", "일상","궁금해요","도와줘요","휠체어", "스쿠터")
-
     private lateinit var spinner: Spinner
     private lateinit var titleEditText: EditText
     private lateinit var contentEditText: EditText
@@ -49,19 +51,32 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
     private var isCategorySelected = false
     private var isTitleFilled = false
     private var isContentFilled = false
+    private var accessToken: String? = null
+    private var postId: Int? = null // 수정할 게시글 ID (null이면 새 게시글)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCommunityWritingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Room 데이터베이스 인스턴스 생성
-        communityDB = CommunityPostDatabase.getInstance(this)!!
+        //토큰 가져오기
+//        val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
+//        accessToken = sharedPreferences?.getString("accessToken", "none")
+        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRqZ3VzaWRAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY4NjQwLCJleHAiOjE3MjY3NjA2NDB9.fUaTieyCFhodHH1YTWJTNVTmDFZuvW6RjJ2t_tVzs_M"
+
+
+        // Intent로 전달된 postId 확인
+        postId = intent.getIntExtra("postId", -1).takeIf { it != -1 }
 
         spinner = binding.communitySelectCategory
         titleEditText = binding.communityWritingTitleTv
         contentEditText = binding.communityWritingContent
         finishButton = binding.communityWritingFinishTv
+
+
+        // 수정 모드일 경우, 기존 데이터 로드
+        postId?.let { loadPostData(it) }
+
 
         // 제목 EditText 변화 listener
         titleEditText.addTextChangedListener(object : TextWatcher {
@@ -134,7 +149,11 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         // 등록 버튼 click listener
         finishButton.setOnClickListener {
             if (finishButton.isEnabled) {
-                savePostWithImages() // 게시글 저장
+                if (postId != null) {
+                    updatePostWithImages(postId!!) // 게시글 수정
+                } else {
+                    savePostWithImages() // 새 게시글 작성
+                }
             }
         }
 
@@ -147,13 +166,57 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         }
 
         // 키보드 외부 화면 클릭 시 키보드 숨기기
-        binding.activityCommunityWriting.setOnTouchListener { v, event ->
+        binding.activityCommunityWriting.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 hideKeyboard()
             }
             false
         }
     }
+
+
+    // 게시글 수정 시 기존 데이터 로드 함수
+    private fun loadPostData(postId: Int) {
+        CommunityRepository.getDetailCommunity(accessToken ?: "none", postId) { response ->
+            if (response != null) {
+                // 기존 데이터 UI에 반영
+                titleEditText.setText(response.title)
+                contentEditText.setText(response.content)
+                spinner.setSelection(menuList.indexOf(toKorean(response.category)))
+                // 이미지 데이터 처리
+                response.images.forEach { imageUri ->
+                    addImageToList(imageUri)
+                }
+                adapter.notifyDataSetChanged()
+            } else {
+                Log.e("상세커뮤니티조회", "상세 게시글 데이터가 없습니다.")
+            }
+        }
+    }
+
+
+    // 게시글 수정 함수
+    private fun updatePostWithImages(postId: Int) {
+        val category: String = toEnglish(spinner.selectedItem.toString())
+        val imageUriList: List<String> = imageList.keys.toList()
+
+        val postBoardRequest = PostBoardRequest(
+            title = titleEditText.text.toString(),
+            content = contentEditText.text.toString(),
+            category = category,
+            images = imageUriList
+        )
+
+        CommunityRepository.updateBoard(accessToken ?: "none", postId, postBoardRequest) { response ->
+            if (response != null) {
+                Log.d("커뮤니티수정", "게시글 수정 성공: ${response.title}")
+                showSuccessDialog()
+            } else {
+                Log.e("커뮤니티수정", "게시글 수정 실패: ${response}")
+            }
+        }
+    }
+
 
     // 등록 버튼 상태 업데이트하는 함수
     private fun updateFinishButtonState() {
@@ -182,43 +245,35 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
                 } else {
                     for (index in 0 until count) {
                         val imageUri = clipData.getItemAt(index).uri // 이미지 담기
-                        addImageToList(imageUri)
+                        addImageToList(imageUri.toString())
                     }
                 }
             } else if (data != null) { // 단일 이미지 선택 시
-                addImageToList(data)
+                addImageToList(data.toString())
             }
-
-
-//            // 멀티 선택은 clip Data
-//            if (it.data!!.clipData != null) { // 멀티 이미지
-//                val count = it.data!!.clipData!!.itemCount // 선택한 이미지 갯수
-//                for (index in 0 until count) {
-//                    val imageUri = it.data!!.clipData!!.getItemAt(index).uri // 이미지 담기
-//                    addImageToList(imageUri) // 이미지 추가
-//                }
-//            } else { // 싱글 이미지
-//                val imageUri = it.data!!.data
-//                addImageToList(imageUri!!)
-//            }
 
             adapter.notifyDataSetChanged()
         }
     }
 
     // 데이터 리스트에 업로드하는 이미지 저장
-    private fun addImageToList(imageUri: Uri) {
-        val isRepresentative = imageList.isEmpty() // 첫 번째 이미지인 경우 대표 이미지로 설정
-        imageList.add(WritingCommunityImage(imageUri, isRepresentative))
+    private fun addImageToList(imageUri: String) {
+        if (imageList.isEmpty()) {
+            imageList[imageUri] = true // 첫 번째 이미지를 대표 이미지로 설정
+        } else {
+            imageList[imageUri] = false
+        }
         adapter.notifyItemInserted(imageList.size - 1)
     }
 
     // 이미지 삭제
     override fun onRemoveImage(position: Int) {
         adapter.removeImage(position)
+
         // 대표 이미지가 삭제된 경우 새로운 대표 이미지 설정
-        if (imageList.isNotEmpty() && !imageList.any { it.isRepresentative }) {
-            imageList[0].isRepresentative = true
+        if (imageList.isNotEmpty() && !imageList.values.any { it }) {
+            val firstKey = imageList.keys.first()
+            imageList[firstKey] = true
             adapter.notifyItemChanged(0)
         }
     }
@@ -276,57 +331,135 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         dialog.show()
     }
 
-    // 카테고리 String -> Int로 바꾸는 함수
-    fun fromString(category: String): Int {
-        return when (category) {
-            "일상" -> R.drawable.tag_daily
-            "궁금해요" -> R.drawable.tag_curious
-            "도와줘요" -> R.drawable.tag_help
-            "휠체어" -> R.drawable.tag_wheelchair
-            else -> R.drawable.tag_scooter
+    fun toEnglish(category: String): String{
+        return when(category){
+            "일상" -> "DAILY"
+            "궁금해요" -> "INQUIRY"
+            "도와줘요" -> "HELP"
+            "휠체어" -> "WHEELCHAIR"
+            else -> "SCOOTER"
+        }
+    }
+    fun toKorean(category: String): String{
+        return when(category){
+            "DAILY" -> "일상"
+            "INQUIRY" -> "궁금해요"
+            "HELP" -> "도와줘요"
+            "WHEELCHAIR" -> "휠체어"
+            else -> "스쿠터"
         }
     }
 
     // 게시글 저장 함수
     private fun savePostWithImages() {
+        //카테고리 -> 영어로 변환
+        val category: String = toEnglish(spinner.selectedItem.toString())
 
-        // 이미지 Uri 리스트 추출
-        val imageUriList: List<Uri> = imageList.map { it.imageUrl }
-//        val imageUriList: List<String> = imageList.map { it.imageUrl.toString() } // Uri를 String으로 변환
+        // 이미지 리스트 추출
+        val imageUriList: List<String> = imageList.keys.toList() //이미지 String 리스트
+        Log.d("이미지정보", "${imageUriList}")
 
-        val category: Int = fromString(spinner.selectedItem.toString())
+        // 이미지 URI 리스트를 MultipartFile로 변환
+        val imageParts = imageList.keys.map { imageUri ->
+            val file = File(imageUri)  // 이미지 파일을 가져옴. (여기서는 URI를 파일 경로로 가정)
+            val requestFile = file.asRequestBody("images".toMediaTypeOrNull())
+            MultipartBody.Part.createFormData("images", file.name, requestFile)
+        }
+        Log.d("이미지MultipartFile", "${imageParts}")
 
-        // CommunityPost 객체 생성
-        val newPost = CommunityPost(
-            userProfile = R.drawable.userimage, // 예시로 설정된 값
-            userName = "사용자 이름", // 예시로 설정된 값
+
+        // 게시글 작성 요청 데이터
+        val postBoardRequest = PostBoardRequest(
             title = titleEditText.text.toString(),
             content = contentEditText.text.toString(),
-            categoryString = spinner.selectedItem.toString(),
             category = category,
-            imageUrl = imageUriList, //imageUriList, // 이미지 Uri 리스트 저장
-            likes = "0",
-            comments = "0"
+            images = imageUriList // 이미지 리스트
         )
 
-        // 데이터베이스에 저장 (비동기 작업)
-//        communityDB.communityPostDao().insertPost(newPost)
-//        postInfo.addAll(communityDB.communityPostDao().getAllPosts())
-//        Log.d("community", communityDB.communityPostDao().getAllPosts().toString())
-//        showSuccessDialog()
-        CoroutineScope(Dispatchers.IO).launch {
-            communityDB.communityPostDao().insertPost(newPost)
-            runOnUiThread {
-                showSuccessDialog()
-                updateCommunityFragment(newPost)
+        // 이미지 업로드 요청 데이터
+        val uploadImagesRequest = UploadImagesRequest(
+            images = imageParts
+        )
+
+//        // 이미지 업로드 API 호출
+//        CommunityRepository.uploadImages(accessToken?: "none", uploadImagesRequest) { uploadResponse  ->
+//            if (uploadResponse != null) {
+//                // 성공적으로 게시글이 작성됨
+//                Log.d("이미지업로드", "이미지 업로드 성공: ${uploadResponse.images}")
+//            } else {
+//                // 게시글 작성 실패
+//                Log.e("이미지업로드", "이미지 업로드 실패: ${uploadResponse}")
+//            }
+//        }
+//
+//        // 게시글 작성 API 호출
+//        CommunityRepository.postBoard(accessToken?: "none", postBoardRequest) { uploadResponse  ->
+//            if (uploadResponse != null) {
+//                // 성공적으로 게시글이 작성됨
+//                Log.d("커뮤니티업로드", "게시글 작성 성공: ${uploadResponse.title}")
+//            } else {
+//                // 게시글 작성 실패
+//                Log.e("커뮤니티업로드", "게시글 작성 실패: ${uploadResponse}")
+//            }
+//        }
+
+
+        if (imageUriList.isNotEmpty()) {
+            // 이미지가 선택된 경우
+            CommunityRepository.uploadImages(accessToken ?: "none", uploadImagesRequest) { uploadResponse ->
+                if (uploadResponse != null) {
+                    // 이미지 업로드 성공
+                    Log.d("이미지업로드", "이미지 업로드 성공: ${uploadResponse.images}")
+
+                    // 게시글 작성 API 호출
+                    CommunityRepository.postBoard(accessToken ?: "none", postBoardRequest) { uploadResponse ->
+                        if (uploadResponse != null) {
+                            // 게시글 작성 성공
+                            Log.d("커뮤니티업로드", "게시글 작성 성공: ${uploadResponse.title}")
+                            showSuccessDialog()
+                        } else {
+                            // 게시글 작성 실패
+                            Log.e("커뮤니티업로드", "게시글 작성 실패: ${uploadResponse}")
+                        }
+                    }
+                } else {
+                    // 이미지 업로드 실패
+                    Log.e("이미지업로드", "이미지 업로드 실패: ${uploadResponse}")
+                }
+            }
+        } else {
+            // 이미지가 선택되지 않은 경우, 바로 게시글 작성 API 호출
+            CommunityRepository.postBoard(accessToken ?: "none", postBoardRequest) { uploadResponse ->
+                if (uploadResponse != null) {
+                    // 게시글 작성 성공
+                    Log.d("커뮤니티업로드", "게시글 작성 성공: ${uploadResponse.title}")
+                    showSuccessDialog()
+                } else {
+                    // 게시글 작성 실패
+                    Log.e("커뮤니티업로드", "게시글 작성 실패: ${uploadResponse}")
+                }
             }
         }
-    }
 
-    // CommunityWholeFragment 업데이트 함수
-    private fun updateCommunityFragment(newPost: CommunityPost) {
-        val fragmentManager: FragmentManager = supportFragmentManager
-        val communityWholeFragment = fragmentManager.findFragmentByTag("CommunityWholeFragment") as CommunityWholeFragment?
-        communityWholeFragment?.updatePostList(newPost)
+        //showSuccessDialog()
+
+
+
+//        val imageUriList: List<Uri> = imageList.map { it.imageUrl }
+
+//        val category: Int = fromString(spinner.selectedItem.toString())
+//
+//        // CommunityPost 객체 생성
+//        val newPost = CommunityPost(
+//            userProfile = R.drawable.userimage, // 예시로 설정된 값
+//            userName = "사용자 이름", // 예시로 설정된 값
+//            title = titleEditText.text.toString(),
+//            content = contentEditText.text.toString(),
+//            categoryString = spinner.selectedItem.toString(),
+//            category = category,
+//            imageUrl = imageUriList, //imageUriList, // 이미지 Uri 리스트 저장
+//            likes = "0",
+//            comments = "0"
+//        )
     }
 }

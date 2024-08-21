@@ -12,21 +12,21 @@ class AuthRepository {
         //카카오 로그인
         fun kakaoLogin(accessToken: String, callback: (UserModel?)-> Unit){
             val authService = getRetrofit().create(AuthInterface::class.java)
-            val call = authService.kakaoLogin(accessToken)
+            val call = authService.kakaoLogin("$accessToken")
 
             call.enqueue(object : retrofit2.Callback<AuthResponse> {
                 override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>
                 ) {
                     if(response.isSuccessful){
                         //통신 성공
-                        Log.d("카카오api테스트", "통신 성공 ${response.body()?.code}")
+                        Log.d("카카오api테스트", "통신 성공 ${response.body()?.code}, ${response.body()?.result}")
                         val userModel = response.body()?.result
                         callback(userModel)
 
                     } else {
                         //통신 실패
                         val error = response.errorBody()?.toString()
-                        Log.e("카카오api테스트", "통신 실패 $error")
+                        Log.e("카카오api테스트", "통신 실패 ${response.code()}, $error")
                         callback(null)
                     }
                 }
@@ -85,35 +85,6 @@ class AuthRepository {
 
                 override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
                     Log.w("logout", "통신 실패: ${t.message}")
-                }
-            }
-            )
-        }
-
-        //일반 로그인
-        fun customLogin(callback: (UserModel?)-> Unit){
-            val authService = getRetrofit().create(AuthInterface::class.java)
-            val call = authService.customLogin(AuthLoginBody())
-
-            call.enqueue(object : retrofit2.Callback<AuthResponse> {
-                override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>
-                ) {
-                    if(response.isSuccessful){
-                        //통신 성공
-                        Log.d("customLogin", "통신 성공 ${response.code()}, ${response.body()?.result}")
-                        val userModel = response.body()?.result
-                        callback(userModel)
-                    } else {
-                        //통신 실패
-                        val error = response.errorBody()?.toString()
-                        Log.e("customLogin", "통신 실패 $error")
-                        callback(null)
-                    }
-                }
-
-                override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
-                    Log.w("customLogin", "통신 실패: ${t.message}")
-                    callback(null)
                 }
             }
             )
