@@ -12,14 +12,14 @@ class AuthRepository {
         //카카오 로그인
         fun kakaoLogin(accessToken: String, callback: (UserModel?)-> Unit){
             val authService = getRetrofit().create(AuthInterface::class.java)
-            val call = authService.kakaoLogin("Bearer $accessToken", AuthKakaoBody(accessToken))
+            val call = authService.kakaoLogin("$accessToken")
 
             call.enqueue(object : retrofit2.Callback<AuthResponse> {
                 override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>
                 ) {
                     if(response.isSuccessful){
                         //통신 성공
-                        Log.d("카카오api테스트", "통신 성공 ${response.body()?.code}")
+                        Log.d("카카오api테스트", "통신 성공 ${response.body()?.code}, ${response.body()?.result}")
                         val userModel = response.body()?.result
                         callback(userModel)
 
