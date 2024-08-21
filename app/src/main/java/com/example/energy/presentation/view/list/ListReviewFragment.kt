@@ -1,5 +1,6 @@
 package com.example.energy.presentation.view.list
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -22,19 +23,21 @@ class ListReviewFragment :
     BaseFragment<FragmentListReviewBinding>({ FragmentListReviewBinding.inflate(it) }) {
     val listViewModel by activityViewModels<ListViewModel>()
 
-    var accessToken =
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1aHl1bjEwMjAxQG5hdmVyLmNvbSIsImlhdCI6MTcyNDA3NjMzMywiZXhwIjoxNzI2NjY4MzMzfQ.Y6_h-Mo9zbThpJGFsW0IMbOunsxtiL-8khw0Z-3kez0"
     private val reviewList = ArrayList<ReviewModel>()
     private val reviewAdapter = ListReviewAdapter(reviewList)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //토큰 가져오기
+        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        var accessToken = sharedPreferences?.getString("accessToken", "none")
+
         //리사이클러뷰
         setRecyclerView()
 
         //추천순 디폴트
-        sortReview("SCORE")
+        sortReview(accessToken!!, "SCORE")
 
         //평가하기 버튼 클릭
         binding.tvGoElevation.setOnClickListener {
@@ -53,14 +56,14 @@ class ListReviewFragment :
 
         //추천순으로 정렬
         binding.sortReviewLikeTv.setOnClickListener {
-            sortReview("SCORE")
+            sortReview(accessToken!!, "SCORE")
             binding.sortReviewLikeTv.setTextColor(Color.parseColor("#222019"))
             binding.sortReviewLatestTv.setTextColor(Color.parseColor("#71716E"))
         }
 
         //최신순으로 정렬
         binding.sortReviewLatestTv.setOnClickListener {
-            sortReview("RECENT")
+            sortReview(accessToken!!,"RECENT")
             binding.sortReviewLatestTv.setTextColor(Color.parseColor("#222019"))
             binding.sortReviewLikeTv.setTextColor(Color.parseColor("#71716E"))
         }
@@ -70,7 +73,7 @@ class ListReviewFragment :
             //리뷰 추천
             override fun onRecommendReview(reviewId: Int) {
                 ReviewRepository.recommendReview(
-                    accessToken, reviewId
+                    accessToken!!, reviewId
                 )
             }
         })
@@ -85,7 +88,7 @@ class ListReviewFragment :
         }
     }
 
-    private fun sortReview(sort: String) {
+    private fun sortReview(accessToken: String,sort: String) {
         listViewModel.getStationId.observe(viewLifecycleOwner, Observer { stationId ->
             ReviewRepository.getReviewsStation(
                 accessToken,

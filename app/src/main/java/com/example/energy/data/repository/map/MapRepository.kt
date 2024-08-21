@@ -97,9 +97,9 @@ class MapRepository {
         }
 
         //즐겨찾기한 충전소 조회
-        fun getBookmarkStation(accessToken: String, currentLatitude: Double, currentLongitude: Double, callback: (List<StationBookmarkModel>?)-> Unit){
+        fun getBookmarkStation(accessToken: String, query: String, lastId: Int, offset: Int?, currentLatitude: Double, currentLongitude: Double, callback: (List<StationBookmarkModel>?)-> Unit){
             val mapService = getRetrofit().create(MapInterface::class.java)
-            val call = mapService.getBookmarkStation(accessToken, currentLatitude, currentLongitude)
+            val call = mapService.getBookmarkStation(accessToken, query, lastId, offset, currentLatitude, currentLongitude)
 
             call.enqueue(object : Callback<StationBookmarkResponse> {
                 override fun onResponse(call: Call<StationBookmarkResponse>, response: Response<StationBookmarkResponse>
@@ -107,7 +107,7 @@ class MapRepository {
                     if(response.isSuccessful){
                         //통신 성공
                         Log.d("getBookmarkStation", "통신 성공 ${response.code()}, ${response.body()?.result}")
-                        val mapModel = response.body()?.result
+                        val mapModel = response.body()?.result?.stations
                         callback(mapModel)
                     } else {
                         //통신 실패

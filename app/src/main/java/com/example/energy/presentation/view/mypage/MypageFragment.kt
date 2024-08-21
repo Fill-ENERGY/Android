@@ -30,12 +30,11 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
 
         //토큰 가져오기
         var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
-        //var accessToken = sharedPreferences?.getString("accessToken", "none")
-        var refreshToken = sharedPreferences?.getString("refreshToken", "none")
-        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1aHl1bjEwMjAxQG5hdmVyLmNvbSIsImlhdCI6MTcyNDE2NDQwMiwiZXhwIjoxNzI2NzU2NDAyfQ.kaEcVTJAFwCDSkzr8Af7z63OwYq2PmrXzIpHLkrHMdo"
+        var accessToken = sharedPreferences?.getString("accessToken", "none")
+        //var refreshToken = sharedPreferences?.getString("refreshToken", "none")
 
         //프로필 테스트
-        ProfileRepository.getMyProfile(accessToken) {
+        ProfileRepository.getMyProfile(accessToken!!) {
             myProfile ->
             if(myProfile != null) {
                 // 로그인이 된 상태라면
@@ -63,7 +62,7 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
         }
 
         //즐겨찾기 수 띄우기
-        MapRepository.getBookmarkStation(accessToken, 35.5, 35.5) {
+        MapRepository.getBookmarkStation(accessToken, "DISTANCE", 0, 10, 35.5, 35.5) {
             response ->
             if (response != null) {
                 binding.tvBookmark.text = response.size.toString()
@@ -87,6 +86,17 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
                     Log.i("로그아웃", "로그아웃 성공. SDK에서 토큰 삭제됨")
                     //남아있는 스택 지우며 이동
                     showToast("로그아웃에 성공했습니다.")
+
+                    //토큰 삭제
+                    val sharedPreferences = requireActivity().getSharedPreferences("userToken",
+                        AppCompatActivity.MODE_PRIVATE
+                    )
+                    val editor = sharedPreferences.edit()
+
+                    editor.putString("accessToken", "")
+                    editor.putString("refreshToken", "")
+                    editor.apply()
+
                     activity?.finishAffinity()
                     startActivity(Intent(activity, LoginActivity::class.java))
                 }
