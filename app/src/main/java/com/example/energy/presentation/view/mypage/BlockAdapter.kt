@@ -2,6 +2,7 @@ package com.example.energy.presentation.view.mypage
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.energy.R
@@ -48,11 +49,16 @@ class BlockAdapter(private val itemList: MutableList<BlockUserModel>): RecyclerV
         fun onUnblockClick(blockList: BlockUserModel)
     }
 
-    fun updateUnblock(newBlockList: ArrayList<BlockUserModel>) {
-        itemList.clear()
-        itemList.addAll(newBlockList)
-        this.notifyDataSetChanged()
-    }
+    fun updateUnblock(blockUsers: List<BlockUserModel>) {
+//        itemList.clear()
+//        itemList.addAll(newBlockList)
+//        this.notifyDataSetChanged()
+        val diffCallback = BlockedUsersDiffCallback(itemList, blockUsers)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+
+        //itemList = blockUsers
+        diffResult.dispatchUpdatesTo(this)
+        }
 
     fun setItemClickListener(onItemClickListener: OnItemClickListener) {
         this.itemClickListener = onItemClickListener
@@ -62,4 +68,22 @@ class BlockAdapter(private val itemList: MutableList<BlockUserModel>): RecyclerV
     private lateinit var itemClickListener : OnItemClickListener
 
 
+}
+
+class BlockedUsersDiffCallback(
+    private val oldList: List<BlockUserModel>,
+    private val newList: List<BlockUserModel>
+) : DiffUtil.Callback() {
+
+    override fun getOldListSize(): Int = oldList.size
+
+    override fun getNewListSize(): Int = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition].blockId == newList[newItemPosition].blockId
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition] == newList[newItemPosition]
+    }
 }

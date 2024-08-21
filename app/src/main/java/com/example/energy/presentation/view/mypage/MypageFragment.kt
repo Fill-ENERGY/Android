@@ -13,10 +13,13 @@ import com.bumptech.glide.Glide
 import com.example.energy.R
 import com.example.energy.data.repository.auth.AuthRepository
 import com.example.energy.data.repository.block.BlockRepository
+import com.example.energy.data.repository.map.MapRepository
+import com.example.energy.data.repository.profile.ProfileRepository
 import com.example.energy.databinding.FragmentMypageBinding
 import com.example.energy.presentation.util.EnergyUtils
 import com.example.energy.presentation.view.MainActivity
 import com.example.energy.presentation.view.base.BaseFragment
+import com.example.energy.presentation.view.community.NotificationActivity
 import com.example.energy.presentation.view.login.LoginActivity
 import com.kakao.sdk.user.UserApiClient
 
@@ -28,63 +31,12 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
         //토큰 가져오기
         var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
         var accessToken = sharedPreferences?.getString("accessToken", "none")
-        var refreshToken = sharedPreferences?.getString("refreshToken", "none")
-        var test = accessToken ?: "dd"
-        var test2 = refreshToken ?: "dd"
+        //var refreshToken = sharedPreferences?.getString("refreshToken", "none")
 
-        Log.d("sharedp", test)
-        Log.d("sharedpRe", test2)
-
-
-        //로그인 api 테스트
-//        AuthRepository.customSignUp {
-//        }
-//        AuthRepository.refreshToken(accessToken!!, refreshToken!!) {
-//        }
-//        AuthRepository.logout(accessToken!!) {
-//        }
-        //차단 api 테스트
-//        BlockRepository.postBlockMember(accessToken!!, 2){
-//        }
-
-
-
-        //login 다이얼로그
-        binding.btnAccountSetting.setOnClickListener {
-            EnergyUtils.showLoginDialog(requireContext())
-        }
-
-
-        setToolBar()
-
-        setUserInfo()
-
-        binding.btnLogout.setOnClickListener {
-            // 로그아웃
-            UserApiClient.instance.logout { error ->
-                if (error != null) {
-                    showToast("로그아웃에 실패했습니다.")
-                }
-                else {
-                    Log.i("로그아웃", "로그아웃 성공. SDK에서 토큰 삭제됨")
-                    //남아있는 스택 지우며 이동
-                    showToast("로그아웃에 성공했습니다.")
-                    activity?.finishAffinity()
-                    startActivity(Intent(activity, LoginActivity::class.java))
-                }
-            }
-        }
-
-        UserApiClient.instance.accessTokenInfo{ token, error ->
-            if (error != null) {
-                //로그아웃 된 상태라면
-                // 로그인 버튼 활성화
-                binding.btnNeedLogin.visibility = View.VISIBLE
-                // 프로필 정보 버튼 비활성화
-                binding.tvNickname.visibility = View.GONE
-                binding.tvProfileEdit.visibility = View.GONE
-                binding.ivProfileViewMore.visibility = View.GONE
-            } else if (token != null) {
+        //프로필 테스트
+        ProfileRepository.getMyProfile(accessToken!!) {
+            myProfile ->
+            if(myProfile != null) {
                 // 로그인이 된 상태라면
                 // 로그인 버튼 비활성화
                 binding.btnNeedLogin.visibility = View.GONE
@@ -95,6 +47,59 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
                 // 로그아웃 버튼 활성화
                 binding.divide3.visibility = View.VISIBLE
                 binding.btnLogout.visibility = View.VISIBLE
+
+                //내 정보 설정
+                binding.tvNickname.text = myProfile.name
+            } else {
+                //로그아웃 된 상태라면
+                // 로그인 버튼 활성화
+                binding.btnNeedLogin.visibility = View.VISIBLE
+                // 프로필 정보 버튼 비활성화
+                binding.tvNickname.visibility = View.GONE
+                binding.tvProfileEdit.visibility = View.GONE
+                binding.ivProfileViewMore.visibility = View.GONE
+            }
+        }
+
+        //즐겨찾기 수 띄우기
+        MapRepository.getBookmarkStation(accessToken, "DISTANCE", 0, 10, 35.5, 35.5) {
+            response ->
+            if (response != null) {
+                binding.tvBookmark.text = response.size.toString()
+            }
+        }
+
+        setToolBar()
+
+        setUserInfo()
+
+        binding.btnBlocks.setOnClickListener {
+            startActivity(Intent(activity, BlockActivity::class.java))
+        }
+        binding.btnLogout.setOnClickListener {
+            // 로그아웃
+            UserApiClient.instance.logout { error ->
+                if (error != null) {
+                    showToast("로그아웃에 실패했습니다.")
+                }
+                else {
+                    Log.i("로그아웃", "로그아웃 성공. SDK에서 토큰 삭제됨")
+                    //남아있는 스택 지우며 이동
+                    showToast("로그아웃에 성공했습니다.")
+
+                    //토큰 삭제
+                    val sharedPreferences = requireActivity().getSharedPreferences("userToken",
+                        AppCompatActivity.MODE_PRIVATE
+                    )
+                    val editor = sharedPreferences.edit()
+
+                    editor.putString("accessToken", "")
+                    editor.putString("refreshToken", "")
+                    editor.apply()
+
+                    activity?.finishAffinity()
+                    startActivity(Intent(activity, LoginActivity::class.java))
+                }
             }
         }
 
@@ -114,8 +119,7 @@ class MypageFragment : BaseFragment<FragmentMypageBinding>({ FragmentMypageBindi
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.appbar_notification -> {
-                    showToast("notification")
-                    startActivity(Intent(activity, BlockActivity::class.java))
+                    startActivity(Intent(activity, NotificationActivity::class.java))
                     true
                 }
 

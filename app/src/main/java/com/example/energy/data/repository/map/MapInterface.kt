@@ -45,9 +45,12 @@ interface MapInterface {
     ): Call<StationResponse>
 
     //즐겨찾기한 충전소 조회
-    @GET("/api/v1/stations/members")
+    @GET("/api/v1/stations/my-favorites")
     fun getBookmarkStation(
         @Header("Authorization") accessToken: String,
+        @Query("query") query: String,
+        @Query("lastId") lastId: Int,
+        @Query("offset") offset: Int?,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
     ): Call<StationBookmarkResponse>

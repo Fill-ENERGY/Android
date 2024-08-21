@@ -48,12 +48,22 @@ class BlockActivity : BaseActivity<ActivityBlockBinding>({ ActivityBlockBinding.
 //                }
 //                blockAdapter.unblockUser(accessToken!!, blockUserModel.blockId!!)
 //                blockAdapter.notifyDataSetChanged()
-                lifecycleScope.launch {
-                    blockViewModel.unBlockUser(accessToken!!, blockUserModel.blockId!!)
-                    Log.d("blockList", blockList.toString())
+                    //blockViewModel.unBlockUser(accessToken!!, blockUserModel.blockId!!)
+                BlockRepository.deleteBlockMember(accessToken!!, blockUserModel.blockId!!) {
 
-                    blockAdapter.updateUnblock(blockList)
+                   BlockRepository.getBlockMembers(accessToken!!, 0, 10){
+                       response ->
+                       if (response?.blocks != null) {
+                           blockAdapter.updateUnblock(response.blocks!!)
+                       }
+                   }
                 }
+
+                Log.d("blockList", blockList.toString())
+                    blockAdapter.notifyDataSetChanged()
+
+                    //blockAdapter.updateUnblock(blockList)
+
                 showToast("차단 해제되었습니다.")
             }
         })
@@ -72,7 +82,7 @@ class BlockActivity : BaseActivity<ActivityBlockBinding>({ ActivityBlockBinding.
 
         BlockRepository.getBlockMembers(accessToken!!, 0, 10) { response ->
             response?.blocks?.let { blocks ->
-                //blockList.addAll(blocks)
+                blockList.addAll(blocks)
                 blockViewModel.setBlockList(blocks)
                 blockViewModel.getBlockList.observe(this, Observer {
                     blockList ->

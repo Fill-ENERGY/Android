@@ -168,9 +168,9 @@
             app:layout_constraintTop_toBottomOf="@id/btn_bookmark"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <!--    내가 쓴 민원 글-->
+        <!-- 내가 쓴 게시글 -->
         <LinearLayout
-            android:id="@+id/btn_complaint"
+            android:id="@+id/btn_my_boards"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -182,60 +182,6 @@
             >
             <ImageView
                 android:id="@+id/ic_complaint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_complaint" />
-
-            <TextView
-                style="@style/Body2"
-                android:textColor="@color/gray_scale8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="내가 쓴 민원 글"
-                android:layout_gravity="center"
-                android:layout_marginStart="8dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/btn_review"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="22dp"
-            app:layout_constraintTop_toBottomOf="@id/btn_complaint"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            >
-            <ImageView
-                android:id="@+id/ic_review"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_review" />
-
-            <TextView
-                style="@style/Body2"
-                android:textColor="@color/gray_scale8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="내가 쓴 리뷰"
-                android:layout_gravity="center"
-                android:layout_marginStart="8dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/btn_post"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="22dp"
-            app:layout_constraintTop_toBottomOf="@id/btn_review"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            >
-            <ImageView
-                android:id="@+id/ic_post"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_post" />
@@ -250,13 +196,120 @@
                 android:layout_marginStart="8dp" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/btn_comments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="22dp"
+            app:layout_constraintTop_toBottomOf="@id/btn_my_boards"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+            <ImageView
+                android:id="@+id/ic_review"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_comment" />
+
+            <TextView
+                style="@style/Body2"
+                android:textColor="@color/gray_scale8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="댓글 단 게시글"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_like_boards"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="22dp"
+            app:layout_constraintTop_toBottomOf="@id/btn_comments"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+            <ImageView
+                android:id="@+id/ic_post"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_liked_posts" />
+
+            <TextView
+                style="@style/Body2"
+                android:textColor="@color/gray_scale8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="좋아한 게시글"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="22dp"
+            app:layout_constraintTop_toBottomOf="@id/btn_like_boards"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_review" />
+
+            <TextView
+                style="@style/Body2"
+                android:textColor="@color/gray_scale8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="내가 쓴 평가"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btn_complaint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="22dp"
+            app:layout_constraintTop_toBottomOf="@id/btn_review"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_complaint" />
+
+            <TextView
+                style="@style/Body2"
+                android:textColor="@color/gray_scale8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="내가 쓴 민원 글"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+
         <View
             android:id="@+id/divide"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="15dp"
             android:background="@color/gray_scale3"
-            app:layout_constraintTop_toBottomOf="@+id/btn_post"
+            app:layout_constraintTop_toBottomOf="@+id/btn_complaint"
             />
 
         <TextView
@@ -272,7 +325,7 @@
             app:layout_constraintTop_toBottomOf="@id/divide" />
 
         <LinearLayout
-            android:id="@+id/btn_account_setting"
+            android:id="@+id/btn_notification"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -284,47 +337,6 @@
             >
             <ImageView
                 android:id="@+id/ic_account_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_account_setting" />
-
-            <TextView
-                style="@style/Body2"
-                android:textColor="@color/gray_scale8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="계정 설정"
-                android:layout_gravity="center"
-                android:layout_marginStart="8dp" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                />
-
-            <TextView
-                style="@style/Body4"
-                android:textColor="@color/gray_scale5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="이름, 연락처 비밀번호 등"
-                android:layout_gravity="center" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/btn_notification"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="22dp"
-            app:layout_constraintTop_toBottomOf="@id/btn_account_setting"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            >
-            <ImageView
-                android:id="@+id/ic_notification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_notification" />
@@ -339,13 +351,40 @@
                 android:layout_marginStart="8dp" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/btn_blocks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="22dp"
+            app:layout_constraintTop_toBottomOf="@id/btn_notification"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+            <ImageView
+                android:id="@+id/ic_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_account_setting" />
+
+            <TextView
+                style="@style/Body2"
+                android:textColor="@color/gray_scale8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="차단한 사용자 관리"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
         <View
             android:id="@+id/divide_2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="15dp"
             android:background="@color/gray_scale3"
-            app:layout_constraintTop_toBottomOf="@+id/btn_notification"
+            app:layout_constraintTop_toBottomOf="@+id/btn_blocks"
             />
 
         <TextView
@@ -388,7 +427,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/btn_call"
+            android:id="@+id/btn_policy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -402,14 +441,14 @@
                 android:id="@+id/ic_support"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_support" />
+                android:src="@drawable/ic_policy" />
 
             <TextView
                 style="@style/Body2"
                 android:textColor="@color/gray_scale8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="고객 지원 연락처"
+                android:text="이용약관"
                 android:layout_gravity="center"
                 android:layout_marginStart="8dp" />
         </LinearLayout>
@@ -421,7 +460,7 @@
             android:layout_height="13dp"
             android:layout_marginTop="15dp"
             android:background="#F6F6F6"
-            app:layout_constraintTop_toBottomOf="@+id/btn_call"
+            app:layout_constraintTop_toBottomOf="@+id/btn_policy"
             />
 
         <LinearLayout

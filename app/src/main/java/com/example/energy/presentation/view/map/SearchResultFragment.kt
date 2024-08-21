@@ -142,15 +142,17 @@ class SearchResultFragment :
                 }
             }
 
+            //충전소 길안내
+            mapViewModel.getCurrentLocation.observe(viewLifecycleOwner, Observer { currentLocation ->
+                searchCharging(currentLocation, stationLatitude, stationLongitude)
+            })
+
             //지도 보여주기
             getMap(mapView)
         })
 
 
-        //충전소 길안내
-        mapViewModel.getCurrentLocation.observe(viewLifecycleOwner, Observer { currentLocation ->
-            searchCharging(currentLocation, stationLatitude, stationLongitude)
-        })
+
 
 
         //충전소 공유

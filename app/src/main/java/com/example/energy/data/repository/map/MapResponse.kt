@@ -54,7 +54,13 @@ data class StationDetailModel (
 data class StationBookmarkResponse (
     val code: String,
     val message: String,
-    val result: List<StationBookmarkModel>?
+    val result: StationBookmarkResult?
+)
+
+data class StationBookmarkResult (
+    var stations: List<StationBookmarkModel>?,
+    val lastId: Int?,
+    val hasNext: Boolean?
 )
 
 data class StationBookmarkModel (
@@ -68,7 +74,8 @@ data class StationBookmarkModel (
     var dayOfWeek: String?,
     var openTime: String?,
     var closeTime: String?,
-)
+    var institutionPhone: String?,
+    )
 
 
 //지도에 표시할 모든 충전소 정보 조회

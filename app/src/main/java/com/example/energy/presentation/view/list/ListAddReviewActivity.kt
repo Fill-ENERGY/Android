@@ -96,11 +96,11 @@ class ListAddReviewActivity :
         super.onCreate(savedInstanceState)
         val stationId = intent.getIntExtra("stationId", -1)
         val stationName = intent.getStringExtra("stationName")
+        Log.d("stationId", stationId.toString())
 
         //토큰 가져오기
         var sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
-//        var accessToken = sharedPreferences?.getString("accessToken", "none")
-        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1aHl1bjEwMjAxQG5hdmVyLmNvbSIsImlhdCI6MTcyNDE2NzIwMiwiZXhwIjoxNzI0MTcwODAyfQ.K6g9U2E1OXZ0r_GcTffJRn2-O40aue1XNQ4UQ6_iWFs"
+        var accessToken = sharedPreferences?.getString("accessToken", "none")
 
         //충전소 이름 설정
         binding.tvStationName.text = stationName
@@ -191,15 +191,19 @@ class ListAddReviewActivity :
 
         //평가 업로드 버튼
         binding.tvSubmit.setOnClickListener {
-            ReviewRepository.postReview(
-                accessToken,
-                binding.etContent.text.toString(),
-                score,
-                keywordList.toList(),
-                stationId,
-                null,
-            )
-            showSuccessDialog()
+            if(binding.etContent.text.isNotEmpty()) {
+                ReviewRepository.postReview(
+                    accessToken!!,
+                    binding.etContent.text.toString(),
+                    score,
+                    keywordList.toList(),
+                    stationId,
+                    null,
+                )
+                showSuccessDialog()
+            } else {
+                showToast("텍스트를 입력해주세요") //텍스트 필수
+            }
         }
 
     }
