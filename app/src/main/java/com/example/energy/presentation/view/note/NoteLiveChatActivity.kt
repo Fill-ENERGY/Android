@@ -1,5 +1,6 @@
 package com.example.energy.presentation.view.note
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -15,6 +16,8 @@ import com.example.energy.R
 import com.example.energy.data.repository.note.GetDetailMessage
 import com.example.energy.data.repository.note.MessageRequest
 import com.example.energy.data.repository.note.NoteRepository
+import com.example.energy.data.repository.note.NoteRepository.Companion.sendMessage
+import com.example.energy.data.repository.note.NoteRepository.Companion.updateReadMessage
 import com.example.energy.databinding.ActivityNoteLiveChatBinding
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -25,7 +28,12 @@ import java.util.Locale
 
 class NoteLiveChatActivity : AppCompatActivity() {
 
+
     private lateinit var binding: ActivityNoteLiveChatBinding
+
+    private var cursor: Int = 0
+
+    private var getunreadmessage: Int = 0
 
     private var lastDisplayedDate: String? = null
 
@@ -36,9 +44,10 @@ class NoteLiveChatActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //토큰 가져오기
-        //var sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
-        var accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTMxNjc3LCJleHAiOjE3MjY3MjM2Nzd9.NT0iEfaOANA8m1Y5E8p0-4ZwuUYBZdMQkHhYVj5X7jA"
+
+        // 토큰 가져오기
+        val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        val accessToken = sharedPreferences?.getString("accessToken", "none")
 
         binding = ActivityNoteLiveChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -48,23 +57,18 @@ class NoteLiveChatActivity : AppCompatActivity() {
         val receiverId = intent.getIntExtra("receiverId", -1)
         val username = intent.getStringExtra("Username") ?: "Unknown User"
         val userId = intent.getStringExtra("Id") ?: "Unknown ID"
-        val cursor = intent.getIntExtra("cursor", 0)
-
-        GetMessages(threadId, cursor)
-
+        getunreadmessage = intent.getIntExtra("unreadMessageCount", -1)
+        cursor = intent.getIntExtra("cursor", 0)
 
 
-
-        /*
-
-
-        // username, Id 가져오기
-
-        val username = intent.getStringExtra("Username") ?: "김규리"
-        val userId = intent.getStringExtra("Id") ?: "rlarbfl"
+        if (getunreadmessage == 0) {
+            GetMessages(threadId, cursor+1, receiverId)
+        } else {
+            UpdateReadMessages(threadId, cursor+1, receiverId)
+        }
 
 
-         */
+
 
 
         binding.usernameTextView.text = username
@@ -102,24 +106,57 @@ class NoteLiveChatActivity : AppCompatActivity() {
 
 
 
-
     }
-
 
 
     // 쪽지 목록 조회
 
-
-
-    private fun GetMessages(threadId: Int, cursor: Int)
+    private fun GetMessages(threadId: Int, cursor: Int, receiverId: Int)
     {
 
-        val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTMxNjc3LCJleHAiOjE3MjY3MjM2Nzd9.NT0iEfaOANA8m1Y5E8p0-4ZwuUYBZdMQkHhYVj5X7jA"
+        // 토큰 가져오기
+        val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        val accessToken = sharedPreferences?.getString("accessToken", "none")
 
-        NoteRepository.getMessages(accessToken, threadId, cursor , 10) { response ->
+        //threadId = threadId +1
+        NoteRepository.getMessages(accessToken!!, threadId, cursor , 100) { response ->
             if (response.result?.messages != null) {
-                // 메시지 리스트를 displayChatMessages 함수로 전달하여 UI에 표시
-                displayChatMessages(response.result.messages)
+
+
+
+                // 메시지 리스트를 역순으로  displayChatMessages 함수로 전달하여 UI에 표시
+                displayChatMessages(response.result.messages.reversed(), receiverId)
+
+
+
+
+
+            } else {
+                Toast.makeText(this, "쪽지 목록을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
+            }
+
+
+        }
+
+    }
+
+    // 안 읽은 메시지가 있을 때
+    private fun UpdateReadMessages(threadId: Int, cursor: Int, receiverId: Int)
+    {
+
+        // 토큰 가져오기
+        val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        val accessToken = sharedPreferences?.getString("accessToken", "none")
+
+        //threadId = threadId +1
+        NoteRepository.updateReadMessage(accessToken!!, threadId, cursor , 100) { response ->
+            if (response.result?.messages != null) {
+
+
+
+                // 메시지 리스트를 역순으로  displayChatMessages 함수로 전달하여 UI에 표시
+                displayChatMessages(response.result.messages.reversed(), receiverId)
+
 
 
 
@@ -134,21 +171,25 @@ class NoteLiveChatActivity : AppCompatActivity() {
     }
 
     // 메시지를 UI에 표시하는 함수
-    private fun displayChatMessages(messages: List<GetDetailMessage>) {
+    private fun displayChatMessages(messages: List<GetDetailMessage>, receiverId: Int) {
         messages.forEach { message ->
             val dateFormat = formatDate(message.createdAt ?: "")
             val timeFormat = formatTime(message.createdAt ?: "")
 
-            // TextView 생성 및 메시지 내용 설정
-            val textView = TextView(this).apply {
-                text = "${message.content} - $dateFormat $timeFormat"
-                textSize = 16f
-                setPadding(16, 16, 16, 16)
+            // receiverId 와 sender가 같을 경우 상대방이 보낸 쪽지
+            var isUserMessage = true
+            if (receiverId == message.sender ) {
+                isUserMessage = false
             }
 
-            // TextView를 LinearLayout에 추가
-            binding.chatContainer.addView(textView)
+
+            message.content?.let { addChatBubble(it, dateFormat, timeFormat, isUserMessage) }
+
+
+
         }
+
+
 
         // 모든 메시지를 추가한 후 스크롤을 맨 아래로 이동
         binding.chatScrollView.post {
@@ -160,20 +201,18 @@ class NoteLiveChatActivity : AppCompatActivity() {
 
 
 
-
     // 메시지 전송 api
 
     private fun sendMessage(accessToken: String?, threadId: Int, receiverId: Int) {
 
-        //val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTMxNjc3LCJleHAiOjE3MjY3MjM2Nzd9.NT0iEfaOANA8m1Y5E8p0-4ZwuUYBZdMQkHhYVj5X7jA"
-        val message = binding.messageInput.text.toString().trim()
+          val message = binding.messageInput.text.toString().trim()
 
         if (message.isEmpty()) {
             Toast.makeText(this, "메시지를 입력하세요", Toast.LENGTH_SHORT).show()
             return
         }
 
-        //val receiverId = intent.getIntExtra("receiverId", 2)
+
 
         if (receiverId == -1) {
             Toast.makeText(this, "수신자 Id가 유효하지 않습니다.", Toast.LENGTH_SHORT).show()
@@ -181,7 +220,7 @@ class NoteLiveChatActivity : AppCompatActivity() {
         }
 
 
-        //val threadId = intent.getIntExtra("threadId", 5)
+
         val images = emptyList<String>()
 
         val messageRequest = if (threadId > 0 ) {
@@ -189,21 +228,6 @@ class NoteLiveChatActivity : AppCompatActivity() {
         } else {
             MessageRequest(null, message, images, receiverId)
         }
-
-
-        /*
-
-
-
-        val messageRequest = MessageRequest(
-            5,
-            message,
-            emptyList(),
-            2
-        )
-
-
-         */
 
 
 
@@ -225,6 +249,13 @@ class NoteLiveChatActivity : AppCompatActivity() {
                 binding.chatScrollView.post {
                     binding.chatScrollView.fullScroll(View.FOCUS_DOWN)
                 }
+
+                //cursor 값 최신 값으로
+                cursor = response.result.messageId!!
+
+
+
+
             } else {
                 Toast.makeText(this, "메시지 전송 실패", Toast.LENGTH_SHORT).show()
             }
@@ -234,19 +265,6 @@ class NoteLiveChatActivity : AppCompatActivity() {
 
 
 
-
-
-    /*
-    private fun formatDate(createdAt: String): String {
-        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-        val date = formatter.parse(createdAt) ?: Date()
-        val outputFormat = SimpleDateFormat("yyyy년 M월 d일", Locale.KOREAN)
-        return outputFormat.format(date)
-    }
-
-
-
-     */
 
 
     // 시간 형식 변환 함수
@@ -281,7 +299,7 @@ class NoteLiveChatActivity : AppCompatActivity() {
             timeFormat.format(date)
         } catch (e: Exception) {
             e.printStackTrace()
-            ""
+            createdAt
 
         }
     }
@@ -304,8 +322,9 @@ class NoteLiveChatActivity : AppCompatActivity() {
             val dateTextView = TextView(this).apply {
                 text = date
                 gravity = Gravity.CENTER
+                setTextAppearance(R.style.Body4)
                 setPadding(0, 20, 0, 10)
-                setTextColor(resources.getColor(android.R.color.darker_gray, null))
+                setTextColor(resources.getColor(R.color.gray_scale7, null))
             }
 
 
@@ -320,13 +339,13 @@ class NoteLiveChatActivity : AppCompatActivity() {
 
 
 
-
+        // 채팅 내용 출력
 
         val chatBubble = TextView(this).apply {
             text = message
-            setBackgroundResource(if (isUserMessage) R.drawable.chat_bubble_background else R.drawable.chat_bubble_background) // 사용자 메시지와 상대방 메시지의 배경 구분
+            setBackgroundResource(if (isUserMessage) R.drawable.chat_bubble_background else R.drawable.chat_bubble_background_receiver) // 사용자 메시지와 상대방 메시지의 배경 구분
             setPadding(34, 22, 34, 22)
-            setTextColor(resources.getColor(android.R.color.black, null))
+            setTextColor(resources.getColor(R.color.gray_scale8, null))
 
             // 최대 너비 설정 (약 50자 정도의 너비)
             maxWidth = resources.displayMetrics.densityDpi * 250 / 160
@@ -352,16 +371,25 @@ class NoteLiveChatActivity : AppCompatActivity() {
 
         // 시각 출력
         val timeTextView = TextView(this).apply {
-            text = time
-            gravity = Gravity.END
-            setPadding(0, 4, 8, 8)
-            setTextColor(resources.getColor(android.R.color.darker_gray, null))
+            //text = time
+            //gravity = Gravity.END
+            setPadding(8, 4, 8, 8)
+            setTextAppearance(R.style.Caption1)
+            setTextColor(resources.getColor(R.color.gray_scale7, null))
 
             val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            layoutParams.gravity = Gravity.END // 시각을 오른쪽 끝에 정렬
+            ).apply {
+                // 시각의 위치를 설정
+                if (isUserMessage) {
+                    text = time
+                    gravity = Gravity.END // 오른쪽 끝에 정렬
+                } else {
+                    text = time
+                    gravity = Gravity.START // 왼쪽 끝에 정렬
+                }
+            }
             this.layoutParams = layoutParams
         }
 
