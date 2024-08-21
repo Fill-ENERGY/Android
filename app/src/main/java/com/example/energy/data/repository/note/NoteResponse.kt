@@ -80,3 +80,32 @@ data class GetDetailMessage(
     val createdAt: String?
 
 )
+
+// 채팅방 나가기
+data class LeaveChatRoomResponse(
+    val code: String?,
+    val message: String?,
+    val result: LeaveChatResult?
+)
+
+data class LeaveChatResult(
+    val threadId: Int?,
+    val memberId: Int?,
+    val status: String,
+    val leftAt: String?
+)
+
+
+// 커뮤니티 -> 채팅방 목록 조회
+data class CommunityGetMessagesResponse(
+    val code: String?,
+    val message: String?,
+    val result: GetThreadId?
+)
+
+data class GetThreadId(
+    val threadId: Int?
+)
+
+
+

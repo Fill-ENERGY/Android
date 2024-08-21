@@ -1,22 +1,29 @@
 package com.example.energy.presentation.view.note
 
+import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.energy.data.repository.note.ChatThread
+import com.example.energy.data.repository.note.NoteRepository
 import com.example.energy.databinding.ChatItemBinding
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Collections
 
-class NoteAdapter(private val noteList: ArrayList<ChatThread>,
-                  private val onSwipeClickListener: (ChatThread, Int) -> Unit) :
+class NoteAdapter(
+    private val context: Context,
+    private val noteList: ArrayList<ChatThread>,
+    private val onSwipeClickListener: (ChatThread, Int) -> Unit) :
     RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 
 
@@ -28,7 +35,33 @@ class NoteAdapter(private val noteList: ArrayList<ChatThread>,
 
             binding.nameTextView.text = note.name
             binding.userIdTextView.text = note.nickname
-            binding.messageTextView.text = note.recentMessage?.content
+
+
+
+            // 30자만 미리보기
+
+
+            binding.messageTextView.apply {
+                val content = note.recentMessage?.content ?: ""
+                text = if (content.length > 30) {
+                    content.substring(0, 30) + "..."
+                } else {
+                    content
+                }
+            }
+
+
+
+            // 안 읽은 메시지 있다면 카운트 수 출력
+
+            if (note.unreadMessageCount!! > 0) {
+                binding.unreadTextView.text = note.unreadMessageCount.toString()
+                binding.unreadTextView.visibility = View.VISIBLE
+
+            } else {
+                binding.unreadTextView.visibility = View.GONE
+            }
+
 
             // 날짜 문자열을 LocalDateTime으로 변환
 
@@ -61,6 +94,7 @@ class NoteAdapter(private val noteList: ArrayList<ChatThread>,
                 intent.putExtra("threadId", note.threadId)
                 intent.putExtra("receiverId", note.receiverId)
                 intent.putExtra("cursor", note.recentMessage?.messageId)
+                intent.putExtra("unreadMessageCount", note.unreadMessageCount)
                 ContextCompat.startActivity(itemView.context, intent, null)
             }
 
@@ -69,19 +103,14 @@ class NoteAdapter(private val noteList: ArrayList<ChatThread>,
 
 
 
-
-
-
-
             // 스와이프-> 스와이프 영역 클릭 시, 채팅 목록 삭제
-            binding.swipespace.setOnClickListener {
+            binding.ExitButton.setOnClickListener {
+
+                note.threadId?.let { threadId -> leaveChatRoom(threadId) }
                 removeData(this.layoutPosition)
                 Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
                 onSwipeClickListener(note, layoutPosition)
             }
-
-
-
 
 
 
@@ -140,6 +169,21 @@ class NoteAdapter(private val noteList: ArrayList<ChatThread>,
 
 
 
+    private fun leaveChatRoom(threadId: Int)
+    {
+        // 토큰 가져오기
+        val sharedPreferences = context.getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        val accessToken = sharedPreferences?.getString("accessToken", "none")
+
+        NoteRepository.leaveChatRoom(accessToken!!, threadId) { response->
+            if (response != null) {
+                Log.d("채팅방 나가기", "방 나가기 성공")
+
+            } else {
+                Log.e("채팅방 나가기","연결 실패")
+            }
+        }
+    }
 
 
 

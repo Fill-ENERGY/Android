@@ -1,6 +1,7 @@
 package com.example.energy.presentation.view.note
 
 //import com.example.energy.data.repository.note.NoteRepository.Companion.leaveChatRoom
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -36,12 +37,10 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
 
 
 
-        noteAdapter = NoteAdapter( ArrayList(), {chatThread, position -> })
+        noteAdapter = NoteAdapter( requireContext(), ArrayList(), {chatThread, position -> })
 
         //채팅방 목록 조회 api 호출
         loadChatThread()
-
-
 
 
 
@@ -65,7 +64,7 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
             addItemDecoration(Itemdeco)
 
 
-            //다른 채팅 목록을 클릭하면 스와이프 해제
+            //다른 채팅 목록을 스와이프 하면 스와이프 해제
             setOnTouchListener { v, event ->
                 swipeHelper.removePreviousClamp(this)
                 v.performClick()
@@ -84,11 +83,14 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
 
     private fun loadChatThread() {
 
-        val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InduZGtkdXMxMDJAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTMxNjc3LCJleHAiOjE3MjY3MjM2Nzd9.NT0iEfaOANA8m1Y5E8p0-4ZwuUYBZdMQkHhYVj5X7jA"
+
+        // 토큰 가져오기
+        val sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        val accessToken = sharedPreferences?.getString("accessToken", "none")
 
 
 
-        NoteRepository.getChatThreads(accessToken, cursor, lastId, 10) { response ->
+        NoteRepository.getChatThreads(accessToken!!, cursor, lastId, 10) { response ->
             if (response != null) {
 
                 Log.d("NoteFragment", "API Response: $response")
@@ -131,28 +133,7 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
             }
         }
 
-        // API 호출을 통해 채팅방을 나가는 함수
-//    private fun leaveChatRoom(threadId: Long, onSuccess: () -> Unit) {
-//
-//        val token = "토큰값" // 토큰 값
-//        val apiService = getRetrofit().create(ChatInterface::class.java)
-//
-//        //apiService.leaveChatRoom(threadId).enqueue(object : Callback<LeaveChatResponse> {
-//            override fun onResponse(call: Call<LeaveChatResponse>, response: Response<LeaveChatResponse>) {
-//                if (response.isSuccessful) {
-//                    onSuccess()
-//                } else {
-//                    // 오류 처리
-//                    Toast.makeText(context, "채팅방 나가기 실패", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<LeaveChatResponse>, t: Throwable) {
-//                // 네트워크 오류 처리
-//                Toast.makeText(context, "네트워크 오류", Toast.LENGTH_SHORT).show()
-//            }
-//        })
-//    }
+
 
 
         //sos 기능

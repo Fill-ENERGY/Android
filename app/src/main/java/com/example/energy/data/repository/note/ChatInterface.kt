@@ -44,15 +44,34 @@ interface ChatInterface {
     ) :Call<GetMessageResponse>
 
 
-    /*
+
+    @PATCH("/api/v1/threads/{threadId}/messages")
+    fun updateReadMessage(
+        @Header("Authorization") accessToken: String,
+        @Path("threadId") threadId: Int,
+        @Query("cursor") cursor: Int?,
+        @Query("limit") limit: Int?
+    ) : Call<GetMessageResponse>
+
+
+
     @PATCH("api/v1/threads/{threadId}")
 
     fun leaveChatRoom(
         @Header("Authorization") accessToken: String,
         @Path("threadId") threadId: Int
-    ): Call<NoteResponse>
+    ): Call<LeaveChatRoomResponse>
 
 
-     */
+
+    @GET("/api/v1/threads/members/{memberId}")
+
+    fun communityGetMessages(
+        @Header("Authorization") accessToken: String,
+        @Path("memberId") memberId: Int,
+    ): Call<CommunityGetMessagesResponse>
+
+
+
 
 }

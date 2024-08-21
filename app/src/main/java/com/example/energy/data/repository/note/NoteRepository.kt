@@ -114,42 +114,112 @@ class NoteRepository {
     }
 
 
-
-
-        /*
-        //지도에 띄울 데이터
-        fun leaveChatRoom(accessToken: String, threadId: Int, callback: (StationMapModel?)-> Unit){
+        //쪽지 읽음 상태 업데이트
+        fun updateReadMessage(accessToken: String, threadId: Int, cursor: Int?, limit: Int?, callback: (GetMessageResponse)-> Unit) {
             val noteService = getRetrofit().create(ChatInterface::class.java)
-            val call = noteService.leaveChatRoom(accessToken, threadId)
+            val call = noteService.updateReadMessage(accessToken, threadId, cursor, limit)
 
-            call.enqueue(object : Callback<LeaveChatResponse> {
-                override fun onResponse(call: Call<LeaveChatResponse>, response: Response<LeaveChatResponse>
+
+            call.enqueue(object : Callback<GetMessageResponse> {
+
+                override fun onResponse(
+                    call: Call<GetMessageResponse>,
+                    response: Response<GetMessageResponse>
                 ) {
-                    if(response.isSuccessful){
-                        //통신 성공
-                        Log.e("맵api테스트", "통신 성공 ${response.body()?.code}")
+                    if (response.isSuccessful) {
+                        Log.d("쪽지 읽음 상태 조회", "통신 성공 ${response.code()}, ${response.body()?.result}")
+                        response.body()?.let { callback(it) }
 
 
                     } else {
-                        //통신 실패
-                        val error = response.errorBody()?.toString()
-                        Log.e("맵api테스트", "통신 실패 $error")
-                        callback(null)
+                        // 서버 응답이 2xx가 아닌 경우
+                        val errorBody = response.errorBody()?.string()
+                        Log.e(
+                            "쪽지 읽음 상태 조회",
+                            "응답 실패: ${response.code()} - ${response.message()} \n에러 내용: $errorBody"
+                        )
+
                     }
                 }
 
-                override fun onFailure(call: Call<LeaveChatResponse>, t: Throwable) {
-                    // 통신 실패
-                    Log.w("맵api테스트", "통신 실패: ${t.message}")
-                    callback(null)
+                override fun onFailure(call: Call<GetMessageResponse>, t: Throwable) {
+                    // 네트워크 오류 처리
+                    Log.e("쪽지목록 조회", "쪽지 목록 조회 실패", t)
+
                 }
-            }
-            )
+            })
+        }
+
+        //채팅방 나가기
+
+        fun leaveChatRoom(accessToken: String, threadId: Int, callback: (LeaveChatRoomResponse?) -> Unit) {
+
+
+            val noteApiService = getRetrofit().create(ChatInterface::class.java)
+            val call = noteApiService.leaveChatRoom(accessToken, threadId)
+
+            call.enqueue(object : Callback<LeaveChatRoomResponse> {
+
+                override fun onResponse(call: Call<LeaveChatRoomResponse>, response: Response<LeaveChatRoomResponse>) {
+                    if (response.isSuccessful) {
+                        Log.d("채팅방 나가기", "채팅방 나가기 성공")
+
+                    } else {
+                        Log.e("채팅방 나가기", "채팅방 나가기 실패")
+
+                    }
+                }
+
+                override fun onFailure(call: Call<LeaveChatRoomResponse>, t: Throwable) {
+                    Log.e("채팅방 나가기", "통신 실패")
+
+                }
+            })
+        }
+
+
+        // 커뮤니티 -> 채팅방 생성
+
+
+        fun communityGetMessages(accessToken: String, memberId: Int, callback: (CommunityGetMessagesResponse?) -> Unit)
+        {
+            val noteService = getRetrofit().create(ChatInterface::class.java)
+            val call = noteService.communityGetMessages(accessToken, memberId)
+
+
+            call.enqueue(object : Callback<CommunityGetMessagesResponse> {
+
+                override fun onResponse(call: Call<CommunityGetMessagesResponse>, response: Response<CommunityGetMessagesResponse>) {
+                    if (response.isSuccessful) {
+
+                        Log.d("커뮤니티 채팅방 목록", "통신 성공 ${response.code()}, ${response.body()?.result}")
+                        response.body()?.let { callback(it) }
+
+
+                    } else {
+                        // 서버 응답이 2xx가 아닌 경우
+                        val errorBody = response.errorBody()?.string()
+                        Log.e("커뮤니티 채팅방 목록", "응답 실패: ${response.code()} - ${response.message()} \n에러 내용: $errorBody")
+
+                    }
+                }
+
+                override fun onFailure(call: Call<CommunityGetMessagesResponse>, t: Throwable) {
+                    // 네트워크 오류 처리
+                    Log.e("쪽지목록 조회", "쪽지 목록 조회 실패", t)
+
+                }
+            })
+
         }
 
 
 
-         */
+
+
+
+
+
 
 
 
