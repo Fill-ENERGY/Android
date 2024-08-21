@@ -86,9 +86,8 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
             binding.itemCommunityPostCategoryHelp.setImageResource(StatusfromString(postInfo.helpStatus))
 
             //토큰 가져오기
-//            val sharedPreferences = binding.root.context.getSharedPreferences("userToken", Context.MODE_PRIVATE)
-//            val accessToken = sharedPreferences.getString("accessToken", "none")
-            val accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRqZ3VzaWRAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY4NjQwLCJleHAiOjE3MjY3NjA2NDB9.fUaTieyCFhodHH1YTWJTNVTmDFZuvW6RjJ2t_tVzs_M"
+            val sharedPreferences = binding.root.context.getSharedPreferences("userToken", Context.MODE_PRIVATE)
+            val accessToken = sharedPreferences.getString("accessToken", "none")
 
             // 좋아요 아이콘 설정
             updateLikeIcon(postInfo.liked)
@@ -142,7 +141,7 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
 
                 if(likeStatus){
                     // 서버에 좋아요 상태 업데이트 요청
-                    CommunityRepository.postLikeBoard(accessToken, postInfo.id) { response ->
+                    CommunityRepository.postLikeBoard(accessToken!!, postInfo.id) { response ->
                         if (response != null) {
                             // 좋아요 상태 업데이트 성공 시
                             postInfo.liked = response.liked
@@ -156,7 +155,7 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
                     }
                 } else{
                     // 서버에 좋아요 삭제 업데이트 요청
-                    CommunityRepository.deleteLikeBoard(accessToken, postInfo.id) { response ->
+                    CommunityRepository.deleteLikeBoard(accessToken!!, postInfo.id) { response ->
                         if (response != null) {
                             // 좋아요 상태 업데이트 성공 시
                             postInfo.liked = response.liked

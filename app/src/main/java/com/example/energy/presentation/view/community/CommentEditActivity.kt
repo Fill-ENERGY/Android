@@ -1,5 +1,6 @@
 package com.example.energy.presentation.view.community
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.MotionEvent
@@ -25,7 +26,9 @@ class CommentEditActivity : AppCompatActivity(){
         binding = ActivityCommunityCommentEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRqZ3VzaWRAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY4NjQwLCJleHAiOjE3MjY3NjA2NDB9.fUaTieyCFhodHH1YTWJTNVTmDFZuvW6RjJ2t_tVzs_M"
+        //토큰 가져오기
+        val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        accessToken = sharedPreferences?.getString("accessToken", "none")
 
         // 인텐트로부터 전달받은 commentId 가져옴. 기본값은 -1로 설정하여 예외처리
         postId = intent.getIntExtra("postId", -1)

@@ -54,9 +54,8 @@ class CommunityDetailActivity : AppCompatActivity(){
         setContentView(binding.root)
 
         //토큰 가져오기
-//        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
-//        var accessToken = sharedPreferences?.getString("accessToken", "none")
-        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRqZ3VzaWRAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY4NjQwLCJleHAiOjE3MjY3NjA2NDB9.fUaTieyCFhodHH1YTWJTNVTmDFZuvW6RjJ2t_tVzs_M"
+        val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        accessToken = sharedPreferences?.getString("accessToken", "none")
 
         // 인텐트로부터 전달받은 postId(board_id) 가져옴. 기본값은 -1로 설정하여 예외처리
         postId = intent.getIntExtra("postId", -1)

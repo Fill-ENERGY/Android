@@ -1,6 +1,7 @@
 package com.example.energy.presentation.view.community
 
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -60,9 +61,8 @@ class CommunityWritingActivity : AppCompatActivity(), GalleryAdapter.MyItemClick
         setContentView(binding.root)
 
         //토큰 가져오기
-//        val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
-//        accessToken = sharedPreferences?.getString("accessToken", "none")
-        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRqZ3VzaWRAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY4NjQwLCJleHAiOjE3MjY3NjA2NDB9.fUaTieyCFhodHH1YTWJTNVTmDFZuvW6RjJ2t_tVzs_M"
+        val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        accessToken = sharedPreferences?.getString("accessToken", "none")
 
 
         // Intent로 전달된 postId 확인

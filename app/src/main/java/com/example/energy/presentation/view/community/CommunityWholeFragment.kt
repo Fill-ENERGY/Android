@@ -23,9 +23,9 @@ class CommunityWholeFragment : BaseFragment<FragmentCommunityWholeBinding>({ Fra
         super.onViewCreated(view, savedInstanceState)
 
         //토큰 가져오기
-//        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
-//        var accessToken = sharedPreferences?.getString("accessToken", "none")
-        accessToken = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRqZ3VzaWRAbmF2ZXIuY29tIiwiaWF0IjoxNzI0MTY4NjQwLCJleHAiOjE3MjY3NjA2NDB9.fUaTieyCFhodHH1YTWJTNVTmDFZuvW6RjJ2t_tVzs_M"
+        var sharedPreferences = requireActivity().getSharedPreferences("userToken", Context.MODE_PRIVATE)
+        accessToken = sharedPreferences?.getString("accessToken", "none")
+
     }
 
     override fun onResume() {
