@@ -3,6 +3,7 @@ package com.example.energy.presentation.view.community
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -13,6 +14,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.energy.R
 import com.example.energy.data.repository.community.BoardModel
@@ -21,6 +24,10 @@ import com.example.energy.data.repository.community.CommunityRepository
 import com.example.energy.data.repository.community.HelpStatusRequest
 import com.example.energy.data.repository.community.PostBoardRequest
 import com.example.energy.data.repository.community.WriteCommentRequest
+import com.example.energy.data.repository.note.ChatThreadsResponse
+import com.example.energy.data.repository.note.MessageResponse
+import com.example.energy.data.repository.note.NoteRepository
+import com.example.energy.data.repository.note.RecentMessage
 import com.example.energy.databinding.ActivityCommunityDetailBinding
 import com.example.energy.databinding.DialogCommunityBlockBinding
 import com.example.energy.databinding.DialogCommunityCommentWriterSeeMoreBinding
@@ -29,7 +36,9 @@ import com.example.energy.databinding.DialogCommunityWriterSeeMoreBinding
 import com.example.energy.databinding.DialogHelpStatusBinding
 import com.example.energy.databinding.DialogLoadingBinding
 import com.example.energy.databinding.DialogPostCommunitySuccessBinding
+import com.example.energy.presentation.view.note.NoteLiveChatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.internal.ViewUtils.hideKeyboard
 
 class CommunityDetailActivity : AppCompatActivity(){
     private lateinit var binding: ActivityCommunityDetailBinding
@@ -121,7 +130,44 @@ class CommunityDetailActivity : AppCompatActivity(){
         binding.communityDetailBackIcon.setOnClickListener {
             finish() //현재 Activity 종료
         }
+
+
+
+        // 채팅하기 버튼 클릭 시
+        binding.communityDetailChattingBtn.setOnClickListener {
+            NoteRepository.communityGetMessages(accessToken!!, writerId!!) { response ->
+
+                if (response != null) {
+                    Log.d("커뮤니티채팅버튼","채팅으로 이동 성공  ${writerId}")
+
+                    //if (response.result?.threadId == null) {
+
+                    //}
+
+                    val intent = Intent(this, NoteLiveChatActivity::class.java)
+
+                    intent.putExtra("Username", writerId)
+                    intent.putExtra("Id","dfdkssf")
+                    intent.putExtra("threadId", writerId)
+                    intent.putExtra("receiverId", writerId)
+
+
+                    //intent.putExtra("cursor", )
+
+
+
+                    startActivity(intent)
+
+
+
+                }
+            }
+        }
     }
+
+
+
+
 
     override fun onResume() {
         super.onResume()
@@ -176,6 +222,8 @@ class CommunityDetailActivity : AppCompatActivity(){
                 var likeCount = response.likeNum
                 writerStatus = response.helpStatus
 
+
+
                 //binding.communityDetailUserProfile.setImageResource(postInfo.userProfile!!)
                 binding.communityDetailUserName.text = response.memberName
                 binding.communityDetailTitle.text = response.title
@@ -198,6 +246,54 @@ class CommunityDetailActivity : AppCompatActivity(){
                         binding.communityDetailHelpCategory.setImageResource(R.drawable.icon_tag_requesting)
                     }
                 }
+
+
+                // 채팅하기 버튼 클릭 시
+                binding.communityDetailChattingBtn.setOnClickListener {
+                    NoteRepository.communityGetMessages(accessToken!!, writerId!!) { responseMessage ->
+
+                        if (responseMessage != null) {
+                            Log.d("커뮤니티채팅버튼","채팅으로 이동 성공  ${writerId}")
+
+                            //if (response.result?.threadId == null) {
+
+                            //}
+
+                            val intent = Intent(this, NoteLiveChatActivity::class.java)
+
+                            intent.putExtra("Username", response.memberName)
+                            intent.putExtra("Id",response.memberId)
+                            intent.putExtra("threadId", responseMessage.result?.threadId)
+                            intent.putExtra("receiverId", writerId)
+                            intent.putExtra("unreadMessageCount", 0)
+                            intent.putExtra("cursor", 0)
+
+
+                            startActivity(intent)
+
+
+
+                            //if threadid = null값이면 그냥 맨 페이지
+
+
+
+                            /*
+
+                            val intent = Intent(itemView.context, NoteLiveChatActivity::class.java)
+
+                            intent.putExtra("Username", note.name)
+                            intent.putExtra("Id",note.nickname)
+                            intent.putExtra("threadId", note.threadId)
+                            intent.putExtra("receiverId", note.receiverId)
+                            intent.putExtra("cursor", note.recentMessage?.messageId)
+                            intent.putExtra("unreadMessageCount", note.unreadMessageCount)
+                            ContextCompat.startActivity(itemView.context, intent, null)
+
+                             */
+                        }
+                    }
+                }
+
 
                 // 좋아요 아이콘 클릭 시
                 binding.communityDetailLikeIcon.setOnClickListener {
