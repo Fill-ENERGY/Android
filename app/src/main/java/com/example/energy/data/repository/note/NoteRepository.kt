@@ -26,9 +26,11 @@ class NoteRepository {
                         Log.d("NoteRepository", "메시지 전송 성공: ${response.body()?.message}")
                         callback(response.body())
                     } else {
-                        Log.e("NoteRepository", "메시지 전송 실패: ${response.errorBody()?.string()}")
+                        Log.e("NoteRepository", "메시지 전송 실패: ${response.errorBody()?.string()}!")
                         callback(null)
                     }
+
+
                 }
 
                 override fun onFailure(call: Call<MessageResponse>, t: Throwable) {

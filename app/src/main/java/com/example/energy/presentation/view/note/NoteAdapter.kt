@@ -93,7 +93,7 @@ class NoteAdapter(
                 intent.putExtra("Id",note.nickname)
                 intent.putExtra("threadId", note.threadId)
                 intent.putExtra("receiverId", note.receiverId)
-                intent.putExtra("cursor", note.recentMessage?.messageId)
+                intent.putExtra("cursor", note.recentMessage?.messageId ?:0)
                 intent.putExtra("unreadMessageCount", note.unreadMessageCount)
                 ContextCompat.startActivity(itemView.context, intent, null)
             }
@@ -109,7 +109,7 @@ class NoteAdapter(
                 if (getClamped()) {  // 스와이프 상태에서만 버튼 클릭이 유효
                     note.threadId?.let { threadId -> leaveChatRoom(threadId) }
                     removeData(this.layoutPosition)
-                    Toast.makeText(binding.root.context, "삭제했습니다.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(binding.root.context, "채팅방 나가기", Toast.LENGTH_SHORT).show()
                     onSwipeClickListener(note, layoutPosition)
                 }
             }
