@@ -102,7 +102,7 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
                 cursor = response.result?.cursor
                 lastId = response.result?.lastId
             } else {
-                Toast.makeText(context, "채팅방 목록 불러오기 실패", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "채팅방 목록 불러오기 실패", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -170,6 +170,9 @@ class NoteFragment : BaseFragment<FragmentNoteBinding>({ FragmentNoteBinding.inf
                 dialog.dismiss()
             }
         }
+
+
+
 
 
 
