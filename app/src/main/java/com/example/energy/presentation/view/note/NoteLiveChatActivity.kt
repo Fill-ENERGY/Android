@@ -43,7 +43,7 @@ class NoteLiveChatActivity : AppCompatActivity() {
         val username = intent.getStringExtra("Username") ?: "Unknown User"
         val userId = intent.getStringExtra("Id") ?: "Unknown ID"
         getUnreadMessage = intent.getIntExtra("unreadMessageCount", -1)
-        cursor = intent.getIntExtra("cursor", 0)
+        //cursor = intent.getIntExtra("cursor", 0)
 
 
 
@@ -88,7 +88,7 @@ class NoteLiveChatActivity : AppCompatActivity() {
 
 
 
-    // 쪽지 목록 조회
+    // 쪽지 목록 조회(안 읽은 메시지가 없을 때)
     private fun GetMessages(threadId: Int, cursor: Int?, receiverId: Int) {
         val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
         val accessToken = sharedPreferences?.getString("accessToken", "none")
@@ -114,13 +114,13 @@ class NoteLiveChatActivity : AppCompatActivity() {
         fetchMessages(cursor)
     }
 
-    // 안 읽은 메시지가 있을 때
+    // 쪽지 목록 조회 (안 읽은 메시지가 있을 때)
     private fun UpdateReadMessages(threadId: Int, cursor: Int?, receiverId: Int) {
         val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
         val accessToken = sharedPreferences?.getString("accessToken", "none")
 
         fun fetchMessages(currentCursor: Int?) {
-            NoteRepository.getMessages(accessToken!!, threadId, currentCursor, 10) { response ->
+            NoteRepository.updateReadMessage(accessToken!!, threadId, currentCursor, 10) { response ->
                 if (response.result?.messages != null) {
                     // 수신된 메시지를 리스트에 추가하고 역순으로 정렬하여 UI에 표시
                     allMessages.addAll(response.result.messages)
@@ -148,6 +148,9 @@ class NoteLiveChatActivity : AppCompatActivity() {
             val dateFormat = formatDate(message.createdAt ?: "")
             val timeFormat = formatTime(message.createdAt ?: "")
 
+
+            // receiverId와 sender가 같지 않아야 보내는 사람
+
             val isUserMessage = receiverId != message.sender
             message.content?.let { addChatBubble(it, dateFormat, timeFormat, isUserMessage) }
         }
@@ -174,6 +177,8 @@ class NoteLiveChatActivity : AppCompatActivity() {
 
         val images = emptyList<String>()
         val messageRequest = MessageRequest(threadId, message, images, receiverId)
+
+        // 메시지 전송 api 호출
 
         NoteRepository.sendMessage(accessToken!!, messageRequest) { response ->
             if (response != null) {
@@ -226,6 +231,9 @@ class NoteLiveChatActivity : AppCompatActivity() {
             createdAt
         }
     }
+
+
+    //채팅방에 대화 버블 출력
 
     private fun addChatBubble(message: String, date: String, time: String, isUserMessage: Boolean) {
         // 처음 보낼 때만 날짜 출력
@@ -288,7 +296,7 @@ class NoteLiveChatActivity : AppCompatActivity() {
         binding.chatContainer.addView(chatBubble)
         binding.chatContainer.addView(timeTextView)
 
-        // 마지막으로 추가된 시간 표시를 추적
+        // 마지막으로 추가된 시간 표시를 추가
         lastTimeTextView = timeTextView
     }
 }

@@ -255,14 +255,12 @@ class CommunityDetailActivity : AppCompatActivity(){
                         if (responseMessage != null) {
                             Log.d("커뮤니티채팅버튼","채팅으로 이동 성공  ${writerId}")
 
-                            //if (response.result?.threadId == null) {
 
-                            //}
 
                             val intent = Intent(this, NoteLiveChatActivity::class.java)
 
                             intent.putExtra("Username", response.memberName)
-                            intent.putExtra("Id",response.memberId)
+                            intent.putExtra("Id","fillenergy")
                             intent.putExtra("threadId", responseMessage.result?.threadId)
                             intent.putExtra("receiverId", writerId)
                             intent.putExtra("unreadMessageCount", 0)
@@ -273,23 +271,10 @@ class CommunityDetailActivity : AppCompatActivity(){
 
 
 
-                            //if threadid = null값이면 그냥 맨 페이지
 
 
 
-                            /*
 
-                            val intent = Intent(itemView.context, NoteLiveChatActivity::class.java)
-
-                            intent.putExtra("Username", note.name)
-                            intent.putExtra("Id",note.nickname)
-                            intent.putExtra("threadId", note.threadId)
-                            intent.putExtra("receiverId", note.receiverId)
-                            intent.putExtra("cursor", note.recentMessage?.messageId)
-                            intent.putExtra("unreadMessageCount", note.unreadMessageCount)
-                            ContextCompat.startActivity(itemView.context, intent, null)
-
-                             */
                         }
                     }
                 }
