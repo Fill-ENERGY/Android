@@ -13,7 +13,7 @@ class NoteRepository {
 
 
         // 메시지를 보내는 함수
-        fun sendMessage(accessToken: String, messageRequest: MessageRequest, callback: (MessageResponse?) -> Unit) {
+        fun sendMessage(accessToken: String, messageRequest: MessageRequest?, callback: (MessageResponse?) -> Unit) {
 
 
             val noteApiService = getRetrofit().create(ChatInterface::class.java)
@@ -78,10 +78,10 @@ class NoteRepository {
 
 
         //쪽지 목록 조회
-        fun getMessages(accessToken: String, threadId: Int, cursor: Int?, limit: Int?, callback: (GetMessageResponse)-> Unit)
+        fun getMessages(accessToken: String, threadId: Int?, cursor: Int?, limit: Int?, callback: (GetMessageResponse)-> Unit)
         {
             val noteService = getRetrofit().create(ChatInterface::class.java)
-            val call = noteService.getMessages(accessToken, threadId, cursor, limit)
+            val call = noteService.getMessages(accessToken, threadId!!, cursor, limit)
 
 
             call.enqueue(object : Callback<GetMessageResponse> {
@@ -117,9 +117,9 @@ class NoteRepository {
 
 
         //쪽지 읽음 상태 업데이트
-        fun updateReadMessage(accessToken: String, threadId: Int, cursor: Int?, limit: Int?, callback: (GetMessageResponse)-> Unit) {
+        fun updateReadMessage(accessToken: String, threadId: Int?, cursor: Int?, limit: Int?, callback: (GetMessageResponse)-> Unit) {
             val noteService = getRetrofit().create(ChatInterface::class.java)
-            val call = noteService.updateReadMessage(accessToken, threadId, cursor, limit)
+            val call = noteService.updateReadMessage(accessToken, threadId!!, cursor, limit)
 
 
             call.enqueue(object : Callback<GetMessageResponse> {

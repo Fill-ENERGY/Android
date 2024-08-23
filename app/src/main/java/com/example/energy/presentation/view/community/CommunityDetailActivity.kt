@@ -132,37 +132,6 @@ class CommunityDetailActivity : AppCompatActivity(){
         }
 
 
-
-        // 채팅하기 버튼 클릭 시
-        binding.communityDetailChattingBtn.setOnClickListener {
-            NoteRepository.communityGetMessages(accessToken!!, writerId!!) { response ->
-
-                if (response != null) {
-                    Log.d("커뮤니티채팅버튼","채팅으로 이동 성공  ${writerId}")
-
-                    //if (response.result?.threadId == null) {
-
-                    //}
-
-                    val intent = Intent(this, NoteLiveChatActivity::class.java)
-
-                    intent.putExtra("Username", writerId)
-                    intent.putExtra("Id","dfdkssf")
-                    intent.putExtra("threadId", writerId)
-                    intent.putExtra("receiverId", writerId)
-
-
-                    //intent.putExtra("cursor", )
-
-
-
-                    startActivity(intent)
-
-
-
-                }
-            }
-        }
     }
 
 
