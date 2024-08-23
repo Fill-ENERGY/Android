@@ -25,6 +25,7 @@ class NoteLiveChatActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNoteLiveChatBinding
     private var cursor: Int? = 0
+    //private var threadId: Int? = null
     private var getUnreadMessage: Int = 0
     private var lastDisplayedDate: String? = null
     private var lastTimeTextView: TextView? = null
@@ -38,19 +39,26 @@ class NoteLiveChatActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Intent에서 threadId, receiverId, username 및 userId 가져오기
-        val threadId = intent.getIntExtra("threadId", -1)
-        val receiverId = intent.getIntExtra("receiverId", -1)
+        //val threadId: Int? = intent.extras?.getInt("threadId")
+
+
+
+        val threadId: Int = intent.extras?.getInt("threadId") ?: 0
+
+
+        val receiverId = intent.getIntExtra("receiverId", 0)
         val username = intent.getStringExtra("Username") ?: "Unknown User"
         val userId = intent.getStringExtra("Id") ?: "Unknown ID"
-        getUnreadMessage = intent.getIntExtra("unreadMessageCount", -1)
+        getUnreadMessage = intent.getIntExtra("unreadMessageCount", 0)
         //cursor = intent.getIntExtra("cursor", 0)
 
 
 
         // 메시지 로딩
         if (getUnreadMessage == 0) {
-            //val initialCursor = cursor ?: 0 // cursor가 null이면 0으로 설정
+
             GetMessages(threadId, cursor, receiverId)
+
         } else {
             UpdateReadMessages(threadId, cursor, receiverId)
         }
@@ -68,6 +76,10 @@ class NoteLiveChatActivity : AppCompatActivity() {
             val accessToken = getSharedPreferences("userToken", Context.MODE_PRIVATE)
                 .getString("accessToken", "none")
             sendMessage(accessToken, threadId, receiverId)
+
+
+
+
         }
 
         // 프로필 전환 클릭 리스너
@@ -88,8 +100,13 @@ class NoteLiveChatActivity : AppCompatActivity() {
 
 
 
+
+
+
+
+
     // 쪽지 목록 조회(안 읽은 메시지가 없을 때)
-    private fun GetMessages(threadId: Int, cursor: Int?, receiverId: Int) {
+    private fun GetMessages(threadId: Int?, cursor: Int?, receiverId: Int) {
         val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
         val accessToken = sharedPreferences?.getString("accessToken", "none")
 
@@ -115,7 +132,7 @@ class NoteLiveChatActivity : AppCompatActivity() {
     }
 
     // 쪽지 목록 조회 (안 읽은 메시지가 있을 때)
-    private fun UpdateReadMessages(threadId: Int, cursor: Int?, receiverId: Int) {
+    private fun UpdateReadMessages(threadId: Int?, cursor: Int?, receiverId: Int) {
         val sharedPreferences = getSharedPreferences("userToken", Context.MODE_PRIVATE)
         val accessToken = sharedPreferences?.getString("accessToken", "none")
 
@@ -176,7 +193,9 @@ class NoteLiveChatActivity : AppCompatActivity() {
         }
 
         val images = emptyList<String>()
-        val messageRequest = MessageRequest(threadId, message, images, receiverId)
+        val messageRequest = MessageRequest(threadId!!, message, images, receiverId)
+
+
 
         // 메시지 전송 api 호출
 
@@ -184,6 +203,25 @@ class NoteLiveChatActivity : AppCompatActivity() {
             if (response != null) {
                 Log.d("NoteLiveChatActivity", "서버 응답: ${response.result}")
 
+                //if (response.result.threadId == null) {
+                    //threadId = response.result.threadId
+
+
+                    val createdAt = response.result.createdAt
+                    val dateFormat = formatDate(createdAt)
+                    val timeFormat = formatTime(createdAt)
+
+                    addChatBubble(message, dateFormat, timeFormat, true)
+                    binding.messageInput.text.clear()
+                    binding.chatScrollView.post {
+                        binding.chatScrollView.fullScroll(View.FOCUS_DOWN)
+                    }
+
+                    cursor = response.result.messageId
+
+                //}
+
+                /*
                 val createdAt = response.result.createdAt
                 val dateFormat = formatDate(createdAt)
                 val timeFormat = formatTime(createdAt)
@@ -195,6 +233,8 @@ class NoteLiveChatActivity : AppCompatActivity() {
                 }
 
                 cursor = response.result.messageId
+
+                 */
 
 
 

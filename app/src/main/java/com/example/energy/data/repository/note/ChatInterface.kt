@@ -20,7 +20,7 @@ interface ChatInterface {
     fun sendMessages(
 
         @Header("Authorization") accessToken: String,
-        @Body request: MessageRequest
+        @Body request: MessageRequest?
 
     ) :Call<MessageResponse>
 
@@ -38,7 +38,7 @@ interface ChatInterface {
     @GET("/api/v1/threads/{threadId}/messages")
     fun getMessages (
         @Header("Authorization") accessToken: String,
-        @Path("threadId") threadId: Int,
+        @Path("threadId") threadId: Int?,
         @Query("cursor") cursor: Int?,
         @Query("limit") limit: Int?
     ) :Call<GetMessageResponse>
@@ -48,7 +48,7 @@ interface ChatInterface {
     @PATCH("/api/v1/threads/{threadId}/messages")
     fun updateReadMessage(
         @Header("Authorization") accessToken: String,
-        @Path("threadId") threadId: Int,
+        @Path("threadId") threadId: Int?,
         @Query("cursor") cursor: Int?,
         @Query("limit") limit: Int?
     ) : Call<GetMessageResponse>
@@ -59,7 +59,7 @@ interface ChatInterface {
 
     fun leaveChatRoom(
         @Header("Authorization") accessToken: String,
-        @Path("threadId") threadId: Int
+        @Path("threadId") threadId: Int?
     ): Call<LeaveChatRoomResponse>
 
 
@@ -68,7 +68,7 @@ interface ChatInterface {
 
     fun communityGetMessages(
         @Header("Authorization") accessToken: String,
-        @Path("memberId") memberId: Int,
+        @Path("memberId") memberId: Int?,
     ): Call<CommunityGetMessagesResponse>
 
 
