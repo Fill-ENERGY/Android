@@ -90,19 +90,19 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
             override fun onItemClick(searchData: SearchData) {
                 // 아이템을 최근 검색어 리스트에 추가
                 recentSearchAdapter.addItem(searchData)
-                //데이터 전달
-                val bundle = Bundle().apply {
-                    putDouble("latitude", searchData.y)
-                    putDouble("longitude", searchData.x)
-                }
-
-                // MapFragment 인스턴스 생성
-                val mapFragment = MapFragment().apply {
-                    arguments = bundle
-                }
-
-                //search result fragment로 이동
-                supportFragmentManager.beginTransaction().replace(R.id.search_activity, SearchResultFragment()).commit()
+//                //데이터 전달
+//                val bundle = Bundle().apply {
+//                    putDouble("latitude", searchData.y)
+//                    putDouble("longitude", searchData.x)
+//                }
+//
+//                // MapFragment 인스턴스 생성
+//                val mapFragment = MapFragment().apply {
+//                    arguments = bundle
+//                }
+//
+//                //search result fragment로 이동
+//                supportFragmentManager.beginTransaction().replace(R.id.search_activity, SearchResultFragment()).commit()
 
             }
         }
@@ -164,7 +164,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>({ ActivitySearchBindi
 
         } else {
     // 검색 결과 없음
-            showToast("검색 결과가 없습니다")
+           // showToast("검색 결과가 없습니다")
         }
     }
 

@@ -32,22 +32,22 @@ class MainActivity : AppCompatActivity() {
     private fun initBottomNavigation() {
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.main_frm, ListFragment())
+            .replace(R.id.main_frm, MapFragment())
             .commitAllowingStateLoss()
 
         binding.mainBnv.setOnItemSelectedListener { item ->
             when (item.itemId) {
 
-                R.id.listFragment -> {
+                R.id.mapFragment -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.main_frm, ListFragment())
+                        .replace(R.id.main_frm, MapFragment())
                         .commitAllowingStateLoss()
                     return@setOnItemSelectedListener true
                 }
 
-                R.id.mapFragment -> {
+                R.id.listFragment -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.main_frm, MapFragment())
+                        .replace(R.id.main_frm, ListFragment())
                         .commitAllowingStateLoss()
                     return@setOnItemSelectedListener true
                 }

@@ -37,7 +37,7 @@
             android:gravity="center"
             android:background="@drawable/unselect_help_status"
             android:text="삭제하기"
-            android:textColor="@color/gray_scale7"
+            android:textColor="@color/red"
             style="@style/Title2"
             android:layout_marginBottom="20dp"
             app:layout_constraintStart_toStartOf="parent"

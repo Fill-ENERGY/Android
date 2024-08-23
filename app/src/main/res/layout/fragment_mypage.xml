@@ -35,13 +35,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar"/>
 
-        <ImageView
-            android:id="@+id/ic_profile_camera"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_camera"
-            app:layout_constraintBottom_toBottomOf="@id/iv_profile"
-            app:layout_constraintEnd_toEndOf="@id/iv_profile" />
+<!--        <ImageView-->
+<!--            android:visibility="gone"-->
+<!--            android:id="@+id/ic_profile_camera"-->
+<!--            android:layout_width="20dp"-->
+<!--            android:layout_height="20dp"-->
+<!--            android:src="@drawable/ic_camera"-->
+<!--            app:layout_constraintBottom_toBottomOf="@id/iv_profile"-->
+<!--            app:layout_constraintEnd_toEndOf="@id/iv_profile" />-->
 
 
         <TextView
