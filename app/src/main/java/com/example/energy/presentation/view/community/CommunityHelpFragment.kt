@@ -29,7 +29,7 @@ class CommunityHelpFragment : BaseFragment<FragmentCommunityHelpBinding>({ Fragm
     }
 
     private fun refreshData() { // 게시글 조회
-        CommunityRepository.getListCommunity(accessToken!!, "HELP", 0, 10, "") {
+        CommunityRepository.getListCommunity(accessToken!!, "HELP", 0, 100, "") {
                 response ->
             response.let {
                 //통신성공

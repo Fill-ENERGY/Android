@@ -28,7 +28,7 @@ class CommunityWheelchairFragment : BaseFragment<FragmentCommunityWheelchairBind
     }
 
     private fun refreshData() { // 게시글 조회
-        CommunityRepository.getListCommunity(accessToken!!, "WHEELCHAIR", 0, 10, "") {
+        CommunityRepository.getListCommunity(accessToken!!, "WHEELCHAIR", 0, 100, "") {
                 response ->
             response.let {
                 //통신성공

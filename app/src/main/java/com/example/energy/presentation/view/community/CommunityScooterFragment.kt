@@ -29,7 +29,7 @@ class CommunityScooterFragment : BaseFragment<FragmentCommunityScooterBinding>({
     }
 
     private fun refreshData() { // 게시글 조회
-        CommunityRepository.getListCommunity(accessToken!!, "SCOOTER", 0, 10, "") {
+        CommunityRepository.getListCommunity(accessToken!!, "SCOOTER", 0, 100, "") {
                 response ->
             response.let {
                 //통신성공

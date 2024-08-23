@@ -29,7 +29,7 @@ class CommunityDailyFragment : BaseFragment<FragmentCommunityDailyBinding>({ Fra
     }
 
     private fun refreshData() { // 게시글 조회
-        CommunityRepository.getListCommunity(accessToken!!, "DAILY", 0, 10, "") {
+        CommunityRepository.getListCommunity(accessToken!!, "DAILY", 0, 100, "") {
                 response ->
             response.let {
                 //통신성공

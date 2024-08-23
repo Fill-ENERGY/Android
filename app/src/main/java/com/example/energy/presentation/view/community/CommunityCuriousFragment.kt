@@ -29,7 +29,7 @@ class CommunityCuriousFragment : BaseFragment<FragmentCommunityCuriousBinding>({
     }
 
     private fun refreshData() { // 게시글 조회
-        CommunityRepository.getListCommunity(accessToken!!, "INQUIRY", 0, 10, "") {
+        CommunityRepository.getListCommunity(accessToken!!, "INQUIRY", 0, 100, "") {
                 response ->
             response.let {
                 //통신성공

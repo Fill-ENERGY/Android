@@ -35,7 +35,7 @@ class CommunityWholeFragment : BaseFragment<FragmentCommunityWholeBinding>({ Fra
     }
 
     private fun refreshData() { // 게시글 조회
-        CommunityRepository.getListCommunity(accessToken!!, "", 0, 10, "LATEST") {
+        CommunityRepository.getListCommunity(accessToken!!, "", 0, 100, "LATEST") {
                 response ->
             response?.let {
                 Log.d("게시글정보", "${response}")
