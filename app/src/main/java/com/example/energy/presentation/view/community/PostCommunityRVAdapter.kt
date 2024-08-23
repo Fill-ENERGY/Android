@@ -170,9 +170,9 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
                 }
             }
 
-//            // 커뮤니티 경과 시간 bind
-//            val timeText = checkMinute(postInfo)
-//            binding.itemCommunityPostUploadTime.text = timeText
+            // 커뮤니티 경과 시간 bind
+            var timeText = checkMinute(postInfo)
+            binding.itemCommunityPostUploadTime.text = timeText
         }
 
         fun updateLikeIcon(isLike: Boolean) {
@@ -184,45 +184,45 @@ class PostCommunityRVAdapter (private var postInfo: List<BoardModel>): RecyclerV
         }
 
 
-        fun checkMinute(postInfo: BoardModel): String { // 게시글 post 시간 계산하는 함수
+        fun checkMinute(postInfo: BoardModel): String {
             // 현재 시간 가져오기
-            var current = Calendar.getInstance().time
+            val current = Calendar.getInstance().time
 
             // 서버에서 받은 시간 포맷과 동일하게 SimpleDateFormat 정의
             val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
 
             // postInfo의 createdAt 문자열을 Date로 변환
-            val postTime = formatter.parse(postInfo.createdAt)
-            current = formatter.parse(current.toString())
+            val postTime: Date?
+            try {
+                postTime = formatter.parse(postInfo.createdAt)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return "시간 형식 오류" // 파싱 오류 발생 시 반환값
+            }
 
-//            var postTime: Date? = null
-//
-//            try {
-//                postTime = formatter.parse(postInfo.createdAt)
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//                return "시간 형식 오류" // 파싱 오류 발생 시 반환값
-//            }
-//
-//            if (postTime == null) {
-//                return "시간 데이터 없음"
-//            }
+            if (postTime == null) {
+                return "시간 데이터 없음"
+            }
 
             // 두 시간 사이의 차이를 계산
-            val durationInMillis = current.time - postTime!!.time
-            val durationInDays = durationInMillis / (1000 * 60 * 60 * 24)
+            val durationInMillis = current.time - postTime.time
             val durationInMinutes = durationInMillis / (1000 * 60)
+            val durationInHours = durationInMinutes / 60
+            val durationInDays = durationInMillis / (1000 * 60 * 60 * 24)
 
             return when {
                 durationInMinutes < 1 -> "방금 전"
-                durationInDays >= 1 -> {
+                durationInHours >= 24 -> {
                     // 하루 이상 차이가 나는 경우, yy.MM.dd 형식으로 반환
                     val dateFormatter = SimpleDateFormat("yy.MM.dd", Locale.getDefault())
                     dateFormatter.format(postTime)
                 }
+                durationInMinutes >= 60 -> {
+                    "${durationInHours}시간 전"
+                }
                 else -> {
                     // 하루 미만의 경우, 경과된 분 수를 반환
-                    "$durationInMinutes 분 전"
+                    "${durationInMinutes}분 전"
                 }
             }
         }
